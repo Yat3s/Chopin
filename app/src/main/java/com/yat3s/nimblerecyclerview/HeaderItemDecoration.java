@@ -28,7 +28,7 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void onDrawOver(Canvas c, RecyclerView parent, RecyclerView.State state) {
         super.onDrawOver(c, parent, state);
-        c.drawRect(0, 0, parent.getWidth(), parent.getChildAt(0).getHeight(), mPaint);
+        c.drawRect(0, 0, parent.getWidth(), 100, mPaint);
     }
 
     @Override
