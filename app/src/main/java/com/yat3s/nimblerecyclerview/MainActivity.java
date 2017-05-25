@@ -38,14 +38,19 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mRecyclerView.addItemDecoration(new HeaderItemDecoration());
+        View header = getLayoutInflater().inflate(R.layout.header_layout, null, false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(new TodoAdapter(this, generateMockData()));
+
+        mRecyclerView.addItemDecoration(new HeaderItemDecoration(this, header));
+
     }
 
     private List<Task> generateMockData() {
         List<Task> tasks = new ArrayList<>();
-        String[] titles = {"Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran"};
+        String[] titles = {"Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran",
+                "Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran",
+                "Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran"};
         for (String title : titles) {
             tasks.add(new Task(title));
         }
@@ -60,12 +65,19 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         protected void bindDataToItemView(BaseViewHolder holder, Task data, int position) {
-            holder.setText(R.id.title_tv, data.title);
-            holder.itemView.setBackgroundColor((position & 1) == 0 ? Color.parseColor("#DDDDDD") : Color.WHITE);
+            if (position % 3 == 0) {
+                holder.setText(R.id.header, "Header" + data.title);
+            } else {
+                holder.setText(R.id.title_tv, data.title);
+                holder.itemView.setBackgroundColor((position & 1) == 0 ? Color.parseColor("#DDDDDD") : Color.WHITE);
+            }
         }
 
         @Override
         protected int getItemViewLayoutId(int position, Task data) {
+            if (position % 3 == 0) {
+                return R.layout.header_layout;
+            }
             return R.layout.item_task;
         }
     }
