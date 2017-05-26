@@ -7,6 +7,7 @@ import android.graphics.Paint;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 
@@ -58,7 +59,16 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-
+        if (parent.getChildCount() > 1) {
+            View firstChild = parent.getChildAt(1);
+            int position = parent.getChildAdapterPosition(firstChild);
+            int top = (int) (firstChild.getY() - 2 * mView.getHeight());
+            if (hasHeader(position) && top < 0) {
+                drawHeader(0, top, canvas);
+            } else {
+                drawHeader(0, 0, canvas);
+            }
+        }
     }
 
     @Override

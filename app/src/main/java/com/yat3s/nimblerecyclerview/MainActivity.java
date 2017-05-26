@@ -11,9 +11,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 
-import com.yat3s.nimblerecyclerview.util.BaseAdapter;
-import com.yat3s.nimblerecyclerview.util.BaseViewHolder;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    private List<Task> generateMockData() {
-        List<Task> tasks = new ArrayList<>();
+    private ArrayList<Task> generateMockData() {
+        ArrayList<Task> tasks = new ArrayList<>();
         String[] titles = {"Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran",
                 "Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran",
                 "Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran"};
@@ -58,14 +55,14 @@ public class MainActivity extends AppCompatActivity {
         return tasks;
     }
 
-    static class TodoAdapter extends BaseAdapter<Task> {
+    static class TodoAdapter extends NimbleAdapter<Task, NimbleViewHolder> {
         public TodoAdapter(Context context, List<Task> data) {
             super(context, data);
         }
 
         @Override
-        protected void bindDataToItemView(BaseViewHolder holder, Task data, int position) {
-            holder.setText(R.id.title_tv, data.title);
+        protected void bindDataToItemView(NimbleViewHolder holder, Task task, int position) {
+            holder.setTextView(R.id.title_tv, task.title);
             holder.itemView.setBackgroundColor((position & 1) == 0 ? Color.parseColor("#F2E19B") : Color.WHITE);
         }
 
