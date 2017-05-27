@@ -40,18 +40,16 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(new TodoAdapter(this, generateMockData()));
 
         mRecyclerView.addItemDecoration(new HeaderItemDecoration(this, header));
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
     }
 
     private ArrayList<Task> generateMockData() {
+        String[] taskNames = getResources().getStringArray(R.array.animals);
         ArrayList<Task> tasks = new ArrayList<>();
-        String[] titles = {"Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran",
-                "Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran",
-                "Abby", "Romy", "Aran", "Abby", "Romy", "Aran", "Abby", "Romy", "Aran"};
-        for (String title : titles) {
-            tasks.add(new Task(title));
+        for (String taskName : taskNames) {
+            tasks.add(new Task(taskName));
         }
-
         return tasks;
     }
 
@@ -63,7 +61,6 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void bindDataToItemView(NimbleViewHolder holder, Task task, int position) {
             holder.setTextView(R.id.title_tv, task.title);
-            holder.itemView.setBackgroundColor((position & 1) == 0 ? Color.parseColor("#F2E19B") : Color.WHITE);
         }
 
         @Override

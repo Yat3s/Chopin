@@ -20,7 +20,6 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
     private static final String TAG = "HeaderItemDecoration";
     private Paint mPaint;
     private View mView;
-    private Drawable mDrawable;
     Rect mBounds = new Rect();
 
     public HeaderItemDecoration(Context context, View view) {
@@ -33,10 +32,7 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
         int heightSpec = View.MeasureSpec.makeMeasureSpec(mBounds.height(), View.MeasureSpec.EXACTLY);
         mView.measure(widthSpec, heightSpec);
 
-        //Lay the view out at the mBounds width and height
         mView.layout(0, 0, mBounds.width(), mBounds.height());
-
-        mDrawable = context.getResources().getDrawable(R.drawable.divider);
     }
 
     @Override
@@ -89,6 +85,6 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
     }
 
     private boolean hasHeader(int position) {
-        return position % 2 == 0;
+        return position % 5 == 0;
     }
 }

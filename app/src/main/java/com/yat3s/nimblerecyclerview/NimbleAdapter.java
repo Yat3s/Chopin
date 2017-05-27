@@ -19,13 +19,13 @@ public abstract class NimbleAdapter<T, VH extends NimbleViewHolder> extends Recy
     private int mCurrentViewTypeValue = 0x0100;
 
     // The data source of adapter.
-    private List<T> mDataSource;
+    protected List<T> mDataSource;
 
     // The context from recycler view.
-    private Context mContext;
+    protected Context mContext;
 
     // The layout inflater to inflate all item view.
-    private LayoutInflater mInflater;
+    protected LayoutInflater mInflater;
 
     // Save all layout id, key is view type, value is layout id.
     private SparseIntArray mLayoutIdCacheArray;
