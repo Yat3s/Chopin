@@ -1,46 +1,30 @@
-//package com.yat3s.nimblerecyclerview;
-//
-//import android.content.Context;
-//import android.util.SparseArray;
-//import android.view.View;
-//import android.view.ViewGroup;
-//
-//import java.util.List;
-//
-//import static android.icu.lang.UCharacter.GraphemeClusterBreak.T;
-//
-///**
-// * Created by Yat3s on 26/05/2017.
-// * Email: hawkoyates@gmail.com
-// * GitHub: https://github.com/yat3s
-// */
-//public abstract class StickyHeaderAdapter<T> extends NimbleAdapter {
-//
-//    private SparseArray<View> mStickyHeaderViewCache;
-//
-//    public StickyHeaderAdapter(Context context) {
-//        this(context, null);
-//    }
-//
-//    public StickyHeaderAdapter(Context context, List dataSource) {
-//        super(context, dataSource);
-//        mStickyHeaderViewCache = new SparseArray<>();
-//    }
-//
-//    protected abstract void bindStickyHeader(NimbleViewHolder holder, T t, int position);
-//
-//    protected abstract int getStickyHeaderLayoutId(int position, T t);
-//
-//    protected abstract boolean hasStickyHeader(int position, T t);
-//
-//    @Override
-//    public NimbleViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-//        return new NimbleViewHolder(mInflater.inflate(R.layout.header_layout, parent, false));
-//    }
-//
-//    @Override
-//    public void onBindViewHolder(NimbleViewHolder holder, int position) {
-//        super.onBindViewHolder(holder, position);
-//        bindStickyHeader(holder, position);
-//    }
-//}
+package com.yat3s.nimblerecyclerview;
+
+import android.support.v7.widget.RecyclerView;
+import android.view.ViewGroup;
+
+/**
+ * Created by Yat3s on 27/05/2017.
+ * Email: hawkoyates@gmail.com
+ * GitHub: https://github.com/yat3s
+ */
+public interface StickyHeaderAdapter<VH extends RecyclerView.ViewHolder> {
+
+    /**
+     * Creates a new ViewHolder for a header.  This works the same way onCreateViewHolder in
+     * Recycler.Adapter, ViewHolders can be reused for different views.  This is usually a good place
+     * to inflate the layout for the header.
+     *
+     * @param parent the view to create a header view holder for
+     * @return the view holder
+     */
+    VH onCreateHeaderViewHolder(ViewGroup parent);
+
+    /**
+     * Binds an existing ViewHolder to the specified adapter position.
+     *
+     * @param holder   the view holder
+     * @param position the adapter position
+     */
+    void onBindHeaderViewHolder(VH holder, int position);
+}
