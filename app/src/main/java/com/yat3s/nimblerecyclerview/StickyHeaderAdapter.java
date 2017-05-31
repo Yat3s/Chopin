@@ -11,7 +11,7 @@ import android.view.ViewGroup;
 public interface StickyHeaderAdapter<VH extends RecyclerView.ViewHolder> {
 
     /**
-     * Creates a new ViewHolder for a header.  This works the same way onCreateViewHolder in
+     * Create a new ViewHolder for a header.  This works the same way onCreateViewHolder in
      * Recycler.Adapter, ViewHolders can be reused for different views.  This is usually a good place
      * to inflate the layout for the header.
      *
@@ -21,10 +21,17 @@ public interface StickyHeaderAdapter<VH extends RecyclerView.ViewHolder> {
     VH onCreateHeaderViewHolder(ViewGroup parent);
 
     /**
-     * Binds an existing ViewHolder to the specified adapter position.
+     * Bind an existing ViewHolder to the specified adapter position.
      *
      * @param holder   the view holder
      * @param position the adapter position
      */
     void onBindHeaderViewHolder(VH holder, int position);
+
+    /**
+     * Get unique id for differentiate others. it will
+     * @return
+     */
+    boolean hasHeader(int position);
+
 }
