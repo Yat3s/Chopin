@@ -27,11 +27,4 @@ public interface StickyHeaderAdapter<VH extends RecyclerView.ViewHolder> {
      * @param position the adapter position
      */
     void onBindHeaderViewHolder(VH holder, int position);
-
-    /**
-     * Get unique id for differentiate others. it will
-     * @return
-     */
-    boolean hasHeader(int position);
-
 }
