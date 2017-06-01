@@ -5,11 +5,12 @@ import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseArray;
+import android.view.LayoutInflater;
 import android.view.View;
-
-import java.security.SecureRandom;
 
 
 /**
@@ -20,13 +21,18 @@ import java.security.SecureRandom;
 public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
     private static final String TAG = "HeaderItemDecoration";
     private Paint mPaint;
-    private View mView;
     Rect mBounds = new Rect();
+    private StickyHeaderAdapter mStickyHeaderAdapter;
+    private SparseArray<View> mHeaderViewCache;
+    private Context mContext;
+    private int mCurrentStickyHeaderHeight;
 
-    public HeaderItemDecoration(Context context, View view) {
+    public HeaderItemDecoration(Context context, View view, StickyHeaderAdapter adapter) {
         mPaint = new Paint();
-        mView = view;
         mPaint.setColor(Color.BLUE);
+        mStickyHeaderAdapter = adapter;
+        mHeaderViewCache = new SparseArray<>();
+        mContext = context;
     }
 
     @Override
@@ -34,9 +40,6 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
         final int childCount = parent.getChildCount();
         if (childCount <= 0) {
             return;
-        }
-        if (mView.getWidth() <= 0) {
-            measureHeader(parent.getWidth());
         }
 
         int left = 0;
@@ -46,16 +49,13 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
             final int top = mBounds.top;
             final int position = parent.getChildAdapterPosition(itemView);
             if (hasHeader(position)) {
-                drawHeader(position, left, top, canvas);
+                drawHeader(parent, position, left, top, canvas);
             }
         }
     }
 
     @Override
     public void onDrawOver(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-        if (mView.getWidth() <= 0) {
-            measureHeader(parent.getWidth());
-        }
 
         View nearestHasHeaderChildView = null;
         int childCount = parent.getChildCount();
@@ -70,59 +70,98 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
         }
 
         if (null == nearestHasHeaderChildView) {
-            drawHeader(0, 0, 0, canvas);
+            drawHeaderOver(parent, 0, 0, 0, canvas);
             return;
         }
 
         int position = parent.getChildAdapterPosition(nearestHasHeaderChildView);
-        int top = (int) (nearestHasHeaderChildView.getY() - 2 * mView.getHeight());
-        Log.d(TAG, "onDrawOver: top" + top);
-        Log.d(TAG, "onDrawOver: firstChild.getY()" + nearestHasHeaderChildView.getY());
+        int top = (int) (nearestHasHeaderChildView.getY() - 2 * mCurrentStickyHeaderHeight);
         if (hasHeader(position) && top < 0) {
-            drawHeader(position, 0, top, canvas);
+            drawHeaderOver(parent, position, 0, top, canvas);
         } else {
-            drawHeader(position, 0, 0, canvas);
+            drawHeaderOver(parent, position, 0, 0, canvas);
         }
     }
 
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
-        if (mView.getWidth() <= 0) {
-            measureHeader(parent.getWidth());
-        }
         final int position = parent.getChildAdapterPosition(view);
         if (hasHeader(position)) {
-            outRect.set(0, mView.getHeight(), 0, 0);
+            View headerView = getHeaderViewAndBindViewHolder(position, parent);
+            if (headerView.getHeight() <= 0) {
+                measureView(headerView, parent.getWidth(), 0);
+            }
+            outRect.set(0, headerView.getHeight(), 0, 0);
         } else {
             outRect.set(0, 0, 0, 0);
         }
     }
 
-    private void drawHeader(int position, int left, int top, Canvas canvas) {
-        mView.setBackgroundColor(generateColor(position));
-        canvas.save();
-        canvas.translate(left, top);
-        mView.draw(canvas);
-        canvas.restore();
+    private int lastMeasureOverItemPosition = -1;
+
+    private void drawHeaderOver(RecyclerView parent, int position, int left, int top, Canvas canvas) {
+        View headerView = getHeaderViewAndBindViewHolder(position, parent);
+
+
+        // Measure & layout
+        if (lastMeasureOverItemPosition != position) {
+            measureView(headerView, parent.getWidth(), 0);
+            mCurrentStickyHeaderHeight = headerView.getMeasuredHeight();
+            lastMeasureOverItemPosition = position;
+            Log.d(TAG, "MeasureItemViewOver: " + position);
+        }
+
+        drawView(canvas, headerView, left, top);
     }
 
-    private void measureHeader(int width) {
-        //Measure the view at the exact dimensions (otherwise the text won't center correctly)
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(0, View.MeasureSpec.UNSPECIFIED);
-        mView.measure(widthSpec, heightSpec);
+    private int lastMeasureItemPosition = -1;
 
-        mView.layout(0, 0, mView.getMeasuredWidth(), mView.getMeasuredHeight());
-    }
+    private void drawHeader(RecyclerView parent, int position, int left, int top, Canvas canvas) {
+        View headerView = getHeaderViewAndBindViewHolder(position, parent);
 
-    private int generateColor(int position) {
-        SecureRandom rgen = new SecureRandom();
-        return Color.HSVToColor(150, new float[]{
-                position, 1, 1
-        });
+        // Measure & layout
+        if (lastMeasureItemPosition != position) {
+            measureView(headerView, parent.getWidth(), 0);
+            Log.d(TAG, "MeasureItemView: " + position);
+            lastMeasureItemPosition = position;
+        }
+        drawView(canvas, headerView, left, top);
     }
 
     private boolean hasHeader(int position) {
-        return position % 5 == 0 && position != 0;
+        return mStickyHeaderAdapter.hasHeader(position);
+    }
+
+    private void drawView(Canvas canvas, View needDrawView, int left, int top) {
+        canvas.save();
+        canvas.translate(left, top);
+        needDrawView.draw(canvas);
+        canvas.restore();
+    }
+
+    private void measureView(View view, int width, int height) {
+        int widthSpec = View.MeasureSpec.makeMeasureSpec(width, View.MeasureSpec.EXACTLY);
+        int heightSpec = View.MeasureSpec.makeMeasureSpec(height, View.MeasureSpec.UNSPECIFIED);
+        view.measure(widthSpec, heightSpec);
+        view.layout(0, 0, view.getMeasuredWidth(), view.getMeasuredHeight());
+    }
+
+    private View getHeaderViewAndBindViewHolder(int position, RecyclerView parent) {
+        int layoutResId = mStickyHeaderAdapter.getHeaderViewLayoutId(position);
+        View headerView = mHeaderViewCache.get(layoutResId);
+        if (null == headerView) {
+            View inflatedView = LayoutInflater
+                    .from(mContext)
+                    .inflate(layoutResId, parent, false);
+
+            RecyclerView.ViewHolder vh = new NimbleViewHolder(inflatedView);
+            mStickyHeaderAdapter.onBindHeaderViewHolder(vh, position);
+            headerView = vh.itemView;
+
+            measureView(headerView, parent.getWidth(), 0);
+            mHeaderViewCache.put(layoutResId, headerView);
+        }
+
+        return headerView;
     }
 }

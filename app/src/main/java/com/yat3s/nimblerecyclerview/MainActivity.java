@@ -1,7 +1,6 @@
 package com.yat3s.nimblerecyclerview;
 
 import android.content.Context;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -36,12 +35,12 @@ public class MainActivity extends AppCompatActivity {
 
 
         View header = getLayoutInflater().inflate(R.layout.header_layout, null, false);
+        TodoAdapter todoAdapter = new TodoAdapter(this, generateMockData());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(new TodoAdapter(this, generateMockData()));
+        mRecyclerView.setAdapter(todoAdapter);
 
-        mRecyclerView.addItemDecoration(new HeaderItemDecoration(this, header));
+        mRecyclerView.addItemDecoration(new HeaderItemDecoration(this, header, todoAdapter));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
     }
 
     private ArrayList<Task> generateMockData() {
@@ -53,7 +52,7 @@ public class MainActivity extends AppCompatActivity {
         return tasks;
     }
 
-    static class TodoAdapter extends NimbleAdapter<Task, NimbleViewHolder> {
+    static class TodoAdapter extends NimbleAdapter<Task, NimbleViewHolder> implements StickyHeaderAdapter<NimbleViewHolder> {
         public TodoAdapter(Context context, List<Task> data) {
             super(context, data);
         }
@@ -66,6 +65,21 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected int getItemViewLayoutId(int position, Task data) {
             return R.layout.item_task;
+        }
+
+        @Override
+        public void onBindHeaderViewHolder(NimbleViewHolder holder, int position) {
+            holder.setTextView(R.id.header_tv, mDataSource.get(position).title);
+        }
+
+        @Override
+        public int getHeaderViewLayoutId(int position) {
+            return R.layout.header_layout;
+        }
+
+        @Override
+        public boolean hasHeader(int position) {
+            return position % 8 == 0 && position != 0;
         }
     }
 
