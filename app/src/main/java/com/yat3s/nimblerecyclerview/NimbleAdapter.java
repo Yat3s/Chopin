@@ -2,15 +2,12 @@ package com.yat3s.nimblerecyclerview;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
 import java.util.List;
-
-import static android.content.ContentValues.TAG;
 
 /**
  * Created by Yat3s on 26/05/2017.
@@ -57,7 +54,6 @@ public abstract class NimbleAdapter<T, VH extends NimbleViewHolder> extends Recy
     @Override
     public int getItemViewType(int position) {
         int currentLayoutId = getItemViewLayoutId(position, mDataSource.get(position));
-        Log.d(TAG, "getItemViewType: " + position +"：" +  currentLayoutId);
 
         if (mViewTypeCacheArray.get(currentLayoutId) == 0) {
             mCurrentViewTypeValue++;
@@ -70,13 +66,11 @@ public abstract class NimbleAdapter<T, VH extends NimbleViewHolder> extends Recy
     @Override
     @SuppressWarnings("unchecked")
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        Log.d(TAG, "onCreateViewHolder: " + viewType);
         return (VH) new NimbleViewHolder(mInflater.inflate(mLayoutIdCacheArray.get(viewType), parent, false));
     }
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
-        Log.d(TAG, "onBindViewHolder: " + position);
         bindDataToItemView(holder, getItem(position), position);
     }
 
