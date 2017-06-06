@@ -1,12 +1,20 @@
 package com.yat3s.nimblerecyclerview;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
+import android.widget.FrameLayout;
 
+import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
+import in.srain.cube.views.ptr.PtrClassicFrameLayout;
+import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
+import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 
@@ -15,9 +23,17 @@ import in.srain.cube.views.ptr.indicator.PtrIndicator;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class NimbleRecyclerView extends PtrFrameLayout {
+public class NimbleRecyclerView extends FrameLayout {
+    private static final String TAG = "NimbleRecyclerView";
+    private static final int mVisibleThreshold = 4;
 
+    private boolean isLoadingMore = false;
     private RecyclerView mRecyclerView;
+    private PtrFrameLayout mPtrFrameLayout;
+
+    // Listener
+    private OnRefreshListener mOnRefreshListener;
+    private OnLoadMoreListener mOnLoadMoreListener;
 
     public NimbleRecyclerView(Context context) {
         this(context, null);
@@ -34,41 +50,80 @@ public class NimbleRecyclerView extends PtrFrameLayout {
 
     private void initialize() {
         mRecyclerView = new RecyclerView(getContext());
-        addView(mRecyclerView);
+        mPtrFrameLayout = new PtrClassicFrameLayout(getContext());
 
-        addPtrUIHandler(new PtrUIHandler() {
+        PtrClassicDefaultHeader ptrClassicHeader = new PtrClassicDefaultHeader(getContext());
+        mPtrFrameLayout.setHeaderView(ptrClassicHeader);
+        mPtrFrameLayout.addPtrUIHandler(ptrClassicHeader);
+
+        mPtrFrameLayout.setPtrHandler(new PtrHandler() {
             @Override
-            public void onUIReset(PtrFrameLayout frame) {
-
+            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
+                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
             }
 
             @Override
-            public void onUIRefreshPrepare(PtrFrameLayout frame) {
-
+            public void onRefreshBegin(PtrFrameLayout frame) {
+                if (null != mOnRefreshListener) {
+                    mOnRefreshListener.onRefresh();
+                }
             }
+        });
 
+        mPtrFrameLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+                .LayoutParams.MATCH_PARENT));
+        mPtrFrameLayout.addView(mRecyclerView);
+        addView(mPtrFrameLayout);
+
+        mPtrFrameLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
-            public void onUIRefreshBegin(PtrFrameLayout frame) {
-
-            }
-
-            @Override
-            public void onUIRefreshComplete(PtrFrameLayout frame) {
-
-            }
-
-            @Override
-            public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, PtrIndicator ptrIndicator) {
-
+            public void onGlobalLayout() {
+                Log.d(TAG, "onGlobalLayout: " + mPtrFrameLayout.getHeight());
             }
         });
     }
 
-    public void setRefreshHeaderView(RefreshHeaderView headerView) {
-        addPtrUIHandler(headerView);
-        setHeaderView(headerView);
+    public void loadMoreComplete() {
+        isLoadingMore = false;
     }
 
+    public void refreshComplete() {
+        mPtrFrameLayout.refreshComplete();
+    }
+
+    public RecyclerView getRecyclerView() {
+        return mRecyclerView;
+    }
+
+    public void setRefreshHeaderView(RefreshHeaderView headerView) {
+        mPtrFrameLayout.setHeaderView(headerView);
+        mPtrFrameLayout.addPtrUIHandler(headerView);
+    }
+
+    public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
+        mOnRefreshListener = onRefreshListener;
+    }
+
+    public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
+        mOnLoadMoreListener = onLoadMoreListener;
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                        .findLastVisibleItemPosition();
+                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载
+                // if dy>0 --> pull down
+                if (lastVisibleItem >= totalItemCount - mVisibleThreshold && dy > 0) {
+                    if (!isLoadingMore) {
+                        isLoadingMore = true;
+                        mOnLoadMoreListener.onLoadMore();
+                    }
+                }
+            }
+        });
+    }
 
     public static class RefreshHeaderViewBuilder {
         private RefreshHeaderView mRefreshView;
@@ -146,5 +201,13 @@ public class NimbleRecyclerView extends PtrFrameLayout {
     public interface HeaderViewRefreshListener {
         void onStartRefresh();
 
+    }
+
+    public interface OnRefreshListener {
+        void onRefresh();
+    }
+
+    public interface OnLoadMoreListener {
+        void onLoadMore();
     }
 }

@@ -5,7 +5,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
@@ -14,13 +13,13 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private RecyclerView mRecyclerView;
+    private NimbleRecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView = (NimbleRecyclerView) findViewById(R.id.recycler_view);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -34,11 +33,26 @@ public class MainActivity extends AppCompatActivity {
 
         View header = getLayoutInflater().inflate(R.layout.header_layout, null, false);
         TodoAdapter todoAdapter = new TodoAdapter(this, generateMockData());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(todoAdapter);
+        mRecyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
+        mRecyclerView.getRecyclerView().setAdapter(todoAdapter);
 
-        mRecyclerView.addItemDecoration(new HeaderItemDecoration(this, header, todoAdapter));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        mRecyclerView.getRecyclerView().addItemDecoration(new HeaderItemDecoration(this, header, todoAdapter));
+        mRecyclerView.getRecyclerView().addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+//        mRecyclerView.setOnRefreshListener(new NimbleRecyclerView.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                Toast.makeText(MainActivity.this, "Refresh", Toast.LENGTH_SHORT).show();
+//                mRecyclerView.refreshComplete();
+//            }
+//        });
+//
+//        mRecyclerView.setOnLoadMoreListener(new NimbleRecyclerView.OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore() {
+//                Toast.makeText(MainActivity.this, "LoadMore", Toast.LENGTH_SHORT).show();
+//                mRecyclerView.loadMoreComplete();
+//            }
+//        });
     }
 
     private ArrayList<Task> generateMockData() {
