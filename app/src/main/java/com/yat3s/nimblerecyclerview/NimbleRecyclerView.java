@@ -11,7 +11,6 @@ import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
 
 import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
-import in.srain.cube.views.ptr.PtrClassicFrameLayout;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
 import in.srain.cube.views.ptr.PtrHandler;
@@ -50,7 +49,7 @@ public class NimbleRecyclerView extends FrameLayout {
 
     private void initialize() {
         mRecyclerView = new RecyclerView(getContext());
-        mPtrFrameLayout = new PtrClassicFrameLayout(getContext());
+        mPtrFrameLayout = new PtrFrameLayout(getContext());
 
         PtrClassicDefaultHeader ptrClassicHeader = new PtrClassicDefaultHeader(getContext());
         mPtrFrameLayout.setHeaderView(ptrClassicHeader);
@@ -72,13 +71,18 @@ public class NimbleRecyclerView extends FrameLayout {
 
         mPtrFrameLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
                 .LayoutParams.MATCH_PARENT));
-        mPtrFrameLayout.addView(mRecyclerView);
-        addView(mPtrFrameLayout);
 
-        mPtrFrameLayout.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+        mPtrFrameLayout.setBackgroundResource(R.color.md_yellow_300);
+
+        FrameLayout frameLayout = new FrameLayout(getContext());
+
+        addView(frameLayout);
+        frameLayout.addView(mRecyclerView);
+
+        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Log.d(TAG, "onGlobalLayout: " + mPtrFrameLayout.getHeight());
+                Log.d(TAG, "onGlobalLayout: " + mRecyclerView.getHeight());
             }
         });
     }

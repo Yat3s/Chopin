@@ -14,12 +14,17 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
 
     private NimbleRecyclerView mRecyclerView;
+    private ScrollableView mScrollableView;
+    private ScrollerLayout mScrollerLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRecyclerView = (NimbleRecyclerView) findViewById(R.id.recycler_view);
+        mScrollableView = (ScrollableView) findViewById(R.id.scrollable_view);
+        mScrollerLayout = (ScrollerLayout) findViewById(R.id.scroller_layout);
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
@@ -27,6 +32,7 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mScrollableView.starBackHome(200, 200);
             }
         });
 
