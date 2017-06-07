@@ -1,49 +1,21 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/content_main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.yat3s.nimblerecyclerview.MainActivity"
     tools:showIn="@layout/activity_main">
 
     <com.yat3s.nimblerecyclerview.NimbleRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:visibility="gone"/>
+        android:layout_height="match_parent"/>
 
     <com.yat3s.nimblerecyclerview.ScrollableView
         android:id="@+id/scrollable_view"
         android:layout_width="120dp"
         android:layout_height="60dp"
-        android:layout_marginLeft="100dp"
-        android:layout_marginTop="100dp"
         android:background="@color/md_teal_200"/>
-
-    <com.yat3s.nimblerecyclerview.ScrollerLayout
-        android:id="@+id/scroller_layout"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:text="This is first child view"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:text="This is second child view"/>
-
-        <Button
-            android:layout_width="match_parent"
-            android:layout_height="100dp"
-            android:text="This is third child view"/>
-
-    </com.yat3s.nimblerecyclerview.ScrollerLayout>
-
 </RelativeLayout>

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+import android.view.View;
 import android.view.ViewConfiguration;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
@@ -14,6 +15,7 @@ import android.widget.Scroller;
  * GitHub: https://github.com/yat3s
  */
 public class ScrollableView extends FrameLayout {
+    private int mLastX, mLastY;
     private static final String TAG = "ScrollableView";
     private Scroller mScroller;
     private int mTouchSlop;
@@ -38,16 +40,18 @@ public class ScrollableView extends FrameLayout {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int x = (int) event.getRawX(), y = (int) event.getRawY();
+        int x = (int) event.getX(), y = (int) event.getY();
         Log.d(TAG, "onTouchEvent: " + event.getAction() + "--->" + x + ", " + y);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mLastX = x;
+                mLastY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
-                move(x, y);
+                move(x - mLastX, y - mLastY);
                 break;
             case MotionEvent.ACTION_UP:
-                starBackHome(x, y);
+//                starBackHome(x, y);
                 break;
         }
         return true;
@@ -58,9 +62,13 @@ public class ScrollableView extends FrameLayout {
     }
 
     private void move(int x, int y) {
-        Log.d(TAG, "move: " + x + "， " + y);
-        setTranslationX(x);
-        setTranslationY(y);
+//        layout(getLeft() + x, getTop() + y, getRight() + x, getBottom() + y);
+
+        offsetLeftAndRight(x);
+        offsetTopAndBottom(y);
+//        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) getLayoutParams();
+//        lp.setMargins(x, y, 0, 0);
+//        setLayoutParams(lp);
     }
 
     public void starBackHome(int x, int y) {
@@ -74,7 +82,7 @@ public class ScrollableView extends FrameLayout {
     public void computeScroll() {
         if (mScroller.computeScrollOffset()) {
             Log.d(TAG, "computeScroll: " + mScroller.getCurrX() + ", " + mScroller.getCurrY());
-            scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
+            ((View) getParent()).scrollTo(mScroller.getCurrX(), mScroller.getCurrY());
             invalidate();
         }
     }

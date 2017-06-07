@@ -5,10 +5,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 
 import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
 import in.srain.cube.views.ptr.PtrDefaultHandler;
@@ -17,12 +19,14 @@ import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 
+import static android.R.attr.offset;
+
 /**
  * Created by Yat3s on 03/06/2017.
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class NimbleRecyclerView extends FrameLayout {
+public class NimbleRecyclerView extends LinearLayout {
     private static final String TAG = "NimbleRecyclerView";
     private static final int mVisibleThreshold = 4;
 
@@ -74,17 +78,65 @@ public class NimbleRecyclerView extends FrameLayout {
 
         mPtrFrameLayout.setBackgroundResource(R.color.md_yellow_300);
 
-        FrameLayout frameLayout = new FrameLayout(getContext());
+        mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+                .LayoutParams.MATCH_PARENT));
 
-        addView(frameLayout);
-        frameLayout.addView(mRecyclerView);
+        addView(mRecyclerView);
 
         mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
-                Log.d(TAG, "onGlobalLayout: " + mRecyclerView.getHeight());
             }
         });
+
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+
+                Log.d(TAG, "onScrolled: " + mRecyclerView.canScrollVertically(RecyclerView.VERTICAL));
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+
+
+    }
+
+
+    private int mLastX, mLastY;
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int x = (int) event.getX(), y = (int) event.getY();
+        Log.d(TAG, "onTouchEvent: " + x + ", " + y);
+        switch (event.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastX = x;
+                mLastY = y;
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                int offsetX = x - mLastX;
+                int offsetY = y - mLastY;
+                move(offsetX, offsetY);
+                return true;
+        }
+        return super.onTouchEvent(event);
+    }
+
+    private void move(int offsetX, int offsetY) {
+        Log.d(TAG, "move: " + offsetX + ", " + offsetY);
+        mRecyclerView.offsetLeftAndRight(offsetX);
+        mRecyclerView.offsetLeftAndRight(offsetY);
+    }
+
+
+    public RecyclerView getRecyclerView() {
+        return mRecyclerView;
     }
 
     public void loadMoreComplete() {
@@ -93,10 +145,6 @@ public class NimbleRecyclerView extends FrameLayout {
 
     public void refreshComplete() {
         mPtrFrameLayout.refreshComplete();
-    }
-
-    public RecyclerView getRecyclerView() {
-        return mRecyclerView;
     }
 
     public void setRefreshHeaderView(RefreshHeaderView headerView) {
@@ -128,6 +176,7 @@ public class NimbleRecyclerView extends FrameLayout {
             }
         });
     }
+
 
     public static class RefreshHeaderViewBuilder {
         private RefreshHeaderView mRefreshView;
