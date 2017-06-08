@@ -62,13 +62,8 @@ public class ScrollableView extends FrameLayout {
     }
 
     private void move(int x, int y) {
-//        layout(getLeft() + x, getTop() + y, getRight() + x, getBottom() + y);
-
         offsetLeftAndRight(x);
         offsetTopAndBottom(y);
-//        RelativeLayout.LayoutParams lp = (RelativeLayout.LayoutParams) getLayoutParams();
-//        lp.setMargins(x, y, 0, 0);
-//        setLayoutParams(lp);
     }
 
     public void starBackHome(int x, int y) {
