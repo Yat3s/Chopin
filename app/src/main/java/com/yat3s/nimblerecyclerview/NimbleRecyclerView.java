@@ -19,8 +19,6 @@ import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 
-import static android.R.attr.offset;
-
 /**
  * Created by Yat3s on 03/06/2017.
  * Email: hawkoyates@gmail.com
@@ -78,32 +76,17 @@ public class NimbleRecyclerView extends LinearLayout {
 
         mPtrFrameLayout.setBackgroundResource(R.color.md_yellow_300);
 
-        mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
-                .LayoutParams.MATCH_PARENT));
 
-        addView(mRecyclerView);
+        addView(mPtrFrameLayout);
+        mPtrFrameLayout.addView(mRecyclerView);
 
         mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
             public void onGlobalLayout() {
+                mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1000));
+                mPtrFrameLayout.invalidate();
             }
         });
-
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-
-                Log.d(TAG, "onScrolled: " + mRecyclerView.canScrollVertically(RecyclerView.VERTICAL));
-            }
-
-            @Override
-            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
-                super.onScrollStateChanged(recyclerView, newState);
-            }
-        });
-
-
     }
 
 
