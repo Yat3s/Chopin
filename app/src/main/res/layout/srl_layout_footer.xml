@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingTop="@dimen/srl_footer_padding_top"
+    android:background="@color/srl_pull_background">
+
+    <TextView
+        android:id="@+id/srl_tv_pull_up"
+        android:layout_width="wrap_content"
+        android:layout_height="@dimen/srl_pull_tv_height"
+        android:layout_centerHorizontal="true"
+        android:drawableLeft="@drawable/srl_arrow_up"
+        android:gravity="center_vertical"
+        android:text="@string/srl_keep_pull_up"
+        android:textColor="@color/srl_text_color"
+        android:textSize="@dimen/srl_text_size" />
+
+    <me.hwang.library.widgit.EatBeanLoadingView
+        android:id="@+id/srl_elv_pull_up"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/srl_loading_view_height"
+        android:layout_centerHorizontal="true"
+        android:visibility="gone" />
+</RelativeLayout>

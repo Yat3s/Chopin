@@ -7,6 +7,13 @@
     <color name="black">#000000</color>
     <color name="grey">#EEEEEE</color>
 
+    <color name="srl_colorPrimary">#3F51B5</color>
+    <color name="srl_colorPrimaryDark">#303F9F</color>
+    <color name="srl_colorAccent">#515151</color>
+
+    <color name="srl_text_color">#515151</color>
+    <color name="srl_pull_background">#FFFFFF</color>
+
     <!-- google's material design colours from
        http://www.google.com/design/spec/style/color.html#color-ui-color-palette -->
 
