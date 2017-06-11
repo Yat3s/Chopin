@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
+import com.yat3s.nimblerecyclerview.widget.ScrollableView;
+
 import java.util.ArrayList;
 import java.util.List;
 

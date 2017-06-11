@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.nimblerecyclerview.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewConfigurationCompat;

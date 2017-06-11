@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.nimblerecyclerview.widget;
 
 import android.view.View;
 import android.animation.Animator;

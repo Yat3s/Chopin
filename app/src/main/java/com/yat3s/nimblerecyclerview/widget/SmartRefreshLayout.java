@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.nimblerecyclerview.widget;
 
 import android.content.Context;
 import android.content.res.TypedArray;
@@ -16,6 +16,8 @@ import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.Scroller;
 import android.widget.TextView;
+
+import com.yat3s.nimblerecyclerview.R;
 
 
 public class SmartRefreshLayout extends ViewGroup {
