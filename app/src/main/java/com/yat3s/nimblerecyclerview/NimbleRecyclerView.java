@@ -76,8 +76,7 @@ public class NimbleRecyclerView extends LinearLayout {
 
         mPtrFrameLayout.setBackgroundResource(R.color.md_yellow_300);
 
-        mPtrFrameLayout.addView(mRecyclerView);
-        addView(mPtrFrameLayout);
+
 
         mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
             @Override
@@ -88,6 +87,12 @@ public class NimbleRecyclerView extends LinearLayout {
         });
     }
 
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mPtrFrameLayout.addView(mRecyclerView);
+        addView(mPtrFrameLayout);
+    }
 
     private int mLastX, mLastY;
 

@@ -1,5 +1,5 @@
 package com.yat3s.nimblerecyclerview.widget;
-        
+
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.animation.ValueAnimator;
@@ -25,11 +25,9 @@ public class EatBeanLoadingView extends View {
     int eatSpeed = 5;
     private float beansWidth = 10f;
 
-
     private float mAngle = 34;
     private float eatErStrtAngle = mAngle;
     private float eatErEndAngle = 360 - 2 * eatErStrtAngle;
-
 
     public EatBeanLoadingView(Context context) {
         this(context, null);
