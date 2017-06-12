@@ -24,7 +24,7 @@ import in.srain.cube.views.ptr.indicator.PtrIndicator;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class NimbleRecyclerView extends LinearLayout {
+public class NimbleRecyclerView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
     private static final int mVisibleThreshold = 4;
 
@@ -47,6 +47,19 @@ public class NimbleRecyclerView extends LinearLayout {
     public NimbleRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initialize();
+    }
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        for (int idx = 0; idx < getChildCount(); idx++) {
+            measureChild(getChildAt(idx), widthMeasureSpec, heightMeasureSpec);
+        }
+    }
+
+    @Override
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
+
     }
 
     private void initialize() {
