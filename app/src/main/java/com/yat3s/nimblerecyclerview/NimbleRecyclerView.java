@@ -23,11 +23,14 @@ import in.srain.cube.views.ptr.indicator.PtrIndicator;
 public class NimbleRecyclerView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
     private static final int mVisibleThreshold = 4;
+    private static final float SCROLL_RESISTANCE = 0.64f;
 
     private boolean isLoadingMore = false;
     private RecyclerView mRecyclerView;
-    private int mLastX, mLastY;
+    private int mLastY;
     private Scroller mScroller;
+    private View mRefreshHeaderView;
+    private boolean isRefreshing;
 
     // Listener
     private OnRefreshListener mOnRefreshListener;
@@ -46,6 +49,14 @@ public class NimbleRecyclerView extends ViewGroup {
         initialize();
     }
 
+    public void setRefreshHeaderView(View refreshHeaderView) {
+        mRefreshHeaderView = refreshHeaderView;
+        if (null != mRefreshHeaderView) {
+            mRefreshHeaderView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            addView(mRefreshHeaderView);
+        }
+    }
 
     @Override
     protected void onFinishInflate() {
@@ -54,7 +65,6 @@ public class NimbleRecyclerView extends ViewGroup {
                 .LayoutParams.MATCH_PARENT));
         addView(mRecyclerView);
     }
-
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -67,15 +77,18 @@ public class NimbleRecyclerView extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         mRecyclerView.layout(0, 0, mRecyclerView.getMeasuredWidth(), mRecyclerView.getMeasuredHeight());
+        if (null != mRefreshHeaderView) {
+            mRefreshHeaderView.layout(0, -mRefreshHeaderView.getMeasuredHeight(), mRefreshHeaderView.getMeasuredWidth(), 0);
+        }
     }
-
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        int x = (int) ev.getX(), y = (int) ev.getY();
+        int y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 mLastY = y;
+                mLastTouchY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
                 // Scroll down
@@ -89,21 +102,23 @@ public class NimbleRecyclerView extends ViewGroup {
         return super.onInterceptTouchEvent(ev);
     }
 
+    int mLastTouchY;
+
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        int x = (int) event.getX(), y = (int) event.getY();
+        int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                Log.d(TAG, "ACTION_DOWN: " + x + ", " + y);
-                mLastX = x;
-                mLastY = y;
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                Log.d(TAG, "onTouchEvent: " + x + ", " + y);
-                int offsetX = x - mLastX;
-                int offsetY = y - mLastY;
-                scrollTo(0, -offsetY);
+                int offsetY = y - mLastTouchY;
+
+                Log.d(TAG, "mLastTouchY: " + mLastTouchY);
+                Log.d(TAG, "offsetY: " + offsetY);
+
+                scrollBy(0, (int) (-offsetY * SCROLL_RESISTANCE));
+                mLastTouchY = y;
                 return true;
             case MotionEvent.ACTION_UP:
                 releaseRefresh();
@@ -113,9 +128,16 @@ public class NimbleRecyclerView extends ViewGroup {
     }
 
     private void releaseRefresh() {
-        mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderView.getMeasuredHeight() + getScrollY()));
+        if (null != mOnRefreshListener) {
+            mOnRefreshListener.onRefresh();
+        }
     }
 
+    public void refreshComplete() {
+        mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+        isRefreshing = false;
+    }
 
     private boolean recyclerViewScrolledToTop() {
         return mRecyclerView.computeVerticalScrollOffset() <= 0;
@@ -155,9 +177,6 @@ public class NimbleRecyclerView extends ViewGroup {
         isLoadingMore = false;
     }
 
-    public void refreshComplete() {
-//        mPtrFrameLayout.refreshComplete();
-    }
 
     public void setRefreshHeaderView(RefreshHeaderView headerView) {
 //
@@ -264,7 +283,6 @@ public class NimbleRecyclerView extends ViewGroup {
 
     public interface HeaderViewRefreshListener {
         void onStartRefresh();
-
     }
 
     public interface OnRefreshListener {

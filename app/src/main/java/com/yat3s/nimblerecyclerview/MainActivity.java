@@ -2,9 +2,11 @@ package com.yat3s.nimblerecyclerview;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
@@ -13,6 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
 
     private NimbleRecyclerView mRecyclerView;
     private ScrollableView mScrollableView;
@@ -33,10 +36,23 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        View header = getLayoutInflater().inflate(R.layout.header_layout, null, false);
+        View header = getLayoutInflater().inflate(R.layout.layout_refresh_header, null, false);
         TodoAdapter todoAdapter = new TodoAdapter(this, generateMockData());
         mRecyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.getRecyclerView().setAdapter(todoAdapter);
+        mRecyclerView.setRefreshHeaderView(header);
+        mRecyclerView.setOnRefreshListener(new NimbleRecyclerView.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                Log.d(TAG, "onRefresh: ");
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRecyclerView.refreshComplete();
+                    }
+                }, 500);
+            }
+        });
 
         mRecyclerView.getRecyclerView().addItemDecoration(new HeaderItemDecoration(this, header, todoAdapter));
         mRecyclerView.getRecyclerView().addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
