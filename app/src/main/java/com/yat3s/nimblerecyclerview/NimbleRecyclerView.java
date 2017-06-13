@@ -8,14 +8,10 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewTreeObserver;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
+import android.widget.Scroller;
 
-import in.srain.cube.views.ptr.PtrClassicDefaultHeader;
-import in.srain.cube.views.ptr.PtrDefaultHandler;
 import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrHandler;
 import in.srain.cube.views.ptr.PtrUIHandler;
 import in.srain.cube.views.ptr.indicator.PtrIndicator;
 
@@ -30,7 +26,8 @@ public class NimbleRecyclerView extends ViewGroup {
 
     private boolean isLoadingMore = false;
     private RecyclerView mRecyclerView;
-    private PtrFrameLayout mPtrFrameLayout;
+    private int mLastX, mLastY;
+    private Scroller mScroller;
 
     // Listener
     private OnRefreshListener mOnRefreshListener;
@@ -49,6 +46,16 @@ public class NimbleRecyclerView extends ViewGroup {
         initialize();
     }
 
+
+    @Override
+    protected void onFinishInflate() {
+        super.onFinishInflate();
+        mRecyclerView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
+                .LayoutParams.MATCH_PARENT));
+        addView(mRecyclerView);
+    }
+
+
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -59,79 +66,84 @@ public class NimbleRecyclerView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
+        mRecyclerView.layout(0, 0, mRecyclerView.getMeasuredWidth(), mRecyclerView.getMeasuredHeight());
     }
 
-    private void initialize() {
-        mRecyclerView = new RecyclerView(getContext());
-        mPtrFrameLayout = new PtrFrameLayout(getContext());
-
-        PtrClassicDefaultHeader ptrClassicHeader = new PtrClassicDefaultHeader(getContext());
-        mPtrFrameLayout.setHeaderView(ptrClassicHeader);
-        mPtrFrameLayout.addPtrUIHandler(ptrClassicHeader);
-
-        mPtrFrameLayout.setPtrHandler(new PtrHandler() {
-            @Override
-            public boolean checkCanDoRefresh(PtrFrameLayout frame, View content, View header) {
-                return PtrDefaultHandler.checkContentCanBePulledDown(frame, content, header);
-            }
-
-            @Override
-            public void onRefreshBegin(PtrFrameLayout frame) {
-                if (null != mOnRefreshListener) {
-                    mOnRefreshListener.onRefresh();
-                }
-            }
-        });
-
-        mPtrFrameLayout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
-                .LayoutParams.MATCH_PARENT));
-
-        mPtrFrameLayout.setBackgroundResource(R.color.md_yellow_300);
-
-
-
-        mRecyclerView.getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                mRecyclerView.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, 1000));
-                mPtrFrameLayout.invalidate();
-            }
-        });
-    }
 
     @Override
-    protected void onFinishInflate() {
-        super.onFinishInflate();
-        mPtrFrameLayout.addView(mRecyclerView);
-        addView(mPtrFrameLayout);
-    }
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        int x = (int) ev.getX(), y = (int) ev.getY();
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+                mLastY = y;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                // Scroll down
+                if (y - mLastY > 0) {
+                    return recyclerViewScrolledToTop();
+                }
+            case MotionEvent.ACTION_UP:
 
-    private int mLastX, mLastY;
+                break;
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         int x = (int) event.getX(), y = (int) event.getY();
-        Log.d(TAG, "onTouchEvent: " + x + ", " + y);
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                Log.d(TAG, "ACTION_DOWN: " + x + ", " + y);
                 mLastX = x;
                 mLastY = y;
                 break;
 
             case MotionEvent.ACTION_MOVE:
+                Log.d(TAG, "onTouchEvent: " + x + ", " + y);
                 int offsetX = x - mLastX;
                 int offsetY = y - mLastY;
-                move(offsetX, offsetY);
+                scrollTo(0, -offsetY);
+                return true;
+            case MotionEvent.ACTION_UP:
+                releaseRefresh();
                 return true;
         }
         return super.onTouchEvent(event);
     }
 
-    private void move(int offsetX, int offsetY) {
-        Log.d(TAG, "move: " + offsetX + ", " + offsetY);
-        mRecyclerView.offsetLeftAndRight(offsetX);
-        mRecyclerView.offsetLeftAndRight(offsetY);
+    private void releaseRefresh() {
+        mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+    }
+
+
+    private boolean recyclerViewScrolledToTop() {
+        return mRecyclerView.computeVerticalScrollOffset() <= 0;
+    }
+
+    private void initialize() {
+        mScroller = new Scroller(getContext());
+        mRecyclerView = new RecyclerView(getContext());
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+            }
+
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+            }
+        });
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        if (mScroller.computeScrollOffset()) {
+            scrollTo(0, mScroller.getCurrY());
+        }
+        postInvalidate();
     }
 
 
@@ -144,12 +156,11 @@ public class NimbleRecyclerView extends ViewGroup {
     }
 
     public void refreshComplete() {
-        mPtrFrameLayout.refreshComplete();
+//        mPtrFrameLayout.refreshComplete();
     }
 
     public void setRefreshHeaderView(RefreshHeaderView headerView) {
-        mPtrFrameLayout.setHeaderView(headerView);
-        mPtrFrameLayout.addPtrUIHandler(headerView);
+//
     }
 
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {

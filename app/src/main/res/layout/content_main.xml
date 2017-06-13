@@ -17,5 +17,6 @@
         android:id="@+id/scrollable_view"
         android:layout_width="120dp"
         android:layout_height="60dp"
+        android:visibility="gone"
         android:background="@color/md_teal_200"/>
 </RelativeLayout>

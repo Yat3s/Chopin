@@ -81,15 +81,15 @@ public class SmartRefreshLayout extends ViewGroup {
 
     public SmartRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray array = context.obtainStyledAttributes(attrs,
-                R.styleable.SmartRefreshLayout);
-        try {
-            mEnablePullDown = array.getBoolean(R.styleable.SmartRefreshLayout_enablePullDown, true);
-            mEnablePullUp = array.getBoolean(R.styleable.SmartRefreshLayout_enablePullUp, true);
-            mPullBgDrawable = array.getDrawable(R.styleable.SmartRefreshLayout_pullBackground);
-        } finally {
-            array.recycle();
-        }
+//        TypedArray array = context.obtainStyledAttributes(attrs,
+//                R.styleable.SmartRefreshLayout);
+//        try {
+//            mEnablePullDown = array.getBoolean(R.styleable.SmartRefreshLayout_enablePullDown, true);
+//            mEnablePullUp = array.getBoolean(R.styleable.SmartRefreshLayout_enablePullUp, true);
+//            mPullBgDrawable = array.getDrawable(R.styleable.SmartRefreshLayout_pullBackground);
+//        } finally {
+//            array.recycle();
+//        }
 
         // 实例化布局填充器
         mInflater = LayoutInflater.from(context);
@@ -118,14 +118,14 @@ public class SmartRefreshLayout extends ViewGroup {
      */
     private void addLayoutHeader() {
         // 通过LayoutInflater获取从布局文件中获取header的view对象
-        mLayoutHeader = (RelativeLayout) mInflater.inflate(R.layout.srl_layout_header, null);
-        if (mPullBgDrawable != null)
-            mLayoutHeader.setBackgroundDrawable(mPullBgDrawable);
-
-        // 获取上拉刷新的文字描述
-        tvPullDown = (TextView) mLayoutHeader.findViewById(R.id.srl_tv_pull_down);
-        // 获取上拉刷新的loading-view
-        glvPullDown = (GhostLoadingView) mLayoutHeader.findViewById(R.id.srl_glv_pull_down);
+//        mLayoutHeader = (RelativeLayout) mInflater.inflate(R.layout.srl_layout_header, null);
+//        if (mPullBgDrawable != null)
+//            mLayoutHeader.setBackgroundDrawable(mPullBgDrawable);
+//
+//        // 获取上拉刷新的文字描述
+//        tvPullDown = (TextView) mLayoutHeader.findViewById(R.id.srl_tv_pull_down);
+//        // 获取上拉刷新的loading-view
+//        glvPullDown = (GhostLoadingView) mLayoutHeader.findViewById(R.id.srl_glv_pull_down);
         // 设置布局参数(宽度为MATCH_PARENT,高度为MATCH_PARENT)
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
@@ -137,15 +137,15 @@ public class SmartRefreshLayout extends ViewGroup {
      * 添加下拉加载布局作为footer
      */
     private void addLayoutFooter() {
-        // 通过LayoutInflater获取从布局文件中获取footer的view对象
-        mLayoutFooter = (RelativeLayout) mInflater.inflate(R.layout.srl_layout_footer, null);
-        if (mPullBgDrawable != null)
-            mLayoutFooter.setBackgroundDrawable(mPullBgDrawable);
-
-        // 上拉提示
-        tvPullUp = (TextView) mLayoutFooter.findViewById(R.id.srl_tv_pull_up);
-        // 上拉loading动画
-        elvPullUp = (EatBeanLoadingView) mLayoutFooter.findViewById(R.id.srl_elv_pull_up);
+//        // 通过LayoutInflater获取从布局文件中获取footer的view对象
+//        mLayoutFooter = (RelativeLayout) mInflater.inflate(R.layout.srl_layout_footer, null);
+//        if (mPullBgDrawable != null)
+//            mLayoutFooter.setBackgroundDrawable(mPullBgDrawable);
+//
+//        // 上拉提示
+//        tvPullUp = (TextView) mLayoutFooter.findViewById(R.id.srl_tv_pull_up);
+//        // 上拉loading动画
+//        elvPullUp = (EatBeanLoadingView) mLayoutFooter.findViewById(R.id.srl_elv_pull_up);
         // 设置布局参数(宽度为MATCH_PARENT,高度为MATCH_PARENT)
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams
                 (RelativeLayout.LayoutParams.MATCH_PARENT, RelativeLayout.LayoutParams.MATCH_PARENT);
