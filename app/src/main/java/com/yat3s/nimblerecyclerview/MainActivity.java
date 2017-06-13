@@ -36,11 +36,31 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        View header = getLayoutInflater().inflate(R.layout.layout_refresh_header, null, false);
+        final View header = getLayoutInflater().inflate(R.layout.layout_refresh_header, null, false);
         TodoAdapter todoAdapter = new TodoAdapter(this, generateMockData());
         mRecyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.getRecyclerView().setAdapter(todoAdapter);
-        mRecyclerView.setRefreshHeaderView(header);
+        mRecyclerView.setRefreshHeaderView(new NimbleRecyclerView.RefreshHeaderViewProvider() {
+            @Override
+            public View provideContentView() {
+                return header;
+            }
+
+            @Override
+            public void onStartRefresh() {
+                Log.d(TAG, "onStartRefresh: ");
+            }
+
+            @Override
+            public void onRefreshComplete() {
+                Log.d(TAG, "onRefreshComplete: ");
+            }
+
+            @Override
+            public void onRefreshHeaderViewScrollChange(int progress) {
+                Log.d(TAG, "onRefreshHeaderViewScrollChange: " + progress);
+            }
+        });
         mRecyclerView.setOnRefreshListener(new NimbleRecyclerView.OnRefreshListener() {
             @Override
             public void onRefresh() {

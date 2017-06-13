@@ -11,10 +11,6 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import in.srain.cube.views.ptr.PtrFrameLayout;
-import in.srain.cube.views.ptr.PtrUIHandler;
-import in.srain.cube.views.ptr.indicator.PtrIndicator;
-
 /**
  * Created by Yat3s on 03/06/2017.
  * Email: hawkoyates@gmail.com
@@ -30,6 +26,7 @@ public class NimbleRecyclerView extends ViewGroup {
     private int mLastY;
     private Scroller mScroller;
     private View mRefreshHeaderView;
+    private RefreshHeaderViewProvider mRefreshHeaderViewProvider;
     private boolean isRefreshing;
 
     // Listener
@@ -49,8 +46,9 @@ public class NimbleRecyclerView extends ViewGroup {
         initialize();
     }
 
-    public void setRefreshHeaderView(View refreshHeaderView) {
-        mRefreshHeaderView = refreshHeaderView;
+    public void setRefreshHeaderView(RefreshHeaderViewProvider refreshHeaderViewProvider) {
+        mRefreshHeaderViewProvider = refreshHeaderViewProvider;
+        mRefreshHeaderView = refreshHeaderViewProvider.provideContentView();
         if (null != mRefreshHeaderView) {
             mRefreshHeaderView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
@@ -119,24 +117,46 @@ public class NimbleRecyclerView extends ViewGroup {
 
                 scrollBy(0, (int) (-offsetY * SCROLL_RESISTANCE));
                 mLastTouchY = y;
+
+                if (null != mRefreshHeaderViewProvider) {
+                    int progress = -getScrollY() > mRefreshHeaderView.getMeasuredHeight() ? 100 : -100 * getScrollY() /
+                            mRefreshHeaderView.getMeasuredHeight();
+                    mRefreshHeaderViewProvider.onRefreshHeaderViewScrollChange(progress);
+                }
+
                 return true;
             case MotionEvent.ACTION_UP:
-                releaseRefresh();
+                // Ignore any when refreshing.
+                if (isRefreshing) {
+                    return true;
+                }
+                if (-getScrollY() >= mRefreshHeaderView.getMeasuredHeight()) {
+                    releaseToStartRefresh();
+                } else {
+                    // Ignore this refresh.
+                    mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+                }
                 return true;
         }
         return super.onTouchEvent(event);
     }
 
-    private void releaseRefresh() {
+    private void releaseToStartRefresh() {
         mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderView.getMeasuredHeight() + getScrollY()));
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
+        }
+        if (null != mRefreshHeaderViewProvider) {
+            mRefreshHeaderViewProvider.onStartRefresh();
         }
     }
 
     public void refreshComplete() {
         mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
         isRefreshing = false;
+        if (null != mRefreshHeaderViewProvider) {
+            mRefreshHeaderViewProvider.onRefreshComplete();
+        }
     }
 
     private boolean recyclerViewScrolledToTop() {
@@ -177,11 +197,6 @@ public class NimbleRecyclerView extends ViewGroup {
         isLoadingMore = false;
     }
 
-
-    public void setRefreshHeaderView(RefreshHeaderView headerView) {
-//
-    }
-
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
         mOnRefreshListener = onRefreshListener;
     }
@@ -208,82 +223,16 @@ public class NimbleRecyclerView extends ViewGroup {
     }
 
 
-    public static class RefreshHeaderViewBuilder {
-        private RefreshHeaderView mRefreshView;
-        private View mContentView;
+    public interface RefreshHeaderViewProvider {
+        View provideContentView();
 
-        public RefreshHeaderViewBuilder(Context context, View refreshView) {
-            mRefreshView = new RefreshHeaderView(context);
-            mContentView = refreshView;
-            mRefreshView.addView(mContentView);
-        }
-
-        public RefreshHeaderViewBuilder setHeaderViewRefreshListener(HeaderViewRefreshListener listener) {
-            mRefreshView.setHeaderViewRefreshListener(listener);
-            return this;
-        }
-
-        public RefreshHeaderView build() {
-            return mRefreshView;
-        }
-
-    }
-
-    private static class RefreshHeaderView extends ViewGroup implements PtrUIHandler {
-        private HeaderViewRefreshListener mListener;
-
-        public RefreshHeaderView(Context context) {
-            this(context, null);
-        }
-
-        public RefreshHeaderView(Context context, AttributeSet attrs) {
-            this(context, attrs, 0);
-        }
-
-        public RefreshHeaderView(Context context, AttributeSet attrs, int defStyle) {
-            super(context, attrs, defStyle);
-        }
-
-        public void setHeaderViewRefreshListener(HeaderViewRefreshListener listener) {
-            mListener = listener;
-        }
-
-        @Override
-        protected void onLayout(boolean changed, int l, int t, int r, int b) {
-
-        }
-
-        @Override
-        public void onUIReset(PtrFrameLayout frame) {
-
-        }
-
-        @Override
-        public void onUIRefreshPrepare(PtrFrameLayout frame) {
-
-        }
-
-        @Override
-        public void onUIRefreshBegin(PtrFrameLayout frame) {
-            if (null != mListener) {
-                mListener.onStartRefresh();
-            }
-        }
-
-        @Override
-        public void onUIRefreshComplete(PtrFrameLayout frame) {
-
-        }
-
-        @Override
-        public void onUIPositionChange(PtrFrameLayout frame, boolean isUnderTouch, byte status, PtrIndicator ptrIndicator) {
-
-        }
-    }
-
-    public interface HeaderViewRefreshListener {
         void onStartRefresh();
+
+        void onRefreshComplete();
+
+        void onRefreshHeaderViewScrollChange(int progress);
     }
+
 
     public interface OnRefreshListener {
         void onRefresh();
