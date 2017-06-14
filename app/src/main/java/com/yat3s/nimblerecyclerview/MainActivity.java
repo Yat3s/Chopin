@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.util.Log;
 import android.view.View;
+import android.widget.TextView;
 
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        final View header = getLayoutInflater().inflate(R.layout.layout_refresh_header, null, false);
+        final TextView header = (TextView) getLayoutInflater().inflate(R.layout.layout_refresh_header, null, false);
         TodoAdapter todoAdapter = new TodoAdapter(this, generateMockData());
         mRecyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.getRecyclerView().setAdapter(todoAdapter);
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onRefreshHeaderViewScrollChange(int progress) {
+                header.setText("Refresh" + progress);
                 Log.d(TAG, "onRefreshHeaderViewScrollChange: " + progress);
             }
         });
@@ -76,21 +78,6 @@ public class MainActivity extends AppCompatActivity {
 
         mRecyclerView.getRecyclerView().addItemDecoration(new HeaderItemDecoration(this, header, todoAdapter));
         mRecyclerView.getRecyclerView().addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-//        mRecyclerView.setOnRefreshListener(new NimbleRecyclerView.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                Toast.makeText(MainActivity.this, "Refresh", Toast.LENGTH_SHORT).show();
-//                mRecyclerView.refreshComplete();
-//            }
-//        });
-//
-//        mRecyclerView.setOnLoadMoreListener(new NimbleRecyclerView.OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore() {
-//                Toast.makeText(MainActivity.this, "LoadMore", Toast.LENGTH_SHORT).show();
-//                mRecyclerView.loadMoreComplete();
-//            }
-//        });
     }
 
     private ArrayList<Task> generateMockData() {

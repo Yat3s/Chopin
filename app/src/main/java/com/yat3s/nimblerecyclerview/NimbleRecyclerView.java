@@ -19,6 +19,7 @@ import android.widget.Scroller;
 public class NimbleRecyclerView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
     private static final int mVisibleThreshold = 4;
+    private static final int SCROLLER_DURATION = 800;
     private static final float SCROLL_RESISTANCE = 0.64f;
 
     private boolean isLoadingMore = false;
@@ -142,7 +143,7 @@ public class NimbleRecyclerView extends ViewGroup {
     }
 
     private void releaseToStartRefresh() {
-        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderView.getMeasuredHeight() + getScrollY()));
+        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderView.getMeasuredHeight() + getScrollY()), SCROLLER_DURATION);
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
         }
@@ -222,7 +223,6 @@ public class NimbleRecyclerView extends ViewGroup {
         });
     }
 
-
     public interface RefreshHeaderViewProvider {
         View provideContentView();
 
@@ -232,7 +232,6 @@ public class NimbleRecyclerView extends ViewGroup {
 
         void onRefreshHeaderViewScrollChange(int progress);
     }
-
 
     public interface OnRefreshListener {
         void onRefresh();
