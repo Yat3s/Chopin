@@ -49,30 +49,28 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onStartRefresh() {
-                Log.d(TAG, "onStartRefresh: ");
+                header.animate().setDuration(2000).translationX(500).start();
             }
 
             @Override
             public void onRefreshComplete() {
-                Log.d(TAG, "onRefreshComplete: ");
+                header.animate().translationX(0).start();
             }
 
             @Override
             public void onRefreshHeaderViewScrollChange(int progress) {
                 header.setText("Refresh" + progress);
-                Log.d(TAG, "onRefreshHeaderViewScrollChange: " + progress);
             }
         });
         mRecyclerView.setOnRefreshListener(new NimbleRecyclerView.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Log.d(TAG, "onRefresh: ");
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
                         mRecyclerView.refreshComplete();
                     }
-                }, 500);
+                }, 3000);
             }
         });
 
