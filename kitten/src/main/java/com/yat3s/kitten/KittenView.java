@@ -189,6 +189,17 @@ public class KittenView extends ViewGroup {
         postInvalidate();
     }
 
+    public void setAdapter(RecyclerView.Adapter adapter) {
+        mRecyclerView.setAdapter(adapter);
+    }
+
+    public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
+        mRecyclerView.setLayoutManager(layoutManager);
+    }
+
+    public void addItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
+        mRecyclerView.addItemDecoration(itemDecoration);
+    }
 
     public RecyclerView getRecyclerView() {
         return mRecyclerView;
