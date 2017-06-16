@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.kitten;
 
 import android.content.Context;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,7 +16,7 @@ import android.widget.Scroller;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class NimbleRecyclerView extends ViewGroup {
+public class KittenView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
     private static final int mVisibleThreshold = 4;
     private static final int SCROLLER_DURATION = 800;
@@ -34,15 +34,15 @@ public class NimbleRecyclerView extends ViewGroup {
     private OnRefreshListener mOnRefreshListener;
     private OnLoadMoreListener mOnLoadMoreListener;
 
-    public NimbleRecyclerView(Context context) {
+    public KittenView(Context context) {
         this(context, null);
     }
 
-    public NimbleRecyclerView(Context context, AttributeSet attrs) {
+    public KittenView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public NimbleRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+    public KittenView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initialize();
     }
@@ -51,7 +51,7 @@ public class NimbleRecyclerView extends ViewGroup {
         mRefreshHeaderViewProvider = refreshHeaderViewProvider;
         mRefreshHeaderView = refreshHeaderViewProvider.provideContentView();
         if (null != mRefreshHeaderView) {
-            mRefreshHeaderView.setLayoutParams(new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+            mRefreshHeaderView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
             addView(mRefreshHeaderView);
         }
@@ -60,8 +60,8 @@ public class NimbleRecyclerView extends ViewGroup {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mRecyclerView.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup
-                .LayoutParams.MATCH_PARENT));
+        mRecyclerView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
+                LayoutParams.MATCH_PARENT));
         addView(mRecyclerView);
     }
 

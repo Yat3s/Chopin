@@ -8,7 +8,6 @@
     android:fitsSystemWindows="true"
     tools:context="com.yat3s.nimblerecyclerview.MainActivity">
 
-
     <include layout="@layout/content_main"/>
 
     <android.support.design.widget.FloatingActionButton

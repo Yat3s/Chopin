@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.kitten.adapter;
 
 import android.support.v7.widget.RecyclerView;
 

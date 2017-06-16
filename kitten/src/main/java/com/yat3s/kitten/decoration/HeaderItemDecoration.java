@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.kitten.decoration;
 
 import android.content.Context;
 import android.graphics.Canvas;
@@ -10,6 +10,9 @@ import android.util.Log;
 import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
+
+import com.yat3s.kitten.adapter.NimbleViewHolder;
+import com.yat3s.kitten.adapter.StickyHeaderAdapter;
 
 
 /**
@@ -25,8 +28,6 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
     private SparseArray<View> mHeaderViewCache;
     private Context mContext;
     private int mCurrentStickyHeaderHeight;
-
-    // Yvonne Yudit Ydel Eva Yava Yates Kitten Yarina  Yasmin Yakira, Yale Yogi Yoga Yana Yuki Yuri Yelena
 
     public HeaderItemDecoration(Context context, View view, StickyHeaderAdapter adapter) {
         mPaint = new Paint();

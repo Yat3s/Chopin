@@ -5,11 +5,16 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.yat3s.kitten.KittenView;
+import com.yat3s.kitten.adapter.NimbleAdapter;
+import com.yat3s.kitten.adapter.NimbleViewHolder;
+import com.yat3s.kitten.adapter.StickyHeaderAdapter;
+import com.yat3s.kitten.decoration.HeaderItemDecoration;
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
 import java.util.ArrayList;
@@ -18,14 +23,14 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private NimbleRecyclerView mRecyclerView;
+    private KittenView mRecyclerView;
     private ScrollableView mScrollableView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (NimbleRecyclerView) findViewById(R.id.recycler_view);
+        mRecyclerView = (KittenView) findViewById(R.id.recycler_view);
         mScrollableView = (ScrollableView) findViewById(R.id.scrollable_view);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -36,12 +41,11 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-
         final TextView header = (TextView) getLayoutInflater().inflate(R.layout.layout_refresh_header, null, false);
         TodoAdapter todoAdapter = new TodoAdapter(this, generateMockData());
         mRecyclerView.getRecyclerView().setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.getRecyclerView().setAdapter(todoAdapter);
-        mRecyclerView.setRefreshHeaderView(new NimbleRecyclerView.RefreshHeaderViewProvider() {
+        mRecyclerView.setRefreshHeaderView(new KittenView.RefreshHeaderViewProvider() {
             @Override
             public View provideContentView() {
                 return header;
@@ -62,7 +66,7 @@ public class MainActivity extends AppCompatActivity {
                 header.setText("Refresh" + progress);
             }
         });
-        mRecyclerView.setOnRefreshListener(new NimbleRecyclerView.OnRefreshListener() {
+        mRecyclerView.setOnRefreshListener(new KittenView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new Handler().postDelayed(new Runnable() {
