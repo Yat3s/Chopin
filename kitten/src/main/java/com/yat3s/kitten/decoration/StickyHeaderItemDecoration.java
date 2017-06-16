@@ -14,7 +14,6 @@ import android.view.View;
 import com.yat3s.kitten.adapter.NimbleViewHolder;
 import com.yat3s.kitten.adapter.StickyHeaderAdapter;
 
-
 /**
  * Created by Yat3s on 24/05/2017.
  * Email: hawkoyates@gmail.com

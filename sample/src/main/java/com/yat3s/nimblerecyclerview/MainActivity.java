@@ -15,6 +15,11 @@ import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
 import java.util.ArrayList;
 
+/**
+ * Created by Yat3s on 16/06/2017.
+ * Email: hawkoyates@gmail.com
+ * GitHub: https://github.com/yat3s
+ */
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 

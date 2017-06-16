@@ -9,12 +9,11 @@ import com.yat3s.kitten.adapter.StickyHeaderAdapter;
 import java.util.List;
 
 /**
- * Package: com.yat3s.nimblerecyclerview
- * User: Zhibin Ye
- * Email: yezhibin3@jd.com
- * Date: 16/06/2017
- * Time: 10:51 PM
+ * Created by Yat3s on 16/06/2017.
+ * Email: hawkoyates@gmail.com
+ * GitHub: https://github.com/yat3s
  */
+
 public class AnimalAdapter extends NimbleAdapter<Animal, NimbleViewHolder> implements
         StickyHeaderAdapter<NimbleViewHolder> {
     public AnimalAdapter(Context context, List<Animal> data) {
