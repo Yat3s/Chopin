@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">NimbleRecyclerView</string>
+    <string name="app_name">Kitten</string>
     <string name="action_settings">Settings</string>
 
     <string name="srl_keep_pull_up">继续向上拉</string>
