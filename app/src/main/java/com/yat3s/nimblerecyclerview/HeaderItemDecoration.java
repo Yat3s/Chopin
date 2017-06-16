@@ -26,6 +26,8 @@ public class HeaderItemDecoration extends RecyclerView.ItemDecoration {
     private Context mContext;
     private int mCurrentStickyHeaderHeight;
 
+    // Yvonne Yudit Ydel Eva Yava Yates Kitten Yarina  Yasmin Yakira, Yale Yogi Yoga Yana Yuki Yuri Yelena
+
     public HeaderItemDecoration(Context context, View view, StickyHeaderAdapter adapter) {
         mPaint = new Paint();
         mPaint.setColor(Color.BLUE);
