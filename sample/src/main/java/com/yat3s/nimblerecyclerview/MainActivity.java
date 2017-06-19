@@ -10,7 +10,6 @@ import android.view.View;
 
 import com.yat3s.kitten.KittenView;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
-import com.yat3s.nimblerecyclerview.widget.RefreshHeaderViewProvider;
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
 import java.util.ArrayList;
