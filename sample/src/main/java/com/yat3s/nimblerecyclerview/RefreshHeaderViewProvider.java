@@ -5,14 +5,14 @@ import android.view.LayoutInflater;
 import android.view.View;
 
 import com.airbnb.lottie.LottieAnimationView;
-import com.yat3s.kitten.KittenView;
+import com.yat3s.kitten.KittenRecyclerView;
 
 /**
  * Created by Yat3s on 19/06/2017.
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class RefreshHeaderViewProvider implements KittenView.RefreshHeaderViewProvider {
+public class RefreshHeaderViewProvider implements KittenRecyclerView.RefreshHeaderViewProvider {
 
     View headerView;
     LottieAnimationView loadView;

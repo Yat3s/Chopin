@@ -8,8 +8,8 @@ import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
-import com.yat3s.kitten.KittenView;
-import com.yat3s.kitten.KittenRefreshHeaderView;
+import com.yat3s.kitten.KittenRecyclerView;
+import com.yat3s.kitten.header.KittenRefreshHeaderView;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
@@ -23,14 +23,14 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private KittenView mRecyclerView;
+    private KittenRecyclerView mRecyclerView;
     private ScrollableView mScrollableView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (KittenView) findViewById(R.id.recycler_view);
+        mRecyclerView = (KittenRecyclerView) findViewById(R.id.recycler_view);
         mScrollableView = (ScrollableView) findViewById(R.id.scrollable_view);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         KittenRefreshHeaderView kittenRefreshHeaderView = new KittenRefreshHeaderView(this, "Plane.json");
         kittenRefreshHeaderView.setScale(0.5f);
         mRecyclerView.setRefreshHeaderView(kittenRefreshHeaderView);
-        mRecyclerView.setOnRefreshListener(new KittenView.OnRefreshListener() {
+        mRecyclerView.setOnRefreshListener(new KittenRecyclerView.OnRefreshListener() {
             @Override
             public void onRefresh() {
                 new Handler().postDelayed(new Runnable() {

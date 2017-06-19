@@ -8,7 +8,7 @@
     tools:context="com.yat3s.nimblerecyclerview.MainActivity"
     tools:showIn="@layout/activity_main">
 
-    <com.yat3s.kitten.KittenView
+    <com.yat3s.kitten.KittenRecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>

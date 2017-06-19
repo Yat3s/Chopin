@@ -16,7 +16,7 @@ import android.widget.Scroller;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class KittenView extends ViewGroup {
+public class KittenRecyclerView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
     private static final int mVisibleThreshold = 4;
     private static final int SCROLLER_DURATION = 800;
@@ -34,15 +34,15 @@ public class KittenView extends ViewGroup {
     private OnRefreshListener mOnRefreshListener;
     private OnLoadMoreListener mOnLoadMoreListener;
 
-    public KittenView(Context context) {
+    public KittenRecyclerView(Context context) {
         this(context, null);
     }
 
-    public KittenView(Context context, AttributeSet attrs) {
+    public KittenRecyclerView(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public KittenView(Context context, AttributeSet attrs, int defStyle) {
+    public KittenRecyclerView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initialize();
     }

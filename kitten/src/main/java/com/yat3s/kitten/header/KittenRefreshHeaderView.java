@@ -1,4 +1,4 @@
-package com.yat3s.kitten;
+package com.yat3s.kitten.header;
 
 
 import android.content.Context;
@@ -6,13 +6,14 @@ import android.util.AttributeSet;
 import android.view.View;
 
 import com.airbnb.lottie.LottieAnimationView;
+import com.yat3s.kitten.KittenRecyclerView;
 
 /**
  * Created by Yat3s on 19/06/2017.
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class KittenRefreshHeaderView extends LottieAnimationView implements KittenView.RefreshHeaderViewProvider {
+public class KittenRefreshHeaderView extends LottieAnimationView implements KittenRecyclerView.RefreshHeaderViewProvider {
 
     public KittenRefreshHeaderView(Context context) {
         super(context);
