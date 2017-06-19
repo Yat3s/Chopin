@@ -9,6 +9,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.yat3s.kitten.KittenView;
+import com.yat3s.kitten.KittenRefreshHeaderView;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
@@ -46,7 +47,9 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(animalAdapter);
 
         // Configure refresh header.
-        mRecyclerView.setRefreshHeaderView(new RefreshHeaderViewProvider(this));
+        KittenRefreshHeaderView kittenRefreshHeaderView = new KittenRefreshHeaderView(this, "Plane.json");
+        kittenRefreshHeaderView.setScale(0.5f);
+        mRecyclerView.setRefreshHeaderView(kittenRefreshHeaderView);
         mRecyclerView.setOnRefreshListener(new KittenView.OnRefreshListener() {
             @Override
             public void onRefresh() {
