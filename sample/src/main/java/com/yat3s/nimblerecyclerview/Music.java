@@ -5,10 +5,10 @@ package com.yat3s.nimblerecyclerview;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class Animal {
+public class Music {
     public String name;
 
-    public Animal(String name) {
+    public Music(String name) {
         this.name = name;
     }
 }

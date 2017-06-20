@@ -593,4 +593,40 @@
         <item>Zonkey</item>
         <item>Zorse</item>
     </string-array>
+    <string-array name="musics">
+        <item>My love</item>
+        <item>Just one last dance</item>
+        <item>As long as you love me</item>
+        <item>Because of you</item>
+        <item>God is a girl</item>
+        <item>Hero</item>
+        <item>Yesterday once more</item>
+        <item>Lonely</item>
+        <item>All rise</item>
+        <item>One love</item>
+        <item>Big big world</item>
+        <item>My heart will go on</item>
+        <item>Petty boy</item>
+        <item>Seasons in the sun</item>
+        <item>You raise me up</item>
+        <item>The day you went away</item>
+        <item>Far away from home</item>
+        <item>Moonlight shadow</item>
+        <item>Dying in the sun</item>
+        <item>I want it that way</item>
+        <item>She</item>
+        <item>Only love</item>
+        <item>Cry on my shoulder</item>
+        <item>In the end</item>
+        <item>We will rock you</item>
+        <item>When you believe</item>
+        <item>Hotel california</item>
+        <item>Right here waiting</item>
+        <item>Thank you</item>
+        <item>Numb</item>
+        <item>Shape of my heart</item>
+        <item>Baby one more time</item>
+        <item>Complicated</item>
+        <item>Take me to your heart</item>
+    </string-array>
 </resources>

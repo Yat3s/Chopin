@@ -14,19 +14,19 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 
-public class AnimalAdapter extends NimbleAdapter<Animal, NimbleViewHolder> implements
+public class MusicAdapter extends NimbleAdapter<Music, NimbleViewHolder> implements
         StickyHeaderAdapter<NimbleViewHolder> {
-    public AnimalAdapter(Context context, List<Animal> data) {
+    public MusicAdapter(Context context, List<Music> data) {
         super(context, data);
     }
 
     @Override
-    protected void bindDataToItemView(NimbleViewHolder holder, Animal animal, int position) {
-        holder.setTextView(R.id.title_tv, animal.name);
+    protected void bindDataToItemView(NimbleViewHolder holder, Music music, int position) {
+        holder.setTextView(R.id.title_tv, music.name);
     }
 
     @Override
-    protected int getItemViewLayoutId(int position, Animal data) {
+    protected int getItemViewLayoutId(int position, Music data) {
         return R.layout.item_task;
     }
 

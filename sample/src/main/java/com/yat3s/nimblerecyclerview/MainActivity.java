@@ -42,13 +42,13 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Configure adapter.
-        AnimalAdapter animalAdapter = new AnimalAdapter(this, generateAnimalData());
+        MusicAdapter musicAdapter = new MusicAdapter(this, generateAnimalData());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(animalAdapter);
+        mRecyclerView.setAdapter(musicAdapter);
 
         // Configure refresh header.
         KittenRefreshHeaderView kittenRefreshHeaderView = new KittenRefreshHeaderView(this, "Plane.json");
-        kittenRefreshHeaderView.setScale(0.5f);
+        kittenRefreshHeaderView.setScale(0.2f);
         mRecyclerView.setRefreshHeaderView(kittenRefreshHeaderView);
         mRecyclerView.setOnRefreshListener(new KittenRecyclerView.OnRefreshListener() {
             @Override
@@ -63,16 +63,16 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Add Sticky header item decoration.
-        mRecyclerView.addItemDecoration(new StickyHeaderItemDecoration(this, animalAdapter));
+        mRecyclerView.addItemDecoration(new StickyHeaderItemDecoration(this, musicAdapter));
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
-    private ArrayList<Animal> generateAnimalData() {
-        String[] taskNames = getResources().getStringArray(R.array.animals);
-        ArrayList<Animal> animals = new ArrayList<>();
-        for (String taskName : taskNames) {
-            animals.add(new Animal(taskName));
+    private ArrayList<Music> generateAnimalData() {
+        String[] musicNames = getResources().getStringArray(R.array.musics);
+        ArrayList<Music> musics = new ArrayList<>();
+        for (String taskName : musicNames) {
+            musics.add(new Music(taskName));
         }
-        return animals;
+        return musics;
     }
 }
