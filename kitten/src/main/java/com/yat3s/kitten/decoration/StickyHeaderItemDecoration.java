@@ -20,7 +20,7 @@ import com.yat3s.kitten.adapter.StickyHeaderAdapter;
  * GitHub: https://github.com/yat3s
  */
 public class StickyHeaderItemDecoration extends RecyclerView.ItemDecoration {
-    private static final String TAG = "StickyHeaderItemDecoration";
+    private static final String TAG = "StickyHeader";
     private Paint mPaint;
     Rect mBounds = new Rect();
     private StickyHeaderAdapter mStickyHeaderAdapter;

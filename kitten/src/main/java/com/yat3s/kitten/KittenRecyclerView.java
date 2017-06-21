@@ -90,10 +90,13 @@ public class KittenRecyclerView extends ViewGroup {
                 mLastTouchY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
-                // Scroll down
+                // Intercept event when scroll to top/bottom.
                 if (y - mLastY > 0) {
                     return recyclerViewScrolledToTop();
+                } else {
+                    return recyclerViewScrolledToBottom();
                 }
+
             case MotionEvent.ACTION_UP:
 
                 break;
@@ -163,6 +166,12 @@ public class KittenRecyclerView extends ViewGroup {
     private boolean recyclerViewScrolledToTop() {
         return mRecyclerView.computeVerticalScrollOffset() <= 0;
     }
+
+    private boolean recyclerViewScrolledToBottom() {
+        return mRecyclerView.computeVerticalScrollExtent() + mRecyclerView.computeVerticalScrollOffset()
+                >= mRecyclerView.computeVerticalScrollRange();
+    }
+
 
     private void initialize() {
         mScroller = new Scroller(getContext());
