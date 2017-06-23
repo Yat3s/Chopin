@@ -64,8 +64,8 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Configure loading footer.
-        KittenLoadingFooterView kittenLoadingFooterView = new KittenLoadingFooterView(this, "star.json");
-        kittenLoadingFooterView.setScale(0.5f);
+        KittenLoadingFooterView kittenLoadingFooterView = new KittenLoadingFooterView(this, "Plane.json");
+        kittenLoadingFooterView.setScale(0.2f);
         mRecyclerView.setLoadingFooterView(kittenLoadingFooterView);
         mRecyclerView.setOnLoadMoreListener(new KittenRecyclerView.OnLoadMoreListener() {
             @Override

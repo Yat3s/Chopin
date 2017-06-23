@@ -21,7 +21,6 @@ import com.yat3s.kitten.decoration.RefreshHeaderViewProvider;
  */
 public class KittenRecyclerView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
-    private static final int mVisibleThreshold = 4;
     private static final int SCROLLER_DURATION = 800;
     private static final float SCROLL_RESISTANCE = 0.64f;
     private static final float SCROLL_FLING_FRICTION = 0.8f;
@@ -58,6 +57,16 @@ public class KittenRecyclerView extends ViewGroup {
     // The load more listener
     private OnLoadMoreListener mOnLoadMoreListener;
 
+    /**
+     * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
+     */
+    private int mLoadMoreRemainItemCount = 2;
+
+    /**
+     * If set true, it will auto trigger load more while visible item < {@link #mLoadMoreRemainItemCount}
+     */
+    private boolean autoTriggerLoadMore = false;
+
     public KittenRecyclerView(Context context) {
         this(context, null);
     }
@@ -89,6 +98,9 @@ public class KittenRecyclerView extends ViewGroup {
                     LayoutParams.WRAP_CONTENT));
             addView(mLoadingFooterView);
         }
+
+        // You can only choose a load more style.
+        autoTriggerLoadMore = false;
     }
 
     @Override
@@ -134,14 +146,14 @@ public class KittenRecyclerView extends ViewGroup {
                 mLastTouchY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
-                Log.d(TAG, "Scroll to : " + (y - mLastTouchY > 0 ? "Top" : "Bottom"));
+//                Log.d(TAG, "Scroll to : " + (y - mLastTouchY > 0 ? "Top" : "Bottom"));
 
-                // Intercept down glide event when scroll to top
+                // Intercept pull down event when scroll to top.
                 if (y - mLastTouchY > 0) {
                     return recyclerViewScrolledToTop();
                 }
 
-                // Intercept up glide event when scroll to bottom
+                // Intercept pull up event when scroll to bottom.
                 if (y - mLastTouchY < 0) {
                     return recyclerViewScrolledToBottom();
                 }
@@ -152,7 +164,6 @@ public class KittenRecyclerView extends ViewGroup {
         }
         return super.onInterceptTouchEvent(ev);
     }
-
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -180,25 +191,56 @@ public class KittenRecyclerView extends ViewGroup {
 
                 return true;
             case MotionEvent.ACTION_UP:
-                // Ignore any when refreshing.
+                // Ignore some action.
                 if (isRefreshing) {
-                    return true;
+                    releaseViewToRefreshingStatus();
                 }
-                if (-getScrollY() >= mRefreshHeaderView.getMeasuredHeight()) {
-                    releaseToStartRefresh();
-                } else if (getScrollY() >= mLoadingFooterView.getMeasuredHeight()) {
-                    releaseToLoadingMore();
-                } else {
-                    // Ignore this refresh.
-                    mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+                if (isLoadingMore) {
+                    releaseViewToLoadingStatus();
                 }
+                if (canAbortThisScrollAction()) {
+                    releaseViewToDefaultStatus();
+                }
+
+                // Start refresh while scrollY over refresh header view height.
+                if (-getScrollY() >= mRefreshHeaderView.getMeasuredHeight() && !isRefreshing) {
+                    releaseViewToRefreshingStatus();
+                    startRefresh();
+                } else if (getScrollY() >= mLoadingFooterView.getMeasuredHeight() && !isLoadingMore) {
+                    releaseViewToLoadingStatus();
+                    startLoading();
+                }
+
                 return true;
         }
         return super.onTouchEvent(event);
     }
 
-    private void releaseToStartRefresh() {
+    private boolean canAbortThisScrollAction() {
+        return !isLoadingMore
+                && !isRefreshing
+                && -getScrollY() < mRefreshHeaderView.getMeasuredHeight()
+                && getScrollY() < mLoadingFooterView.getMeasuredHeight();
+    }
+
+    private void releaseViewToRefreshingStatus() {
+        Log.d(TAG, "releaseViewToRefreshingStatus: ");
         mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderView.getMeasuredHeight() + getScrollY()), SCROLLER_DURATION);
+    }
+
+    private void releaseViewToLoadingStatus() {
+        Log.d(TAG, "releaseViewToLoadingStatus: ");
+        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterView.getMeasuredHeight()), SCROLLER_DURATION);
+    }
+
+    private void releaseViewToDefaultStatus() {
+        Log.d(TAG, "releaseViewToDefaultStatus: ");
+        mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+    }
+
+    private void startRefresh() {
+        Log.d(TAG, "startRefresh: ");
+        isRefreshing = true;
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
         }
@@ -207,8 +249,9 @@ public class KittenRecyclerView extends ViewGroup {
         }
     }
 
-    private void releaseToLoadingMore() {
-        mScroller.startScroll(0, getScrollY(), 0, (getScrollY() - mLoadingFooterView.getMeasuredHeight()), SCROLLER_DURATION);
+    private void startLoading() {
+        Log.d(TAG, "startLoading: ");
+        isLoadingMore = true;
         if (null != mOnLoadMoreListener) {
             mOnLoadMoreListener.onLoadMore();
         }
@@ -218,7 +261,8 @@ public class KittenRecyclerView extends ViewGroup {
     }
 
     public void refreshComplete() {
-        mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+        Log.d(TAG, "refreshComplete: ");
+        releaseViewToDefaultStatus();
         isRefreshing = false;
         if (null != mRefreshHeaderViewProvider) {
             mRefreshHeaderViewProvider.onRefreshComplete();
@@ -226,8 +270,9 @@ public class KittenRecyclerView extends ViewGroup {
     }
 
     public void loadMoreComplete() {
+        Log.d(TAG, "loadMoreComplete: ");
+        releaseViewToDefaultStatus();
         isLoadingMore = false;
-        mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
         if (null != mLoadingFooterViewProvider) {
             mLoadingFooterViewProvider.onLoadingComplete();
         }
@@ -236,7 +281,7 @@ public class KittenRecyclerView extends ViewGroup {
     private boolean recyclerViewScrolledToTop() {
         boolean scrollToTop = mRecyclerView.computeVerticalScrollOffset() <= 0;
         if (scrollToTop) {
-            Log.d(TAG, "recyclerViewScrolledToTop: ");
+//            Log.d(TAG, "recyclerViewScrolledToTop: ");
         }
         return scrollToTop;
     }
@@ -246,7 +291,7 @@ public class KittenRecyclerView extends ViewGroup {
                 + mRecyclerView.computeVerticalScrollOffset()
                 >= mRecyclerView.computeVerticalScrollRange();
         if (scrollToBottom) {
-            Log.d(TAG, "recyclerViewScrolledToBottom: ");
+//            Log.d(TAG, "recyclerViewScrolledToBottom: ");
         }
         return scrollToBottom;
     }
@@ -260,6 +305,21 @@ public class KittenRecyclerView extends ViewGroup {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
+                // Auto load more.
+                if (autoTriggerLoadMore) {
+                    int lastVisibleItemPosition = ((LinearLayoutManager) recyclerView.getLayoutManager())
+                            .findLastVisibleItemPosition();
+                    int totalItemCount = recyclerView.getLayoutManager().getItemCount();
+                    // if lastVisibleItem >= totalItemCount - mLoadMoreRemainItemCount
+                    // and pull down will auto trigger load more.
+                    if (lastVisibleItemPosition >= totalItemCount - mLoadMoreRemainItemCount
+                            && dy > 0
+                            && !isLoadingMore) {
+                        isLoadingMore = true;
+                        mOnLoadMoreListener.onLoadMore();
+                    }
+                }
             }
 
             @Override
@@ -278,6 +338,22 @@ public class KittenRecyclerView extends ViewGroup {
         postInvalidate();
     }
 
+    /**
+     * NOTE: You can ONLY choose one load more style from {@link #setLoadingFooterView(LoadingFooterViewProvider)}
+     * and this.
+     * Please remove Load Footer View while you set autoTriggerLoadMore is true.
+     *
+     * @param autoTriggerLoadMore If true will auto trigger load more while
+     *                            remain to show item < {@link #mLoadMoreRemainItemCount}
+     */
+    public void setAutoTriggerLoadMore(boolean autoTriggerLoadMore) {
+        this.autoTriggerLoadMore = autoTriggerLoadMore;
+    }
+
+    public void setLoadMoreRemainItemCount(int visibleThreshold) {
+        mLoadMoreRemainItemCount = visibleThreshold;
+    }
+
     public void setAdapter(RecyclerView.Adapter adapter) {
         mRecyclerView.setAdapter(adapter);
     }
@@ -294,30 +370,12 @@ public class KittenRecyclerView extends ViewGroup {
         return mRecyclerView;
     }
 
-
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
         mOnRefreshListener = onRefreshListener;
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         mOnLoadMoreListener = onLoadMoreListener;
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                int lastVisibleItem = ((LinearLayoutManager) recyclerView.getLayoutManager())
-                        .findLastVisibleItemPosition();
-                int totalItemCount = recyclerView.getLayoutManager().getItemCount();
-                //lastVisibleItem >= totalItemCount - 4 表示剩下4个item自动加载
-                // if dy>0 --> pull down
-                if (lastVisibleItem >= totalItemCount - mVisibleThreshold && dy > 0) {
-                    if (!isLoadingMore) {
-                        isLoadingMore = true;
-                        mOnLoadMoreListener.onLoadMore();
-                    }
-                }
-            }
-        });
     }
 
     public interface OnRefreshListener {

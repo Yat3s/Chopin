@@ -43,7 +43,7 @@ public class KittenLoadingFooterView extends LottieAnimationView implements Load
 
     @Override
     public void onLoadingComplete() {
-        pauseAnimation();
+        clearAnimation();
     }
 
     @Override

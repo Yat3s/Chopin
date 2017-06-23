@@ -43,7 +43,8 @@ public class KittenRefreshHeaderView extends LottieAnimationView implements Refr
 
     @Override
     public void onRefreshComplete() {
-        pauseAnimation();
+        clearAnimation();
+
     }
 
     @Override
