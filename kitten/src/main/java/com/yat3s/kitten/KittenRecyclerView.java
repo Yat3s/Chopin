@@ -11,8 +11,8 @@ import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.Scroller;
 
-import com.yat3s.kitten.decoration.LoadingFooterViewProvider;
-import com.yat3s.kitten.decoration.RefreshHeaderViewProvider;
+import com.yat3s.kitten.decoration.LoadingFooterIndicatorProvider;
+import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
 
 /**
  * Created by Yat3s on 03/06/2017.
@@ -23,7 +23,6 @@ public class KittenRecyclerView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
     private static final int SCROLLER_DURATION = 800;
     private static final float SCROLL_RESISTANCE = 0.64f;
-    private static final float SCROLL_FLING_FRICTION = 0.8f;
 
     private RecyclerView mRecyclerView;
 
@@ -34,16 +33,16 @@ public class KittenRecyclerView extends ViewGroup {
     private Scroller mScroller;
 
     // The Refresh Header View.
-    private View mRefreshHeaderView;
+    private View mRefreshHeaderIndicator;
 
     // The Loading Footer View.
-    private View mLoadingFooterView;
+    private View mLoadingFooterIndicator;
 
-    // The provider for provide header view and some interfaces for interaction, eg. header view animation.
-    private RefreshHeaderViewProvider mRefreshHeaderViewProvider;
+    // The provider for provide header indicator and some interfaces for interaction, eg. header indicator animation.
+    private RefreshHeaderIndicatorProvider mRefreshHeaderIndicatorProvider;
 
-    // The provider for provide footer view and some interfaces for interaction, eg. footer view animation.
-    private LoadingFooterViewProvider mLoadingFooterViewProvider;
+    // The provider for provide footer indicator and some interfaces for interaction, eg. footer indicator animation.
+    private LoadingFooterIndicatorProvider mLoadingFooterIndicatorProvider;
 
     // Knowing whether recycler view is refreshing.
     private boolean isRefreshing;
@@ -80,23 +79,23 @@ public class KittenRecyclerView extends ViewGroup {
         initialize();
     }
 
-    public void setRefreshHeaderView(RefreshHeaderViewProvider refreshHeaderViewProvider) {
-        mRefreshHeaderViewProvider = refreshHeaderViewProvider;
-        mRefreshHeaderView = refreshHeaderViewProvider.provideContentView();
-        if (null != mRefreshHeaderView) {
-            mRefreshHeaderView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+    public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
+        mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
+        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.provideContentView();
+        if (null != mRefreshHeaderIndicator) {
+            mRefreshHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-            addView(mRefreshHeaderView);
+            addView(mRefreshHeaderIndicator);
         }
     }
 
-    public void setLoadingFooterView(LoadingFooterViewProvider loadingFooterViewProvider) {
-        mLoadingFooterViewProvider = loadingFooterViewProvider;
-        mLoadingFooterView = loadingFooterViewProvider.provideContentView();
-        if (null != mLoadingFooterView) {
-            mLoadingFooterView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+    public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
+        mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
+        mLoadingFooterIndicator = loadingFooterIndicatorProvider.provideContentView();
+        if (null != mLoadingFooterIndicator) {
+            mLoadingFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-            addView(mLoadingFooterView);
+            addView(mLoadingFooterIndicator);
         }
 
         // You can only choose a load more style.
@@ -121,20 +120,20 @@ public class KittenRecyclerView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        // Measure recycler.
+        // Measure recycler view.
         mRecyclerView.layout(0, 0, mRecyclerView.getMeasuredWidth(), mRecyclerView.getMeasuredHeight());
 
-        // Measure refresh header.
-        if (null != mRefreshHeaderView) {
-            mRefreshHeaderView.layout(0, -mRefreshHeaderView.getMeasuredHeight(), mRefreshHeaderView.getMeasuredWidth(), 0);
+        // Measure refresh header indicator.
+        if (null != mRefreshHeaderIndicator) {
+            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(), mRefreshHeaderIndicator.getMeasuredWidth(), 0);
         }
 
-        // Measure loading footer.
-        if (null != mLoadingFooterView) {
-            mLoadingFooterView.layout(0,
+        // Measure loading footer indicator.
+        if (null != mLoadingFooterIndicator) {
+            mLoadingFooterIndicator.layout(0,
                     mRecyclerView.getMeasuredHeight(),
-                    mLoadingFooterView.getMeasuredWidth(),
-                    mRecyclerView.getMeasuredHeight() + mLoadingFooterView.getMeasuredHeight());
+                    mLoadingFooterIndicator.getMeasuredWidth(),
+                    mRecyclerView.getMeasuredHeight() + mLoadingFooterIndicator.getMeasuredHeight());
         }
     }
 
@@ -178,15 +177,15 @@ public class KittenRecyclerView extends ViewGroup {
                 scrollBy(0, (int) (offsetY * SCROLL_RESISTANCE));
                 mLastTouchY = y;
 
-                if (null != mRefreshHeaderViewProvider) {
+                if (null != mRefreshHeaderIndicatorProvider) {
                     int progress;
-                    // Scroll distance has over header view height.
-                    if (-getScrollY() > mRefreshHeaderView.getMeasuredHeight()) {
+                    // Scroll distance has over refresh header indicator height.
+                    if (-getScrollY() > mRefreshHeaderIndicator.getMeasuredHeight()) {
                         progress = 100;
                     } else {
-                        progress = 100 * -getScrollY() / mRefreshHeaderView.getMeasuredHeight();
+                        progress = 100 * -getScrollY() / mRefreshHeaderIndicator.getMeasuredHeight();
                     }
-                    mRefreshHeaderViewProvider.onRefreshHeaderViewScrollChange(progress);
+                    mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                 }
 
                 return true;
@@ -202,11 +201,11 @@ public class KittenRecyclerView extends ViewGroup {
                     releaseViewToDefaultStatus();
                 }
 
-                // Start refresh while scrollY over refresh header view height.
-                if (-getScrollY() >= mRefreshHeaderView.getMeasuredHeight() && !isRefreshing) {
+                // Start refresh while scrollY over refresh header indicator height.
+                if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight() && !isRefreshing) {
                     releaseViewToRefreshingStatus();
                     startRefresh();
-                } else if (getScrollY() >= mLoadingFooterView.getMeasuredHeight() && !isLoadingMore) {
+                } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight() && !isLoadingMore) {
                     releaseViewToLoadingStatus();
                     startLoading();
                 }
@@ -219,18 +218,18 @@ public class KittenRecyclerView extends ViewGroup {
     private boolean canAbortThisScrollAction() {
         return !isLoadingMore
                 && !isRefreshing
-                && -getScrollY() < mRefreshHeaderView.getMeasuredHeight()
-                && getScrollY() < mLoadingFooterView.getMeasuredHeight();
+                && -getScrollY() < mRefreshHeaderIndicator.getMeasuredHeight()
+                && getScrollY() < mLoadingFooterIndicator.getMeasuredHeight();
     }
 
     private void releaseViewToRefreshingStatus() {
         Log.d(TAG, "releaseViewToRefreshingStatus: ");
-        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderView.getMeasuredHeight() + getScrollY()), SCROLLER_DURATION);
+        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderIndicator.getMeasuredHeight() + getScrollY()), SCROLLER_DURATION);
     }
 
     private void releaseViewToLoadingStatus() {
         Log.d(TAG, "releaseViewToLoadingStatus: ");
-        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterView.getMeasuredHeight()), SCROLLER_DURATION);
+        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterIndicator.getMeasuredHeight()), SCROLLER_DURATION);
     }
 
     private void releaseViewToDefaultStatus() {
@@ -244,8 +243,8 @@ public class KittenRecyclerView extends ViewGroup {
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
         }
-        if (null != mRefreshHeaderViewProvider) {
-            mRefreshHeaderViewProvider.onRefreshStart();
+        if (null != mRefreshHeaderIndicatorProvider) {
+            mRefreshHeaderIndicatorProvider.onRefreshStart();
         }
     }
 
@@ -255,8 +254,8 @@ public class KittenRecyclerView extends ViewGroup {
         if (null != mOnLoadMoreListener) {
             mOnLoadMoreListener.onLoadMore();
         }
-        if (null != mLoadingFooterViewProvider) {
-            mLoadingFooterViewProvider.onLoadingStart();
+        if (null != mLoadingFooterIndicatorProvider) {
+            mLoadingFooterIndicatorProvider.onLoadingStart();
         }
     }
 
@@ -264,8 +263,8 @@ public class KittenRecyclerView extends ViewGroup {
         Log.d(TAG, "refreshComplete: ");
         releaseViewToDefaultStatus();
         isRefreshing = false;
-        if (null != mRefreshHeaderViewProvider) {
-            mRefreshHeaderViewProvider.onRefreshComplete();
+        if (null != mRefreshHeaderIndicatorProvider) {
+            mRefreshHeaderIndicatorProvider.onRefreshComplete();
         }
     }
 
@@ -273,8 +272,8 @@ public class KittenRecyclerView extends ViewGroup {
         Log.d(TAG, "loadMoreComplete: ");
         releaseViewToDefaultStatus();
         isLoadingMore = false;
-        if (null != mLoadingFooterViewProvider) {
-            mLoadingFooterViewProvider.onLoadingComplete();
+        if (null != mLoadingFooterIndicatorProvider) {
+            mLoadingFooterIndicatorProvider.onLoadingComplete();
         }
     }
 
@@ -299,7 +298,6 @@ public class KittenRecyclerView extends ViewGroup {
 
     private void initialize() {
         mScroller = new Scroller(getContext());
-        mScroller.setFriction(SCROLL_FLING_FRICTION);
         mRecyclerView = new RecyclerView(getContext());
         mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
@@ -339,7 +337,7 @@ public class KittenRecyclerView extends ViewGroup {
     }
 
     /**
-     * NOTE: You can ONLY choose one load more style from {@link #setLoadingFooterView(LoadingFooterViewProvider)}
+     * NOTE: You can ONLY choose one load more style from {@link #setLoadingFooterIndicator(LoadingFooterIndicatorProvider)}
      * and this.
      * Please remove Load Footer View while you set autoTriggerLoadMore is true.
      *

@@ -3,7 +3,7 @@ package com.yat3s.kitten.decoration;
 import android.support.annotation.IntRange;
 import android.view.View;
 
-public interface LoadingFooterViewProvider {
+public interface LoadingFooterIndicatorProvider {
     View provideContentView();
 
     void onLoadingStart();

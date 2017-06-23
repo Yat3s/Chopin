@@ -9,8 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.yat3s.kitten.KittenRecyclerView;
-import com.yat3s.kitten.decoration.KittenLoadingFooterView;
-import com.yat3s.kitten.decoration.KittenRefreshHeaderView;
+import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
+import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
@@ -48,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(musicAdapter);
 
         // Configure refresh header.
-        KittenRefreshHeaderView kittenRefreshHeaderView = new KittenRefreshHeaderView(this, "Plane.json");
+        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "Plane.json");
         kittenRefreshHeaderView.setScale(0.2f);
-        mRecyclerView.setRefreshHeaderView(kittenRefreshHeaderView);
+        mRecyclerView.setRefreshHeaderIndicator(kittenRefreshHeaderView);
         mRecyclerView.setOnRefreshListener(new KittenRecyclerView.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -64,9 +64,9 @@ public class MainActivity extends AppCompatActivity {
         });
 
         // Configure loading footer.
-        KittenLoadingFooterView kittenLoadingFooterView = new KittenLoadingFooterView(this, "Plane.json");
+        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
         kittenLoadingFooterView.setScale(0.2f);
-        mRecyclerView.setLoadingFooterView(kittenLoadingFooterView);
+        mRecyclerView.setLoadingFooterIndicator(kittenLoadingFooterView);
         mRecyclerView.setOnLoadMoreListener(new KittenRecyclerView.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {

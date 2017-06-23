@@ -12,22 +12,22 @@ import com.airbnb.lottie.LottieAnimationView;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class KittenLoadingFooterView extends LottieAnimationView implements LoadingFooterViewProvider {
+public class KittenLoadingFooterIndicator extends LottieAnimationView implements LoadingFooterIndicatorProvider {
 
-    public KittenLoadingFooterView(Context context) {
+    public KittenLoadingFooterIndicator(Context context) {
         super(context);
     }
 
-    public KittenLoadingFooterView(Context context, String animationFileName) {
+    public KittenLoadingFooterIndicator(Context context, String animationFileName) {
         super(context);
         setAnimation(animationFileName);
     }
 
-    public KittenLoadingFooterView(Context context, AttributeSet attrs) {
+    public KittenLoadingFooterIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public KittenLoadingFooterView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public KittenLoadingFooterIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 

@@ -3,7 +3,7 @@ package com.yat3s.kitten.decoration;
 import android.support.annotation.IntRange;
 import android.view.View;
 
-public interface RefreshHeaderViewProvider {
+public interface RefreshHeaderIndicatorProvider {
     View provideContentView();
 
     void onRefreshStart();
