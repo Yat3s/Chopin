@@ -12,7 +12,6 @@ import com.yat3s.kitten.KittenRecyclerView;
 import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
 import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
-import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
 import java.util.ArrayList;
 
@@ -25,25 +24,22 @@ public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private KittenRecyclerView mRecyclerView;
-    private ScrollableView mScrollableView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mRecyclerView = (KittenRecyclerView) findViewById(R.id.recycler_view);
-        mScrollableView = (ScrollableView) findViewById(R.id.scrollable_view);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mScrollableView.starBackHome(200, 200);
             }
         });
 
         // Configure adapter.
-        MusicAdapter musicAdapter = new MusicAdapter(this, generateAnimalData());
+        MusicAdapter musicAdapter = new MusicAdapter(this, generateMusicData());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(musicAdapter);
 
@@ -84,7 +80,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
-    private ArrayList<Music> generateAnimalData() {
+    private ArrayList<Music> generateMusicData() {
         String[] musicNames = getResources().getStringArray(R.array.musics);
         ArrayList<Music> musics = new ArrayList<>();
         for (String taskName : musicNames) {

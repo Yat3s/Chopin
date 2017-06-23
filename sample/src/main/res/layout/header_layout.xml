@@ -4,7 +4,7 @@
     android:id="@+id/header"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/md_teal_300"
+    android:background="#22000000"
     android:orientation="vertical"
     android:paddingBottom="24dp"
     android:paddingTop="24dp">
@@ -14,8 +14,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:textSize="26sp"
-        android:text="I'm header"/>
+        android:text="I'm header"
+        android:textSize="26sp"/>
 
 </LinearLayout>
 

@@ -2,13 +2,12 @@
 An Android RecyclerView including custom refresh header and sticky header.
 
 ## Feature
-- Custom Refresh Header
-- Lottie Refresh Header
-- Sticky Header Decoration
+- Custom Refresh Header/Footer Indicator
+- Lottie Refresh Header/Footer Indicator
+- Sticky Header Item Decoration
 - Refresh/LoadMore
 
 ## TODO
-- Footer View
 - Item Animator
 - Adaptive
 
