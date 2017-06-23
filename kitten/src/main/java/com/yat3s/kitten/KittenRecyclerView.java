@@ -1,6 +1,7 @@
 package com.yat3s.kitten;
 
 import android.content.Context;
+import android.support.annotation.IntRange;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -22,16 +23,30 @@ public class KittenRecyclerView extends ViewGroup {
     private static final int SCROLLER_DURATION = 800;
     private static final float SCROLL_RESISTANCE = 0.64f;
 
-    private boolean isLoadingMore = false;
     private RecyclerView mRecyclerView;
-    private int mLastY;
+
+    // The last touch y while intercepted touch event.
+    private int mLastTouchY;
+
+    // The Scroller for scroll whole view natural.
     private Scroller mScroller;
+
+    // The Refresh Header View.
     private View mRefreshHeaderView;
+
+    // The provider for provide header view and some interfaces for interaction, eg. header view animation.
     private RefreshHeaderViewProvider mRefreshHeaderViewProvider;
+
+    // Knowing whether recycler view is refreshing.
     private boolean isRefreshing;
 
-    // Listener
+    // Knowing whether recycler view is loading more.
+    private boolean isLoadingMore;
+
+    // The refresh listener
     private OnRefreshListener mOnRefreshListener;
+
+    // The load more listener
     private OnLoadMoreListener mOnLoadMoreListener;
 
     public KittenRecyclerView(Context context) {
@@ -86,14 +101,18 @@ public class KittenRecyclerView extends ViewGroup {
         int y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
-                mLastY = y;
                 mLastTouchY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
-                // Intercept event when scroll to top/bottom.
-                if (y - mLastY > 0) {
+                Log.d(TAG, "Scroll to : " + (y - mLastTouchY > 0 ? "Top" : "Bottom"));
+
+                // Intercept DOWN event when scroll to top
+                if (y - mLastTouchY > 0) {
                     return recyclerViewScrolledToTop();
-                } else {
+                }
+
+                // Intercept UP event when scroll to bottom
+                if (y - mLastTouchY < 0) {
                     return recyclerViewScrolledToBottom();
                 }
 
@@ -104,7 +123,6 @@ public class KittenRecyclerView extends ViewGroup {
         return super.onInterceptTouchEvent(ev);
     }
 
-    int mLastTouchY;
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
@@ -114,17 +132,19 @@ public class KittenRecyclerView extends ViewGroup {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                int offsetY = y - mLastTouchY;
+                int offsetY = mLastTouchY - y;
 
-                Log.d(TAG, "mLastTouchY: " + mLastTouchY);
-                Log.d(TAG, "offsetY: " + offsetY);
-
-                scrollBy(0, (int) (-offsetY * SCROLL_RESISTANCE));
+                scrollBy(0, (int) (offsetY * SCROLL_RESISTANCE));
                 mLastTouchY = y;
 
                 if (null != mRefreshHeaderViewProvider) {
-                    int progress = -getScrollY() > mRefreshHeaderView.getMeasuredHeight() ? 100 : -100 * getScrollY() /
-                            mRefreshHeaderView.getMeasuredHeight();
+                    int progress;
+                    // Scroll distance has over header view height.
+                    if (-getScrollY() > mRefreshHeaderView.getMeasuredHeight()) {
+                        progress = 100;
+                    } else {
+                        progress = 100 * -getScrollY() / mRefreshHeaderView.getMeasuredHeight();
+                    }
                     mRefreshHeaderViewProvider.onRefreshHeaderViewScrollChange(progress);
                 }
 
@@ -164,12 +184,21 @@ public class KittenRecyclerView extends ViewGroup {
     }
 
     private boolean recyclerViewScrolledToTop() {
-        return mRecyclerView.computeVerticalScrollOffset() <= 0;
+        boolean scrollToTop = mRecyclerView.computeVerticalScrollOffset() <= 0;
+        if (scrollToTop) {
+            Log.d(TAG, "recyclerViewScrolledToTop: ");
+        }
+        return scrollToTop;
     }
 
     private boolean recyclerViewScrolledToBottom() {
-        return mRecyclerView.computeVerticalScrollExtent() + mRecyclerView.computeVerticalScrollOffset()
+        boolean scrollToBottom = mRecyclerView.computeVerticalScrollExtent()
+                + mRecyclerView.computeVerticalScrollOffset()
                 >= mRecyclerView.computeVerticalScrollRange();
+        if (scrollToBottom) {
+            Log.d(TAG, "recyclerViewScrolledToBottom: ");
+        }
+        return scrollToBottom;
     }
 
 
@@ -250,7 +279,7 @@ public class KittenRecyclerView extends ViewGroup {
 
         void onRefreshComplete();
 
-        void onRefreshHeaderViewScrollChange(int progress);
+        void onRefreshHeaderViewScrollChange(@IntRange(from = 0, to = 100) int progress);
     }
 
     public interface OnRefreshListener {
