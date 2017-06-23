@@ -1,6 +1,7 @@
 package com.yat3s.kitten;
 
 import android.content.Context;
+import android.support.annotation.FloatRange;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -21,10 +22,13 @@ import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
  */
 public class KittenRecyclerView extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
-    private static final int SCROLLER_DURATION = 800;
-    private static final float SCROLL_RESISTANCE = 0.64f;
 
-    private RecyclerView mRecyclerView;
+    // Scroller duration while release to do some action.
+    private static final int SCROLLER_DURATION = 800;
+
+    // Scroll resistance, if it equal 0f will scroll no any friction,
+    // if it equal 1f will can not scroll.
+    private float mIndicatorScrollResistance = 0.32f;
 
     // The last touch y while intercepted touch event.
     private int mLastTouchY;
@@ -38,10 +42,12 @@ public class KittenRecyclerView extends ViewGroup {
     // The Loading Footer View.
     private View mLoadingFooterIndicator;
 
-    // The provider for provide header indicator and some interfaces for interaction, eg. header indicator animation.
+    // The provider for provide header indicator and some interfaces for interaction,
+    // eg. header indicator animation.
     private RefreshHeaderIndicatorProvider mRefreshHeaderIndicatorProvider;
 
-    // The provider for provide footer indicator and some interfaces for interaction, eg. footer indicator animation.
+    // The provider for provide footer indicator and some interfaces for interaction,
+    // eg. footer indicator animation.
     private LoadingFooterIndicatorProvider mLoadingFooterIndicatorProvider;
 
     // Knowing whether recycler view is refreshing.
@@ -55,6 +61,8 @@ public class KittenRecyclerView extends ViewGroup {
 
     // The load more listener
     private OnLoadMoreListener mOnLoadMoreListener;
+
+    private RecyclerView mRecyclerView;
 
     /**
      * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
@@ -175,7 +183,7 @@ public class KittenRecyclerView extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
 
-                scrollBy(0, (int) (offsetY * SCROLL_RESISTANCE));
+                scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
                 mLastTouchY = y;
 
                 if (null != mRefreshHeaderIndicatorProvider) {
@@ -344,6 +352,16 @@ public class KittenRecyclerView extends ViewGroup {
 
     public void setLoadMoreRemainItemCount(int visibleThreshold) {
         mLoadMoreRemainItemCount = visibleThreshold;
+    }
+
+    /**
+     * Set indicator scroll resistance,
+     * as the resistance coefficient increases, it will become increasingly difficult to slide.
+     *
+     * @param indicatorScrollResistance
+     */
+    public void setIndicatorScrollResistance(@FloatRange(from = 0, to = 1.0f) float indicatorScrollResistance) {
+        mIndicatorScrollResistance = indicatorScrollResistance;
     }
 
     public void setAdapter(RecyclerView.Adapter adapter) {
