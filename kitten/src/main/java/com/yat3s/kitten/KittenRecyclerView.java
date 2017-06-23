@@ -125,7 +125,8 @@ public class KittenRecyclerView extends ViewGroup {
 
         // Measure refresh header indicator.
         if (null != mRefreshHeaderIndicator) {
-            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(), mRefreshHeaderIndicator.getMeasuredWidth(), 0);
+            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(), mRefreshHeaderIndicator
+                    .getMeasuredWidth(), 0);
         }
 
         // Measure loading footer indicator.
@@ -224,12 +225,14 @@ public class KittenRecyclerView extends ViewGroup {
 
     private void releaseViewToRefreshingStatus() {
         Log.d(TAG, "releaseViewToRefreshingStatus: ");
-        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderIndicator.getMeasuredHeight() + getScrollY()), SCROLLER_DURATION);
+        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderIndicator.getMeasuredHeight() + getScrollY()),
+                SCROLLER_DURATION);
     }
 
     private void releaseViewToLoadingStatus() {
         Log.d(TAG, "releaseViewToLoadingStatus: ");
-        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterIndicator.getMeasuredHeight()), SCROLLER_DURATION);
+        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterIndicator.getMeasuredHeight()),
+                SCROLLER_DURATION);
     }
 
     private void releaseViewToDefaultStatus() {
@@ -278,23 +281,14 @@ public class KittenRecyclerView extends ViewGroup {
     }
 
     private boolean recyclerViewScrolledToTop() {
-        boolean scrollToTop = mRecyclerView.computeVerticalScrollOffset() <= 0;
-        if (scrollToTop) {
-//            Log.d(TAG, "recyclerViewScrolledToTop: ");
-        }
-        return scrollToTop;
+        return mRecyclerView.computeVerticalScrollOffset() <= 0;
     }
 
     private boolean recyclerViewScrolledToBottom() {
-        boolean scrollToBottom = mRecyclerView.computeVerticalScrollExtent()
+        return mRecyclerView.computeVerticalScrollExtent()
                 + mRecyclerView.computeVerticalScrollOffset()
                 >= mRecyclerView.computeVerticalScrollRange();
-        if (scrollToBottom) {
-//            Log.d(TAG, "recyclerViewScrolledToBottom: ");
-        }
-        return scrollToBottom;
     }
-
 
     private void initialize() {
         mScroller = new Scroller(getContext());
