@@ -9,7 +9,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.view.View;
 
 import com.yat3s.kitten.KittenRecyclerView;
-import com.yat3s.kitten.header.KittenRefreshHeaderView;
+import com.yat3s.kitten.decoration.KittenLoadingFooterView;
+import com.yat3s.kitten.decoration.KittenRefreshHeaderView;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
 import com.yat3s.nimblerecyclerview.widget.ScrollableView;
 
@@ -57,6 +58,22 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         mRecyclerView.refreshComplete();
+                    }
+                }, 3000);
+            }
+        });
+
+        // Configure loading footer.
+        KittenLoadingFooterView kittenLoadingFooterView = new KittenLoadingFooterView(this, "star.json");
+        kittenLoadingFooterView.setScale(0.5f);
+        mRecyclerView.setLoadingFooterView(kittenLoadingFooterView);
+        mRecyclerView.setOnLoadMoreListener(new KittenRecyclerView.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mRecyclerView.loadMoreComplete();
                     }
                 }, 3000);
             }
