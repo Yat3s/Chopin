@@ -1,14 +1,14 @@
 package com.yat3s.nimblerecyclerview;
 
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
-import com.yat3s.kitten.KittenRecyclerView;
+import com.yat3s.kitten.KittenLayout;
 import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
 import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
@@ -23,13 +23,15 @@ import java.util.ArrayList;
 public class MainActivity extends AppCompatActivity {
     private static final String TAG = "MainActivity";
 
-    private KittenRecyclerView mRecyclerView;
+    private KittenLayout mKittenLayout;
+    private RecyclerView mRecyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mRecyclerView = (KittenRecyclerView) findViewById(R.id.recycler_view);
+        mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
+        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -46,14 +48,14 @@ public class MainActivity extends AppCompatActivity {
         // Configure refresh header.
         KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "Plane.json");
         kittenRefreshHeaderView.setScale(0.2f);
-        mRecyclerView.setRefreshHeaderIndicator(kittenRefreshHeaderView);
-        mRecyclerView.setOnRefreshListener(new KittenRecyclerView.OnRefreshListener() {
+        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                new Handler().postDelayed(new Runnable() {
+                mKittenLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mRecyclerView.refreshComplete();
+                        mKittenLayout.refreshComplete();
                     }
                 }, 3000);
             }
@@ -62,14 +64,14 @@ public class MainActivity extends AppCompatActivity {
         // Configure loading footer.
         KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
         kittenLoadingFooterView.setScale(0.2f);
-        mRecyclerView.setLoadingFooterIndicator(kittenLoadingFooterView);
-        mRecyclerView.setOnLoadMoreListener(new KittenRecyclerView.OnLoadMoreListener() {
+        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
+        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
-                new Handler().postDelayed(new Runnable() {
+                mKittenLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mRecyclerView.loadMoreComplete();
+                        mKittenLayout.loadMoreComplete();
                     }
                 }, 3000);
             }

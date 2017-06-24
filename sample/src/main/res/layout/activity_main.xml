@@ -8,10 +8,17 @@
     android:fitsSystemWindows="true"
     tools:context="com.yat3s.nimblerecyclerview.MainActivity">
 
-    <com.yat3s.kitten.KittenRecyclerView
-        android:id="@+id/recycler_view"
+    <com.yat3s.kitten.KittenLayout
+        android:id="@+id/kitten_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.yat3s.kitten.KittenLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"

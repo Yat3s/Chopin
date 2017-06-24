@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.Scroller;
 
 import com.yat3s.kitten.decoration.LoadingFooterIndicatorProvider;
@@ -20,8 +19,9 @@ import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class KittenRecyclerView extends ViewGroup {
+public class KittenLayout extends ViewGroup {
     private static final String TAG = "NimbleRecyclerView";
+    private static final int SUPPORT_CHILD_COUNT = 1;
 
     // Scroller duration while release to do some action.
     private static final int SCROLLER_DURATION = 800;
@@ -62,27 +62,28 @@ public class KittenRecyclerView extends ViewGroup {
     // The load more listener
     private OnLoadMoreListener mOnLoadMoreListener;
 
-    private RecyclerView mRecyclerView;
+    // The content view of user set.
+    private View mContentView;
 
     /**
      * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
      */
-    private int mLoadMoreRemainItemCount = 2;
+    private int mLoadMoreRemainShowItemCount = 2;
 
     /**
-     * If set true, it will auto trigger load more while visible item < {@link #mLoadMoreRemainItemCount}
+     * If set true, it will auto trigger load more while visible item < {@link #mLoadMoreRemainShowItemCount}
      */
     private boolean autoTriggerLoadMore = false;
 
-    public KittenRecyclerView(Context context) {
+    public KittenLayout(Context context) {
         this(context, null);
     }
 
-    public KittenRecyclerView(Context context, AttributeSet attrs) {
+    public KittenLayout(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public KittenRecyclerView(Context context, AttributeSet attrs, int defStyle) {
+    public KittenLayout(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
         initialize();
     }
@@ -113,9 +114,16 @@ public class KittenRecyclerView extends ViewGroup {
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
-        mRecyclerView.setLayoutParams(new FrameLayout.LayoutParams(LayoutParams.MATCH_PARENT,
-                LayoutParams.MATCH_PARENT));
-        addView(mRecyclerView);
+        if (getChildCount() > SUPPORT_CHILD_COUNT) {
+            throw new IllegalArgumentException("It can ONLY set one child view!");
+        } else if (getChildCount() == SUPPORT_CHILD_COUNT) {
+            mContentView = getChildAt(0);
+
+            // Set up auto load more if content view is recycler view.
+            if (mContentView instanceof RecyclerView) {
+                setupRecyclerViewAutoLoadMore((RecyclerView) mContentView);
+            }
+        }
     }
 
     @Override
@@ -129,7 +137,7 @@ public class KittenRecyclerView extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         // Measure recycler view.
-        mRecyclerView.layout(0, 0, mRecyclerView.getMeasuredWidth(), mRecyclerView.getMeasuredHeight());
+        mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
 
         // Measure refresh header indicator.
         if (null != mRefreshHeaderIndicator) {
@@ -140,9 +148,9 @@ public class KittenRecyclerView extends ViewGroup {
         // Measure loading footer indicator.
         if (null != mLoadingFooterIndicator) {
             mLoadingFooterIndicator.layout(0,
-                    mRecyclerView.getMeasuredHeight(),
+                    mContentView.getMeasuredHeight(),
                     mLoadingFooterIndicator.getMeasuredWidth(),
-                    mRecyclerView.getMeasuredHeight() + mLoadingFooterIndicator.getMeasuredHeight());
+                    mContentView.getMeasuredHeight() + mLoadingFooterIndicator.getMeasuredHeight());
         }
     }
 
@@ -289,19 +297,35 @@ public class KittenRecyclerView extends ViewGroup {
     }
 
     private boolean recyclerViewScrolledToTop() {
-        return mRecyclerView.computeVerticalScrollOffset() <= 0;
+        Log.d(TAG, "recyclerViewScrolledToTop: " + ViewScrollHelper.viewScrolledToTop(mContentView));
+        return ViewScrollHelper.viewScrolledToTop(mContentView);
     }
 
     private boolean recyclerViewScrolledToBottom() {
-        return mRecyclerView.computeVerticalScrollExtent()
-                + mRecyclerView.computeVerticalScrollOffset()
-                >= mRecyclerView.computeVerticalScrollRange();
+        Log.d(TAG, "recyclerViewScrolledToBottom: " + ViewScrollHelper.viewScrolledToBottom(mContentView));
+        return ViewScrollHelper.viewScrolledToBottom(mContentView);
     }
 
     private void initialize() {
         mScroller = new Scroller(getContext());
-        mRecyclerView = new RecyclerView(getContext());
-        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+    }
+
+    @Override
+    public void computeScroll() {
+        super.computeScroll();
+        if (mScroller.computeScrollOffset()) {
+            scrollTo(0, mScroller.getCurrY());
+        }
+        postInvalidate();
+    }
+
+    /**
+     * Setup auto trigger load more.
+     *
+     * @param recyclerView
+     */
+    private void setupRecyclerViewAutoLoadMore(RecyclerView recyclerView) {
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
@@ -313,7 +337,7 @@ public class KittenRecyclerView extends ViewGroup {
                     int totalItemCount = recyclerView.getLayoutManager().getItemCount();
                     // if lastVisibleItem >= totalItemCount - mLoadMoreRemainItemCount
                     // and pull down will auto trigger load more.
-                    if (lastVisibleItemPosition >= totalItemCount - mLoadMoreRemainItemCount
+                    if (lastVisibleItemPosition >= totalItemCount - mLoadMoreRemainShowItemCount
                             && dy > 0
                             && !isLoadingMore) {
                         isLoadingMore = true;
@@ -329,29 +353,29 @@ public class KittenRecyclerView extends ViewGroup {
         });
     }
 
-    @Override
-    public void computeScroll() {
-        super.computeScroll();
-        if (mScroller.computeScrollOffset()) {
-            scrollTo(0, mScroller.getCurrY());
-        }
-        postInvalidate();
-    }
-
     /**
+     * NOTE: It can ONLY be used for {@link android.support.v7.widget.RecyclerView} and {@link android.widget.AbsListView}
+     * {@ref} {@link #setupRecyclerViewAutoLoadMore(RecyclerView)}
+     * <p>
      * NOTE: You can ONLY choose one load more style from {@link #setLoadingFooterIndicator(LoadingFooterIndicatorProvider)}
      * and this.
      * Please remove Load Footer View while you set autoTriggerLoadMore is true.
      *
      * @param autoTriggerLoadMore If true will auto trigger load more while
-     *                            remain to show item < {@link #mLoadMoreRemainItemCount}
+     *                            remain to show item < {@link #mLoadMoreRemainShowItemCount}
      */
     public void setAutoTriggerLoadMore(boolean autoTriggerLoadMore) {
         this.autoTriggerLoadMore = autoTriggerLoadMore;
     }
 
-    public void setLoadMoreRemainItemCount(int visibleThreshold) {
-        mLoadMoreRemainItemCount = visibleThreshold;
+    /**
+     * NOTE: It can ONLY be used for {@link android.support.v7.widget.RecyclerView} and {@link android.widget.AbsListView}
+     * NOTE: It can ONLY be used when {@link #autoTriggerLoadMore} is true.
+     *
+     * @param remainShowItemCount
+     */
+    public void setLoadMoreRemainItemCount(int remainShowItemCount) {
+        mLoadMoreRemainShowItemCount = remainShowItemCount;
     }
 
     /**
@@ -362,22 +386,6 @@ public class KittenRecyclerView extends ViewGroup {
      */
     public void setIndicatorScrollResistance(@FloatRange(from = 0, to = 1.0f) float indicatorScrollResistance) {
         mIndicatorScrollResistance = indicatorScrollResistance;
-    }
-
-    public void setAdapter(RecyclerView.Adapter adapter) {
-        mRecyclerView.setAdapter(adapter);
-    }
-
-    public void setLayoutManager(RecyclerView.LayoutManager layoutManager) {
-        mRecyclerView.setLayoutManager(layoutManager);
-    }
-
-    public void addItemDecoration(RecyclerView.ItemDecoration itemDecoration) {
-        mRecyclerView.addItemDecoration(itemDecoration);
-    }
-
-    public RecyclerView getRecyclerView() {
-        return mRecyclerView;
     }
 
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
