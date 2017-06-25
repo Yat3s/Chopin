@@ -27,7 +27,7 @@ public class MusicAdapter extends NimbleAdapter<Music, NimbleViewHolder> impleme
 
     @Override
     protected int getItemViewLayoutId(int position, Music data) {
-        return R.layout.item_task;
+        return R.layout.item_music;
     }
 
     @Override
