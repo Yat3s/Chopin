@@ -165,18 +165,17 @@ public class KittenLayout extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
 //                Log.d(TAG, "Scroll to : " + (y - mLastTouchY > 0 ? "Top" : "Bottom"));
 
-                // Intercept pull down event when scroll to top.
                 int offsetX = x - mLastTouchX;
                 int offsetY = y - mLastTouchY;
 
-                Log.d(TAG, "offsetX:offsetY " + offsetX + ", " + offsetY);
+                // Intercept pull down event when scroll to top.
                 if (offsetY > Math.abs(offsetX)) {
-                    return recyclerViewScrolledToTop();
+                    return contentViewScrolledToTop();
                 }
 
                 // Intercept pull up event when scroll to bottom.
                 if (-offsetY > Math.abs(offsetX)) {
-                    return recyclerViewScrolledToBottom();
+                    return contentViewScrolledToBottom();
                 }
 
             case MotionEvent.ACTION_UP:
@@ -312,13 +311,13 @@ public class KittenLayout extends ViewGroup {
         }
     }
 
-    private boolean recyclerViewScrolledToTop() {
-        Log.d(TAG, "recyclerViewScrolledToTop: " + ViewScrollHelper.viewScrolledToTop(mContentView));
+    private boolean contentViewScrolledToTop() {
+        Log.d(TAG, "contentViewScrolledToTop: " + ViewScrollHelper.viewScrolledToTop(mContentView));
         return ViewScrollHelper.viewScrolledToTop(mContentView);
     }
 
-    private boolean recyclerViewScrolledToBottom() {
-        Log.d(TAG, "recyclerViewScrolledToBottom: " + ViewScrollHelper.viewScrolledToBottom(mContentView));
+    private boolean contentViewScrolledToBottom() {
+        Log.d(TAG, "contentViewScrolledToBottom: " + ViewScrollHelper.viewScrolledToBottom(mContentView));
         return ViewScrollHelper.viewScrolledToBottom(mContentView);
     }
 
