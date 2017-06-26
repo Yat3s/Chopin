@@ -205,6 +205,17 @@ public class KittenLayout extends ViewGroup {
                     mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                 }
 
+                if (null != mLoadingFooterIndicatorProvider) {
+                    int progress;
+                    if (getScrollY() > mLoadingFooterIndicator.getMeasuredHeight()) {
+                        progress = 100;
+                    } else {
+                        progress = 100 * getScrollY() / mLoadingFooterIndicator.getMeasuredHeight();
+                    }
+
+                    mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
+                }
+
                 return true;
             case MotionEvent.ACTION_UP:
                 // Ignore some action.

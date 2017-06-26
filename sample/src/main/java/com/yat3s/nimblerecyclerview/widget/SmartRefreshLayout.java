@@ -441,7 +441,7 @@ public class SmartRefreshLayout extends ViewGroup {
             }
             case REFRESH: {
                 this.status = REFRESH;
-                tvPullDown.setText(R.string.srl_release_to_refresh);
+//                tvPullDown.setText(R.string.srl_release_to_refresh);
                 break;
             }
             case TRY_LOAD_MORE: {
@@ -450,7 +450,7 @@ public class SmartRefreshLayout extends ViewGroup {
             }
             case LOAD_MORE:
                 this.status = LOAD_MORE;
-                tvPullUp.setText(R.string.srl_release_to_refresh);
+//                tvPullUp.setText(R.string.srl_release_to_refresh);
                 break;
         }
     }
@@ -462,7 +462,7 @@ public class SmartRefreshLayout extends ViewGroup {
     private void upWithStatusTryRefresh() {
         // 取消本次的滑动
         mLayoutScroller.startScroll(0, getScrollY(), 0, -getScrollY(), SCROLL_SPEED);
-        tvPullDown.setText(R.string.srl_keep_pull_down);
+//        tvPullDown.setText(R.string.srl_keep_pull_down);
         status = NORMAL;
     }
 
@@ -478,7 +478,7 @@ public class SmartRefreshLayout extends ViewGroup {
 
     private void upWithStatusTryLoadMore() {
         mLayoutScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mReachBottomScroll), SCROLL_SPEED);
-        tvPullUp.setText(R.string.srl_keep_pull_up);
+//        tvPullUp.setText(R.string.srl_keep_pull_up);
         status = NORMAL;
     }
 
@@ -516,7 +516,7 @@ public class SmartRefreshLayout extends ViewGroup {
             switch (msg.what) {
                 case STOP_REFRESH: {
                     mLayoutScroller.startScroll(0, getScrollY(), 0, -getScrollY(), SCROLL_SPEED);
-                    tvPullDown.setText(R.string.srl_keep_pull_up);
+//                    tvPullDown.setText(R.string.srl_keep_pull_up);
                     tvPullDown.setVisibility(View.VISIBLE);
                     glvPullDown.stopAnim();
                     glvPullDown.setVisibility(View.GONE);
@@ -526,7 +526,7 @@ public class SmartRefreshLayout extends ViewGroup {
 
                 case STOP_LOAD_MORE: {
                     mLayoutScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mReachBottomScroll), SCROLL_SPEED);
-                    tvPullUp.setText(R.string.srl_keep_pull_up);
+//                    tvPullUp.setText(R.string.srl_keep_pull_up);
                     tvPullUp.setVisibility(View.VISIBLE);
                     elvPullUp.stopAnim();
                     elvPullUp.setVisibility(View.GONE);

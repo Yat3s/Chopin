@@ -2,7 +2,21 @@
     <string name="app_name">Kitten</string>
     <string name="action_settings">Settings</string>
 
-    <string name="srl_keep_pull_up">继续向上拉</string>
-    <string name="srl_keep_pull_down">继续向下拉</string>
-    <string name="srl_release_to_refresh">松开刷新</string>
+
+    <string name="mock_long_string">When I was young I\'d listen to the radio\nWaiting for my
+    favorite songs\nWhen they played I\'d sing along\nIt make me smile\nThose were such happy
+    times and not so long ago\nHow I wondered where they\'d gone\nBut they\'re back again just like
+    a long lost friend\nAll the songs I love so well\nEvery shalala every wo\'wostill
+    shines\nEvery shing-a-ling-a-ling that they\'re starting to sing so fine\nWhen they get to the
+    part\nWhere he\'s breaking her heart\nIt can really make me cry\nJust like before\nIt\'s
+    yesterday once more\n(Shoobie do lang lang*)\n(Shoobie do lang lang)\nLooking back on how it
+    was in years gone by\nAnd the good times that I had\nMakes today seem rather sad\nSo much has
+    changed\nIt was songs of love that I would sing to them\nAnd I\'d memorise each word\nThose
+    old melodies still sound so good to me\nAs they melt the years away\nEvery shalala every
+    wo\'wo still shines\nEvery shing-a-ling-a-ling that they\'re starting to sing so fine\nAll my
+    best memories\nCome back clearly to me\nSome can even make me cry\nJust like before\nIt\'s
+    yesterday once more\n(Shoobie do lang lang)\nEvery shalala every wo\'wo still shines\nEvery
+    shing-a-ling-a-ling that they\'re starting to sing so fine\nEvery shalala every wo\'wo still
+    shines\nEvery shing-a-ling-a-ling that they\'re starting to sing so fine</string>
+
 </resources>
