@@ -30,8 +30,8 @@ public class KittenLayout extends ViewGroup {
     // if it equal 1f will can not scroll.
     private float mIndicatorScrollResistance = 0.32f;
 
-    // The last touch y while intercepted touch event.
-    private int mLastTouchY;
+    // The last touch position while intercepted touch event.
+    private int mLastTouchX, mLastTouchY;
 
     // The Scroller for scroll whole view natural.
     private Scroller mScroller;
@@ -156,21 +156,26 @@ public class KittenLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        int y = (int) ev.getY();
+        int x = (int) ev.getX(), y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mLastTouchX = x;
                 mLastTouchY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
 //                Log.d(TAG, "Scroll to : " + (y - mLastTouchY > 0 ? "Top" : "Bottom"));
 
                 // Intercept pull down event when scroll to top.
-                if (y - mLastTouchY > 0) {
+                int offsetX = x - mLastTouchX;
+                int offsetY = y - mLastTouchY;
+
+                Log.d(TAG, "offsetX:offsetY " + offsetX + ", " + offsetY);
+                if (offsetY > Math.abs(offsetX)) {
                     return recyclerViewScrolledToTop();
                 }
 
                 // Intercept pull up event when scroll to bottom.
-                if (y - mLastTouchY < 0) {
+                if (-offsetY > Math.abs(offsetX)) {
                     return recyclerViewScrolledToBottom();
                 }
 

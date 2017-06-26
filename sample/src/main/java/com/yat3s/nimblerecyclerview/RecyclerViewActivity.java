@@ -57,7 +57,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                     public void run() {
                         mKittenLayout.refreshComplete();
                     }
-                }, 3000);
+                }, 1500);
             }
         });
 
@@ -73,7 +73,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
                     public void run() {
                         mKittenLayout.loadMoreComplete();
                     }
-                }, 3000);
+                }, 1500);
             }
         });
 
