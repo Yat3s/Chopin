@@ -23,6 +23,11 @@ public class KittenLoadingFooterIndicator extends LottieAnimationView implements
         setAnimation(animationFileName);
     }
 
+    public KittenLoadingFooterIndicator(Context context, String animationFileName, float scale) {
+        this(context, animationFileName);
+        setScale(scale);
+    }
+
     public KittenLoadingFooterIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
     }

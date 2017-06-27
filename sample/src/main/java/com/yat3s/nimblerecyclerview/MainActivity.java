@@ -32,5 +32,12 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(new Intent(MainActivity.this, ScrollViewActivity.class));
             }
         });
+
+        findViewById(R.id.linear_layout_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, LinearLayoutActivity.class));
+            }
+        });
     }
 }

@@ -23,6 +23,11 @@ public class KittenRefreshHeaderIndicator extends LottieAnimationView implements
         setAnimation(animationFileName);
     }
 
+    public KittenRefreshHeaderIndicator(Context context, String animationFileName, float scale) {
+        this(context, animationFileName);
+        setScale(scale);
+    }
+
     public KittenRefreshHeaderIndicator(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
@@ -44,7 +49,6 @@ public class KittenRefreshHeaderIndicator extends LottieAnimationView implements
     @Override
     public void onRefreshComplete() {
         clearAnimation();
-
     }
 
     @Override

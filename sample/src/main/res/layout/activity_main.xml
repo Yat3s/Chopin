@@ -18,4 +18,11 @@
         android:layout_height="0dp"
         android:layout_weight="1"
         android:text="ScrollView"/>
+
+    <Button
+        android:id="@+id/linear_layout_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="LinearLayout"/>
 </LinearLayout>

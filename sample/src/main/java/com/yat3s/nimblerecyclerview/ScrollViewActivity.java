@@ -32,7 +32,7 @@ public class ScrollViewActivity extends AppCompatActivity {
         mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
 
         // Configure refresh header.
-        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "Plane.json");
+        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
         kittenRefreshHeaderView.setScale(0.2f);
         mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
         mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
@@ -48,7 +48,7 @@ public class ScrollViewActivity extends AppCompatActivity {
         });
 
         // Configure loading footer.
-        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
+        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "loading.json");
         kittenLoadingFooterView.setScale(0.2f);
         mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
         mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {

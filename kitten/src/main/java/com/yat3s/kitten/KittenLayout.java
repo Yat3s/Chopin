@@ -11,6 +11,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
+import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
+import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.LoadingFooterIndicatorProvider;
 import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
 
@@ -20,7 +22,8 @@ import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
  * GitHub: https://github.com/yat3s
  */
 public class KittenLayout extends ViewGroup {
-    private static final String TAG = "NimbleRecyclerView";
+    private static final String TAG = "KittenLayout";
+
     private static final int SUPPORT_CHILD_COUNT = 1;
 
     // Scroller duration while release to do some action.

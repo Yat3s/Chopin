@@ -46,7 +46,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
         mRecyclerView.setAdapter(musicAdapter);
 
         // Configure refresh header.
-        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "Plane.json");
+        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
         kittenRefreshHeaderView.setScale(0.2f);
         mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
         mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {

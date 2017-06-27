@@ -21,6 +21,7 @@
 
         <activity android:name=".RecyclerViewActivity"/>
         <activity android:name=".ScrollViewActivity"/>
+        <activity android:name=".LinearLayoutActivity"/>
     </application>
 
 </manifest>
