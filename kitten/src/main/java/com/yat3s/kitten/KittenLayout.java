@@ -158,7 +158,15 @@ public class KittenLayout extends ViewGroup {
     }
 
     @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction());
+
+        return super.dispatchTouchEvent(ev);
+    }
+
+    @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        Log.d(TAG, "event--> onInterceptTouchEvent: " + ev.getAction());
         int x = (int) ev.getX(), y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -166,8 +174,6 @@ public class KittenLayout extends ViewGroup {
                 mLastTouchY = y;
                 break;
             case MotionEvent.ACTION_MOVE:
-//                Log.d(TAG, "Scroll to : " + (y - mLastTouchY > 0 ? "Top" : "Bottom"));
-
                 int offsetX = x - mLastTouchX;
                 int offsetY = y - mLastTouchY;
 
@@ -185,11 +191,13 @@ public class KittenLayout extends ViewGroup {
 
                 break;
         }
+//        return true;
         return super.onInterceptTouchEvent(ev);
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        Log.d(TAG, "event--> onTouchEvent: " + event.getAction());
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -247,7 +255,8 @@ public class KittenLayout extends ViewGroup {
 
                 return true;
         }
-        return super.onTouchEvent(event);
+        return  true;
+//        return super.onTouchEvent(event);
     }
 
     private boolean canAbortThisScrollAction() {
