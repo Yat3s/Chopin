@@ -191,7 +191,6 @@ public class KittenLayout extends ViewGroup {
 
                 break;
         }
-//        return true;
         return super.onInterceptTouchEvent(ev);
     }
 
@@ -255,8 +254,7 @@ public class KittenLayout extends ViewGroup {
 
                 return true;
         }
-        return  true;
-//        return super.onTouchEvent(event);
+        return super.onTouchEvent(event);
     }
 
     private boolean canAbortThisScrollAction() {
