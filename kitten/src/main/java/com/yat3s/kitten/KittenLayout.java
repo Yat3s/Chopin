@@ -2,6 +2,7 @@ package com.yat3s.kitten;
 
 import android.content.Context;
 import android.support.annotation.FloatRange;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -11,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
-import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
-import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.LoadingFooterIndicatorProvider;
 import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
 
@@ -38,6 +37,15 @@ public class KittenLayout extends ViewGroup {
 
     // The Scroller for scroll whole view natural.
     private Scroller mScroller;
+
+    /**
+     * It is used for check content view whether can be refresh/loading or other action.
+     * The default checker is only check whether view has scrolled to top or bottom.
+     * <p>
+     * {@see} {@link DefaultViewScrollChecker#canBeRefresh(KittenLayout, View)},
+     * {@link DefaultViewScrollChecker#canBeLoading(KittenLayout, View)}
+     */
+    private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
     // The Refresh Header View.
     private View mRefreshHeaderIndicator;
@@ -159,14 +167,13 @@ public class KittenLayout extends ViewGroup {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction());
-
-        return super.dispatchTouchEvent(ev);
+        boolean dispatch = super.dispatchTouchEvent(ev);
+        Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction() + ", " + dispatch);
+        return dispatch;
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "event--> onInterceptTouchEvent: " + ev.getAction());
         int x = (int) ev.getX(), y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -179,24 +186,26 @@ public class KittenLayout extends ViewGroup {
 
                 // Intercept pull down event when scroll to top.
                 if (offsetY > Math.abs(offsetX)) {
-                    return contentViewScrolledToTop();
+                    return mViewScrollChecker.canBeRefresh(this, mContentView);
                 }
 
                 // Intercept pull up event when scroll to bottom.
                 if (-offsetY > Math.abs(offsetX)) {
-                    return contentViewScrolledToBottom();
+                    return mViewScrollChecker.canBeLoading(this, mContentView);
                 }
 
             case MotionEvent.ACTION_UP:
 
                 break;
         }
-        return super.onInterceptTouchEvent(ev);
+
+        boolean intercept = super.onInterceptTouchEvent(ev);
+        Log.d(TAG, "event--> onInterceptTouchEvent: " + ev.getAction() + ", " + intercept);
+        return intercept;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(TAG, "event--> onTouchEvent: " + event.getAction());
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -254,7 +263,11 @@ public class KittenLayout extends ViewGroup {
 
                 return true;
         }
-        return super.onTouchEvent(event);
+
+        boolean touch = super.onTouchEvent(event);
+        Log.d(TAG, "event--> onTouchEvent: " + event.getAction() + ", " + touch);
+
+        return touch;
     }
 
     private boolean canAbortThisScrollAction() {
@@ -319,16 +332,6 @@ public class KittenLayout extends ViewGroup {
         if (null != mLoadingFooterIndicatorProvider) {
             mLoadingFooterIndicatorProvider.onLoadingComplete();
         }
-    }
-
-    private boolean contentViewScrolledToTop() {
-        Log.d(TAG, "contentViewScrolledToTop: " + ViewScrollHelper.viewScrolledToTop(mContentView));
-        return ViewScrollHelper.viewScrolledToTop(mContentView);
-    }
-
-    private boolean contentViewScrolledToBottom() {
-        Log.d(TAG, "contentViewScrolledToBottom: " + ViewScrollHelper.viewScrolledToBottom(mContentView));
-        return ViewScrollHelper.viewScrolledToBottom(mContentView);
     }
 
     private void initialize() {
@@ -411,6 +414,16 @@ public class KittenLayout extends ViewGroup {
      */
     public void setIndicatorScrollResistance(@FloatRange(from = 0, to = 1.0f) float indicatorScrollResistance) {
         mIndicatorScrollResistance = indicatorScrollResistance;
+    }
+
+    /**
+     * It is used for check content view whether can be refresh/loading or other action.
+     * You can do some custom edition for do refresh/loading checking.
+     *
+     * @param viewScrollChecker
+     */
+    public void setViewScrollChecker(@NonNull ViewScrollChecker viewScrollChecker) {
+        mViewScrollChecker = viewScrollChecker;
     }
 
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
