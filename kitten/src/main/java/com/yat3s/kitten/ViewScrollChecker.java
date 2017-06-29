@@ -10,12 +10,21 @@ import android.view.View;
 public interface ViewScrollChecker {
 
     /**
-     * Check content view whether can refresh, and it can be
+     * Check content view whether can do refresh,
+     * so you can do some edition to control view refresh.
      * @param kittenLayout
      * @param contentView
      * @return
      */
     boolean canBeRefresh(KittenLayout kittenLayout, View contentView);
 
+
+    /**
+     * Check content view whether can do loading,
+     * so you can do some edition to control view loading.
+     * @param kittenLayout
+     * @param contentView
+     * @return
+     */
     boolean canBeLoading(KittenLayout kittenLayout, View contentView);
 }

@@ -99,29 +99,6 @@ public class KittenLayout extends ViewGroup {
         initialize();
     }
 
-    public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
-        mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
-        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.provideContentView();
-        if (null != mRefreshHeaderIndicator) {
-            mRefreshHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT));
-            addView(mRefreshHeaderIndicator);
-        }
-    }
-
-    public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
-        mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
-        mLoadingFooterIndicator = loadingFooterIndicatorProvider.provideContentView();
-        if (null != mLoadingFooterIndicator) {
-            mLoadingFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT));
-            addView(mLoadingFooterIndicator);
-        }
-
-        // You can only choose a load more style.
-        autoTriggerLoadMore = false;
-    }
-
     @Override
     protected void onFinishInflate() {
         super.onFinishInflate();
@@ -345,6 +322,30 @@ public class KittenLayout extends ViewGroup {
             scrollTo(0, mScroller.getCurrY());
         }
         postInvalidate();
+    }
+
+
+    public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
+        mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
+        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.provideContentView();
+        if (null != mRefreshHeaderIndicator) {
+            mRefreshHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            addView(mRefreshHeaderIndicator);
+        }
+    }
+
+    public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
+        mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
+        mLoadingFooterIndicator = loadingFooterIndicatorProvider.provideContentView();
+        if (null != mLoadingFooterIndicator) {
+            mLoadingFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            addView(mLoadingFooterIndicator);
+        }
+
+        // You can only choose a load more style.
+        autoTriggerLoadMore = false;
     }
 
     /**
