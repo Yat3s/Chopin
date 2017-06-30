@@ -23,6 +23,7 @@ import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
 public class KittenLayout extends ViewGroup {
     private static final String TAG = "KittenLayout";
 
+    // Support child view count nested in this.
     private static final int SUPPORT_CHILD_COUNT = 1;
 
     // Scroller duration while release to do some action.
@@ -82,7 +83,8 @@ public class KittenLayout extends ViewGroup {
     private int mLoadMoreRemainShowItemCount = 2;
 
     /**
-     * If set true, it will auto trigger load more while visible item < {@link #mLoadMoreRemainShowItemCount}
+     * If set true, it will auto trigger load more while visible
+     * item < {@link #mLoadMoreRemainShowItemCount}
      */
     private boolean autoTriggerLoadMore = false;
 
@@ -103,7 +105,7 @@ public class KittenLayout extends ViewGroup {
     protected void onFinishInflate() {
         super.onFinishInflate();
         if (getChildCount() > SUPPORT_CHILD_COUNT) {
-            throw new IllegalArgumentException("It can ONLY set one child view!");
+            throw new IllegalArgumentException("It can ONLY set ONE child view!");
         } else if (getChildCount() == SUPPORT_CHILD_COUNT) {
             mContentView = getChildAt(0);
 
@@ -129,8 +131,8 @@ public class KittenLayout extends ViewGroup {
 
         // Measure refresh header indicator.
         if (null != mRefreshHeaderIndicator) {
-            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(), mRefreshHeaderIndicator
-                    .getMeasuredWidth(), 0);
+            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(),
+                    mRefreshHeaderIndicator.getMeasuredWidth(), 0);
         }
 
         // Measure loading footer indicator.
@@ -155,7 +157,8 @@ public class KittenLayout extends ViewGroup {
                 // FORCE to dispatch this motion for it's going to process all event while
                 // child not consume this event. for example: it nested with a LinearLayout
                 // and this LinearLayout never consume this event so parent will return False
-                // for disable dispatch this motion. REF: it is a Recursion method.
+                // for disable dispatch this motion.
+                // REF: it is a Recursion method, so it will execute the last child dispatch method.
                 return true;
         }
         Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction() + ", " + dispatch);
