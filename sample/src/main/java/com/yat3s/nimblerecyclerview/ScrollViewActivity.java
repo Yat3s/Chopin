@@ -8,6 +8,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.yat3s.kitten.KittenLayout;
 import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
@@ -60,6 +61,13 @@ public class ScrollViewActivity extends AppCompatActivity {
                         mKittenLayout.loadMoreComplete();
                     }
                 }, 1500);
+            }
+        });
+
+        findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(ScrollViewActivity.this, "Ok!", Toast.LENGTH_SHORT).show();
             }
         });
 

@@ -145,8 +145,21 @@ public class KittenLayout extends ViewGroup {
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         boolean dispatch = super.dispatchTouchEvent(ev);
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
+
+                // Dispatch ACTION_DOWN event to child for process if child never consume
+                // this event.
+                super.dispatchTouchEvent(ev);
+
+                // FORCE to dispatch this motion for it's going to process all event while
+                // child not consume this event. for example: it nested with a LinearLayout
+                // and this LinearLayout never consume this event so parent will return False
+                // for disable dispatch this motion. REF: it is a Recursion method.
+                return true;
+        }
         Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction() + ", " + dispatch);
-        return dispatch;
+        return super.dispatchTouchEvent(ev);
     }
 
     @Override
@@ -163,7 +176,10 @@ public class KittenLayout extends ViewGroup {
 
                 // Intercept pull down event when scroll to top.
                 if (offsetY > Math.abs(offsetX)) {
-                    return mViewScrollChecker.canBeRefresh(this, mContentView);
+                    boolean canBeRefresh = mViewScrollChecker.canBeRefresh(this, mContentView);
+
+                    Log.d(TAG, "event--> canBeRefresh: " + canBeRefresh);
+                    return canBeRefresh;
                 }
 
                 // Intercept pull up event when scroll to bottom.
