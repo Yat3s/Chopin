@@ -101,19 +101,23 @@ public class KittenLayout extends ViewGroup {
         initialize();
     }
 
+    /**
+     * Obtain content view after inflated, and it can be only support nested {@link #SUPPORT_CHILD_COUNT}
+     * Setup auto load more if content view is RecyclerView, {@see} {@link #setupRecyclerViewAutoLoadMore(RecyclerView)}
+     */
     @Override
     protected void onFinishInflate() {
-        super.onFinishInflate();
         if (getChildCount() > SUPPORT_CHILD_COUNT) {
             throw new IllegalArgumentException("It can ONLY set ONE child view!");
         } else if (getChildCount() == SUPPORT_CHILD_COUNT) {
             mContentView = getChildAt(0);
 
-            // Set up auto load more if content view is recycler view.
+            // Set up auto load more if content view is RecyclerView.
             if (mContentView instanceof RecyclerView) {
                 setupRecyclerViewAutoLoadMore((RecyclerView) mContentView);
             }
         }
+        super.onFinishInflate();
     }
 
     @Override
