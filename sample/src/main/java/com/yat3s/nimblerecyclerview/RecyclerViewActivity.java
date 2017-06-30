@@ -6,9 +6,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 
 import com.yat3s.kitten.KittenLayout;
+import com.yat3s.kitten.ViewScrollChecker;
 import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
 import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;

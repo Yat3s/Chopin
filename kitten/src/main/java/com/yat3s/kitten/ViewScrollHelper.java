@@ -13,23 +13,10 @@ public class ViewScrollHelper {
     private static final int VIEW_SCROLL_VERTICALLY_DIRECTION_SCROLL_DOWN = 1;
 
     public static boolean viewHasScrolledToTop(View view) {
-//        if (view instanceof RecyclerView) {
-//            return ((RecyclerView) view).computeVerticalScrollOffset() <= 0;
-//        } else if (view instanceof ScrollView || view instanceof NestedScrollView) {
-//            return view.getScrollY() <= 0;
-//        }
         return !view.canScrollVertically(VIEW_SCROLL_VERTICALLY_DIRECTION_SCROLL_UP);
     }
 
     public static boolean viewHasScrolledToBottom(View view) {
-//        if (view instanceof RecyclerView) {
-//            return ((RecyclerView) view).computeVerticalScrollExtent()
-//                    + ((RecyclerView) view).computeVerticalScrollOffset()
-//                    >= ((RecyclerView) view).computeVerticalScrollRange();
-//        } else if ((view instanceof ScrollView || view instanceof NestedScrollView) && ((ViewGroup) view).getChildCount() >
-// 0) {
-//            return ((ViewGroup) view).getChildAt(0).getMeasuredHeight() <= view.getScrollY() + view.getHeight();
-//        }
         return !view.canScrollVertically(VIEW_SCROLL_VERTICALLY_DIRECTION_SCROLL_DOWN);
     }
 }

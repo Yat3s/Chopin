@@ -24,6 +24,7 @@ import java.util.List;
  */
 public class ScrollViewActivity extends AppCompatActivity {
 
+    private static final String TAG = "ScrollViewActivity";
     private KittenLayout mKittenLayout;
 
     @Override

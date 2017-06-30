@@ -176,20 +176,13 @@ public class KittenLayout extends ViewGroup {
 
                 // Intercept pull down event when scroll to top.
                 if (offsetY > Math.abs(offsetX)) {
-                    boolean canBeRefresh = mViewScrollChecker.canBeRefresh(this, mContentView);
-
-                    Log.d(TAG, "event--> canBeRefresh: " + canBeRefresh);
-                    return canBeRefresh;
+                    return mViewScrollChecker.canBeRefresh(this, mContentView);
                 }
 
                 // Intercept pull up event when scroll to bottom.
                 if (-offsetY > Math.abs(offsetX)) {
                     return mViewScrollChecker.canBeLoading(this, mContentView);
                 }
-
-            case MotionEvent.ACTION_UP:
-
-                break;
         }
 
         boolean intercept = super.onInterceptTouchEvent(ev);
@@ -259,7 +252,6 @@ public class KittenLayout extends ViewGroup {
 
         boolean touch = super.onTouchEvent(event);
         Log.d(TAG, "event--> onTouchEvent: " + event.getAction() + ", " + touch);
-
         return touch;
     }
 
@@ -271,24 +263,20 @@ public class KittenLayout extends ViewGroup {
     }
 
     private void releaseViewToRefreshingStatus() {
-        Log.d(TAG, "releaseViewToRefreshingStatus: ");
         mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderIndicator.getMeasuredHeight() + getScrollY()),
                 SCROLLER_DURATION);
     }
 
     private void releaseViewToLoadingStatus() {
-        Log.d(TAG, "releaseViewToLoadingStatus: ");
         mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterIndicator.getMeasuredHeight()),
                 SCROLLER_DURATION);
     }
 
     private void releaseViewToDefaultStatus() {
-        Log.d(TAG, "releaseViewToDefaultStatus: ");
         mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
     }
 
     private void startRefresh() {
-        Log.d(TAG, "startRefresh: ");
         isRefreshing = true;
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
@@ -299,7 +287,6 @@ public class KittenLayout extends ViewGroup {
     }
 
     private void startLoading() {
-        Log.d(TAG, "startLoading: ");
         isLoadingMore = true;
         if (null != mOnLoadMoreListener) {
             mOnLoadMoreListener.onLoadMore();
@@ -310,7 +297,6 @@ public class KittenLayout extends ViewGroup {
     }
 
     public void refreshComplete() {
-        Log.d(TAG, "refreshComplete: ");
         releaseViewToDefaultStatus();
         isRefreshing = false;
         if (null != mRefreshHeaderIndicatorProvider) {
@@ -319,7 +305,6 @@ public class KittenLayout extends ViewGroup {
     }
 
     public void loadMoreComplete() {
-        Log.d(TAG, "loadMoreComplete: ");
         releaseViewToDefaultStatus();
         isLoadingMore = false;
         if (null != mLoadingFooterIndicatorProvider) {
