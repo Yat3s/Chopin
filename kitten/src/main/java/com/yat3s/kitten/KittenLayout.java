@@ -120,6 +120,11 @@ public class KittenLayout extends ViewGroup {
         super.onFinishInflate();
     }
 
+    /**
+     * Measure children.
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -128,18 +133,23 @@ public class KittenLayout extends ViewGroup {
         }
     }
 
+    /**
+     * Layout content view in suitable position.
+     * Layout refresh header indicator on top of content view and layout loading footer indicator on
+     * the bottom of content view in order to hide in the default status.
+     */
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        // Measure recycler view.
+        // Layout content view.
         mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
 
-        // Measure refresh header indicator.
+        // Layout refresh header indicator on top of content view.
         if (null != mRefreshHeaderIndicator) {
             mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(),
                     mRefreshHeaderIndicator.getMeasuredWidth(), 0);
         }
 
-        // Measure loading footer indicator.
+        // Layout loading footer indicator on the bottom of content view.
         if (null != mLoadingFooterIndicator) {
             mLoadingFooterIndicator.layout(0,
                     mContentView.getMeasuredHeight(),
@@ -181,12 +191,12 @@ public class KittenLayout extends ViewGroup {
                 int offsetX = x - mLastTouchX;
                 int offsetY = y - mLastTouchY;
 
-                // Intercept pull down event when scroll to top.
+                // Intercept pull down event when it is scrolling to top.
                 if (offsetY > Math.abs(offsetX)) {
                     return mViewScrollChecker.canBeRefresh(this, mContentView);
                 }
 
-                // Intercept pull up event when scroll to bottom.
+                // Intercept pull up event when it is scrolling to bottom.
                 if (-offsetY > Math.abs(offsetX)) {
                     return mViewScrollChecker.canBeLoading(this, mContentView);
                 }
@@ -205,10 +215,11 @@ public class KittenLayout extends ViewGroup {
                 break;
 
             case MotionEvent.ACTION_MOVE:
+                mLastTouchY = y;
                 int offsetY = mLastTouchY - y;
 
+                // Scroll whole view while it is needed.
                 scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
-                mLastTouchY = y;
 
                 if (null != mRefreshHeaderIndicatorProvider) {
                     int progress;
@@ -234,7 +245,7 @@ public class KittenLayout extends ViewGroup {
 
                 return true;
             case MotionEvent.ACTION_UP:
-                // Ignore some action.
+                // Cancel some move events while it not meet refresh or loading demands.
                 if (isRefreshing) {
                     releaseViewToRefreshingStatus();
                 }
@@ -245,7 +256,7 @@ public class KittenLayout extends ViewGroup {
                     releaseViewToDefaultStatus();
                 }
 
-                // Start refresh while scrollY over refresh header indicator height.
+                // Start refreshing while scrollY exceeded refresh header indicator height.
                 if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight() && !isRefreshing) {
                     releaseViewToRefreshingStatus();
                     startRefresh();
