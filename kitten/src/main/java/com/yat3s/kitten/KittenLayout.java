@@ -227,6 +227,11 @@ public class KittenLayout extends ViewGroup {
 
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
+
+                if (isRefreshing || isLoadingMore) {
+                    // Scroll whole view while it is needed.
+                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                }
                 if (null != mRefreshHeaderIndicator && offsetY < 0) {
 
                     // Scroll whole view while it is needed.

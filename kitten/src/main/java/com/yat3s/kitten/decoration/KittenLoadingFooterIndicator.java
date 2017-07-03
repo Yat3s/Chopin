@@ -16,10 +16,11 @@ public class KittenLoadingFooterIndicator extends LottieAnimationView implements
 
     public KittenLoadingFooterIndicator(Context context) {
         super(context);
+        initialize();
     }
 
     public KittenLoadingFooterIndicator(Context context, String animationFileName) {
-        super(context);
+        this(context);
         setAnimation(animationFileName);
     }
 
@@ -29,11 +30,16 @@ public class KittenLoadingFooterIndicator extends LottieAnimationView implements
     }
 
     public KittenLoadingFooterIndicator(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public KittenLoadingFooterIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initialize();
+    }
+
+    private void initialize() {
+        loop(true);
     }
 
     @Override
