@@ -37,7 +37,7 @@ public class KittenLoadingFooterIndicator extends LottieAnimationView implements
     }
 
     @Override
-    public View provideContentView() {
+    public View getContentView() {
         return this;
     }
 

@@ -122,6 +122,7 @@ public class KittenLayout extends ViewGroup {
 
     /**
      * Measure children.
+     *
      * @param widthMeasureSpec
      * @param heightMeasureSpec
      */
@@ -160,6 +161,9 @@ public class KittenLayout extends ViewGroup {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+            return super.dispatchTouchEvent(ev);
+        }
         boolean dispatch = super.dispatchTouchEvent(ev);
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -181,6 +185,9 @@ public class KittenLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+            return super.onInterceptTouchEvent(ev);
+        }
         int x = (int) ev.getX(), y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -192,13 +199,13 @@ public class KittenLayout extends ViewGroup {
                 int offsetY = y - mLastTouchY;
 
                 // Intercept pull down event when it is scrolling to top.
-                if (offsetY > Math.abs(offsetX)) {
-                    Log.d(TAG, "canBeRefresh: " +  mViewScrollChecker.canBeRefresh(this, mContentView));
+                if (offsetY > Math.abs(offsetX) && null != mRefreshHeaderIndicator) {
+                    Log.d(TAG, "canBeRefresh: " + mViewScrollChecker.canBeRefresh(this, mContentView));
                     return mViewScrollChecker.canBeRefresh(this, mContentView);
                 }
 
                 // Intercept pull up event when it is scrolling to bottom.
-                if (-offsetY > Math.abs(offsetX)) {
+                if (-offsetY > Math.abs(offsetX) && null != mLoadingFooterIndicator) {
                     return mViewScrollChecker.canBeLoading(this, mContentView);
                 }
         }
@@ -210,6 +217,9 @@ public class KittenLayout extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
+        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+            return super.onTouchEvent(event);
+        }
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -217,11 +227,11 @@ public class KittenLayout extends ViewGroup {
 
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
+                if (null != mRefreshHeaderIndicator && offsetY < 0) {
 
-                // Scroll whole view while it is needed.
-                scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    // Scroll whole view while it is needed.
+                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
 
-                if (null != mRefreshHeaderIndicatorProvider) {
                     int progress;
                     // Scroll distance has over refresh header indicator height.
                     if (-getScrollY() > mRefreshHeaderIndicator.getMeasuredHeight()) {
@@ -232,7 +242,10 @@ public class KittenLayout extends ViewGroup {
                     mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                 }
 
-                if (null != mLoadingFooterIndicatorProvider) {
+                if (null != mLoadingFooterIndicator && offsetY > 0) {
+                    // Scroll whole view while it is needed.
+                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+
                     int progress;
                     if (getScrollY() > mLoadingFooterIndicator.getMeasuredHeight()) {
                         progress = 100;
@@ -246,26 +259,31 @@ public class KittenLayout extends ViewGroup {
 
                 return true;
             case MotionEvent.ACTION_UP:
-                // Cancel some move events while it not meet refresh or loading demands.
-                if (isRefreshing) {
-                    releaseViewToRefreshingStatus();
-                }
-                if (isLoadingMore) {
-                    releaseViewToLoadingStatus();
-                }
-                if (canAbortThisScrollAction()) {
-                    releaseViewToDefaultStatus();
-                }
-
-                // Start refreshing while scrollY exceeded refresh header indicator height.
-                if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight() && !isRefreshing) {
-                    releaseViewToRefreshingStatus();
-                    startRefresh();
-                } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight() && !isLoadingMore) {
-                    releaseViewToLoadingStatus();
-                    startLoading();
+                if (null != mRefreshHeaderIndicator && getScrollY() < 0) {
+                    Log.d(TAG, "onTouchEvent: " + -getScrollY() + "," + mRefreshHeaderIndicator.getMeasuredHeight());
+                    if (isRefreshing) {
+                        releaseViewToRefreshingStatus();
+                    } else if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight()) {
+                        // Start refreshing while scrollY exceeded refresh header indicator height.
+                        releaseViewToRefreshingStatus();
+                        startRefresh();
+                    } else {
+                        // Cancel some move events while it not meet refresh or loading demands.
+                        releaseViewToDefaultStatus();
+                    }
                 }
 
+                if (null != mLoadingFooterIndicator && getScrollY() > 0) {
+                    if (isLoadingMore) {
+                        releaseViewToLoadingStatus();
+                    } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight()) {
+                        releaseViewToLoadingStatus();
+                        startLoading();
+                    } else {
+                        releaseViewToDefaultStatus();
+
+                    }
+                }
                 return true;
         }
 
@@ -347,7 +365,7 @@ public class KittenLayout extends ViewGroup {
 
     public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
         mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
-        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.provideContentView();
+        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.getContentView();
         if (null != mRefreshHeaderIndicator) {
             mRefreshHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
@@ -357,7 +375,7 @@ public class KittenLayout extends ViewGroup {
 
     public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
         mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
-        mLoadingFooterIndicator = loadingFooterIndicatorProvider.provideContentView();
+        mLoadingFooterIndicator = loadingFooterIndicatorProvider.getContentView();
         if (null != mLoadingFooterIndicator) {
             mLoadingFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
