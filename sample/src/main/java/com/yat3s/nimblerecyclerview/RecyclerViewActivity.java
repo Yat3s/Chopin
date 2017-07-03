@@ -47,21 +47,21 @@ public class RecyclerViewActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(musicAdapter);
 
-//        // Configure refresh header.
-//        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
-//        kittenRefreshHeaderView.setScale(0.2f);
-//        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
-//        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                mKittenLayout.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mKittenLayout.refreshComplete();
-//                    }
-//                }, 1500);
-//            }
-//        });
+        // Configure refresh header.
+        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
+        kittenRefreshHeaderView.setScale(0.2f);
+        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mKittenLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mKittenLayout.refreshComplete();
+                    }
+                }, 1500);
+            }
+        });
 
         // Configure loading footer.
         KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
