@@ -227,10 +227,12 @@ public class KittenLayout extends ViewGroup {
 
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
-                // Scroll whole view while it is needed.
-                scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
 
                 if (null != mRefreshHeaderIndicator) {
+                    if (getScrollY() <= 0) {
+                        // Scroll whole view while it is needed.
+                        scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    }
                     int progress;
                     // Scroll distance has over refresh header indicator height.
                     if (-getScrollY() > mRefreshHeaderIndicator.getMeasuredHeight()) {
@@ -242,8 +244,10 @@ public class KittenLayout extends ViewGroup {
                 }
 
                 if (null != mLoadingFooterIndicator) {
-                    // Scroll whole view while it is needed.
-//                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    if (getScrollY() >= 0) {
+                        // Scroll whole view while it is needed.
+                        scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    }
 
                     int progress;
                     if (getScrollY() > mLoadingFooterIndicator.getMeasuredHeight()) {
@@ -256,33 +260,45 @@ public class KittenLayout extends ViewGroup {
                 }
                 mLastTouchY = y;
 
+                Log.d(TAG, "getScrollY(): " + getScrollY());
+
                 return true;
             case MotionEvent.ACTION_UP:
-                if (null != mRefreshHeaderIndicator && getScrollY() < 0) {
-                    Log.d(TAG, "onTouchEvent: " + -getScrollY() + "," + mRefreshHeaderIndicator.getMeasuredHeight());
-                    if (isRefreshing) {
-                        releaseViewToRefreshingStatus();
-                    } else if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight()) {
-                        // Start refreshing while scrollY exceeded refresh header indicator height.
-                        releaseViewToRefreshingStatus();
-                        startRefresh();
+
+
+                if (getScrollY() < 0) {
+                    if (null != mRefreshHeaderIndicator) {
+                        Log.d(TAG, "onTouchEvent: " + -getScrollY() + "," + mRefreshHeaderIndicator.getMeasuredHeight());
+                        if (isRefreshing) {
+                            releaseViewToRefreshingStatus();
+                        } else if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight()) {
+                            // Start refreshing while scrollY exceeded refresh header indicator height.
+                            releaseViewToRefreshingStatus();
+                            startRefresh();
+                        } else {
+                            // Cancel some move events while it not meet refresh or loading demands.
+                            releaseViewToDefaultStatus();
+                        }
                     } else {
-                        // Cancel some move events while it not meet refresh or loading demands.
+                        releaseViewToDefaultStatus();
+                    }
+                } else {
+                    if (null != mLoadingFooterIndicator) {
+                        if (isLoadingMore) {
+                            releaseViewToLoadingStatus();
+                        } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight()) {
+                            releaseViewToLoadingStatus();
+                            startLoading();
+                        } else {
+                            releaseViewToDefaultStatus();
+                        }
+                    } else {
                         releaseViewToDefaultStatus();
                     }
                 }
 
-                if (null != mLoadingFooterIndicator && getScrollY() > 0) {
-                    if (isLoadingMore) {
-                        releaseViewToLoadingStatus();
-                    } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight()) {
-                        releaseViewToLoadingStatus();
-                        startLoading();
-                    } else {
-                        releaseViewToDefaultStatus();
 
-                    }
-                }
+
                 return true;
         }
 
