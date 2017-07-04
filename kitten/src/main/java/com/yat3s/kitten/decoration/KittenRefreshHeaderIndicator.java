@@ -54,7 +54,7 @@ public class KittenRefreshHeaderIndicator extends LottieAnimationView implements
 
     @Override
     public void onRefreshComplete() {
-        clearAnimation();
+        cancelAnimation();
     }
 
     @Override

@@ -54,7 +54,7 @@ public class KittenLoadingFooterIndicator extends LottieAnimationView implements
 
     @Override
     public void onLoadingComplete() {
-        clearAnimation();
+        cancelAnimation();
     }
 
     @Override

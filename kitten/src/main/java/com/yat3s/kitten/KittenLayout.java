@@ -227,12 +227,10 @@ public class KittenLayout extends ViewGroup {
 
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
+                // Scroll whole view while it is needed.
+                scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
 
-                if (null != mRefreshHeaderIndicator && offsetY < 0) {
-
-                    // Scroll whole view while it is needed.
-                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
-
+                if (null != mRefreshHeaderIndicator) {
                     int progress;
                     // Scroll distance has over refresh header indicator height.
                     if (-getScrollY() > mRefreshHeaderIndicator.getMeasuredHeight()) {
@@ -243,9 +241,9 @@ public class KittenLayout extends ViewGroup {
                     mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                 }
 
-                if (null != mLoadingFooterIndicator && offsetY > 0) {
+                if (null != mLoadingFooterIndicator) {
                     // Scroll whole view while it is needed.
-                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+//                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
 
                     int progress;
                     if (getScrollY() > mLoadingFooterIndicator.getMeasuredHeight()) {
