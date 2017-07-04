@@ -199,13 +199,13 @@ public class KittenLayout extends ViewGroup {
                 int offsetY = y - mLastTouchY;
 
                 // Intercept pull down event when it is scrolling to top.
-                if (offsetY > Math.abs(offsetX) && null != mRefreshHeaderIndicator) {
+                if (null != mRefreshHeaderIndicator && offsetY > Math.abs(offsetX)) {
                     Log.d(TAG, "canBeRefresh: " + mViewScrollChecker.canBeRefresh(this, mContentView));
                     return mViewScrollChecker.canBeRefresh(this, mContentView);
                 }
 
                 // Intercept pull up event when it is scrolling to bottom.
-                if (-offsetY > Math.abs(offsetX) && null != mLoadingFooterIndicator) {
+                if (null != mLoadingFooterIndicator && -offsetY > Math.abs(offsetX)) {
                     return mViewScrollChecker.canBeLoading(this, mContentView);
                 }
         }
@@ -228,10 +228,6 @@ public class KittenLayout extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
 
-                if (isRefreshing || isLoadingMore) {
-                    // Scroll whole view while it is needed.
-                    scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
-                }
                 if (null != mRefreshHeaderIndicator && offsetY < 0) {
 
                     // Scroll whole view while it is needed.

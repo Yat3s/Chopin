@@ -45,7 +45,7 @@ public class ScrollViewActivity extends AppCompatActivity {
                     public void run() {
                         mKittenLayout.refreshComplete();
                     }
-                }, 1500);
+                }, 15000);
             }
         });
 
