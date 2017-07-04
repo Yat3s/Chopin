@@ -2,6 +2,7 @@ package com.yat3s.kitten;
 
 import android.content.Context;
 import android.support.annotation.FloatRange;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -11,8 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
-import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
-import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.LoadingFooterIndicatorProvider;
 import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
 
@@ -24,6 +23,7 @@ import com.yat3s.kitten.decoration.RefreshHeaderIndicatorProvider;
 public class KittenLayout extends ViewGroup {
     private static final String TAG = "KittenLayout";
 
+    // Support child view count nested in this.
     private static final int SUPPORT_CHILD_COUNT = 1;
 
     // Scroller duration while release to do some action.
@@ -38,6 +38,15 @@ public class KittenLayout extends ViewGroup {
 
     // The Scroller for scroll whole view natural.
     private Scroller mScroller;
+
+    /**
+     * It is used for check content view whether can be refresh/loading or other action.
+     * The default checker is only check whether view has scrolled to top or bottom.
+     * <p>
+     * {@see} {@link DefaultViewScrollChecker#canBeRefresh(KittenLayout, View)},
+     * {@link DefaultViewScrollChecker#canBeLoading(KittenLayout, View)}
+     */
+    private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
     // The Refresh Header View.
     private View mRefreshHeaderIndicator;
@@ -74,7 +83,8 @@ public class KittenLayout extends ViewGroup {
     private int mLoadMoreRemainShowItemCount = 2;
 
     /**
-     * If set true, it will auto trigger load more while visible item < {@link #mLoadMoreRemainShowItemCount}
+     * If set true, it will auto trigger load more while visible
+     * item < {@link #mLoadMoreRemainShowItemCount}
      */
     private boolean autoTriggerLoadMore = false;
 
@@ -91,44 +101,31 @@ public class KittenLayout extends ViewGroup {
         initialize();
     }
 
-    public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
-        mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
-        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.provideContentView();
-        if (null != mRefreshHeaderIndicator) {
-            mRefreshHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT));
-            addView(mRefreshHeaderIndicator);
-        }
-    }
-
-    public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
-        mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
-        mLoadingFooterIndicator = loadingFooterIndicatorProvider.provideContentView();
-        if (null != mLoadingFooterIndicator) {
-            mLoadingFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT));
-            addView(mLoadingFooterIndicator);
-        }
-
-        // You can only choose a load more style.
-        autoTriggerLoadMore = false;
-    }
-
+    /**
+     * Obtain content view after inflated, and it can be only support nested {@link #SUPPORT_CHILD_COUNT}
+     * Setup auto load more if content view is RecyclerView, {@see} {@link #setupRecyclerViewAutoLoadMore(RecyclerView)}
+     */
     @Override
     protected void onFinishInflate() {
-        super.onFinishInflate();
         if (getChildCount() > SUPPORT_CHILD_COUNT) {
-            throw new IllegalArgumentException("It can ONLY set one child view!");
+            throw new IllegalArgumentException("It can ONLY set ONE child view!");
         } else if (getChildCount() == SUPPORT_CHILD_COUNT) {
             mContentView = getChildAt(0);
 
-            // Set up auto load more if content view is recycler view.
+            // Set up auto load more if content view is RecyclerView.
             if (mContentView instanceof RecyclerView) {
                 setupRecyclerViewAutoLoadMore((RecyclerView) mContentView);
             }
         }
+        super.onFinishInflate();
     }
 
+    /**
+     * Measure children.
+     *
+     * @param widthMeasureSpec
+     * @param heightMeasureSpec
+     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -137,18 +134,23 @@ public class KittenLayout extends ViewGroup {
         }
     }
 
+    /**
+     * Layout content view in suitable position.
+     * Layout refresh header indicator on top of content view and layout loading footer indicator on
+     * the bottom of content view in order to hide in the default status.
+     */
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        // Measure recycler view.
+        // Layout content view.
         mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
 
-        // Measure refresh header indicator.
+        // Layout refresh header indicator on top of content view.
         if (null != mRefreshHeaderIndicator) {
-            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(), mRefreshHeaderIndicator
-                    .getMeasuredWidth(), 0);
+            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(),
+                    mRefreshHeaderIndicator.getMeasuredWidth(), 0);
         }
 
-        // Measure loading footer indicator.
+        // Layout loading footer indicator on the bottom of content view.
         if (null != mLoadingFooterIndicator) {
             mLoadingFooterIndicator.layout(0,
                     mContentView.getMeasuredHeight(),
@@ -159,14 +161,33 @@ public class KittenLayout extends ViewGroup {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction());
+        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+            return super.dispatchTouchEvent(ev);
+        }
+        boolean dispatch = super.dispatchTouchEvent(ev);
+        switch (ev.getAction()) {
+            case MotionEvent.ACTION_DOWN:
 
+                // Dispatch ACTION_DOWN event to child for process if child never consume
+                // this event.
+                super.dispatchTouchEvent(ev);
+
+                // FORCE to dispatch this motion for it's going to process all event while
+                // child not consume this event. for example: it nested with a LinearLayout
+                // and this LinearLayout never consume this event so parent will return False
+                // for disable dispatch this motion.
+                // REF: it is a Recursion method, so it will execute the last child dispatch method.
+                return true;
+        }
+        Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction() + ", " + dispatch);
         return super.dispatchTouchEvent(ev);
     }
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        Log.d(TAG, "event--> onInterceptTouchEvent: " + ev.getAction());
+        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+            return super.onInterceptTouchEvent(ev);
+        }
         int x = (int) ev.getX(), y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -177,26 +198,28 @@ public class KittenLayout extends ViewGroup {
                 int offsetX = x - mLastTouchX;
                 int offsetY = y - mLastTouchY;
 
-                // Intercept pull down event when scroll to top.
-                if (offsetY > Math.abs(offsetX)) {
-                    return contentViewScrolledToTop();
+                // Intercept pull down event when it is scrolling to top.
+                if (null != mRefreshHeaderIndicator && offsetY > Math.abs(offsetX)) {
+                    Log.d(TAG, "canBeRefresh: " + mViewScrollChecker.canBeRefresh(this, mContentView));
+                    return mViewScrollChecker.canBeRefresh(this, mContentView);
                 }
 
-                // Intercept pull up event when scroll to bottom.
-                if (-offsetY > Math.abs(offsetX)) {
-                    return contentViewScrolledToBottom();
+                // Intercept pull up event when it is scrolling to bottom.
+                if (null != mLoadingFooterIndicator && -offsetY > Math.abs(offsetX)) {
+                    return mViewScrollChecker.canBeLoading(this, mContentView);
                 }
-
-            case MotionEvent.ACTION_UP:
-
-                break;
         }
-        return super.onInterceptTouchEvent(ev);
+
+        boolean intercept = super.onInterceptTouchEvent(ev);
+        Log.d(TAG, "event--> onInterceptTouchEvent: " + ev.getAction() + ", " + intercept);
+        return intercept;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        Log.d(TAG, "event--> onTouchEvent: " + event.getAction());
+        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+            return super.onTouchEvent(event);
+        }
         int y = (int) event.getY();
         switch (event.getAction()) {
             case MotionEvent.ACTION_DOWN:
@@ -205,10 +228,11 @@ public class KittenLayout extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
 
-                scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
-                mLastTouchY = y;
-
-                if (null != mRefreshHeaderIndicatorProvider) {
+                if (null != mRefreshHeaderIndicator) {
+                    if (getScrollY() <= 0) {
+                        // Scroll whole view while it is needed.
+                        scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    }
                     int progress;
                     // Scroll distance has over refresh header indicator height.
                     if (-getScrollY() > mRefreshHeaderIndicator.getMeasuredHeight()) {
@@ -219,7 +243,12 @@ public class KittenLayout extends ViewGroup {
                     mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                 }
 
-                if (null != mLoadingFooterIndicatorProvider) {
+                if (null != mLoadingFooterIndicator) {
+                    if (getScrollY() >= 0) {
+                        // Scroll whole view while it is needed.
+                        scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    }
+
                     int progress;
                     if (getScrollY() > mLoadingFooterIndicator.getMeasuredHeight()) {
                         progress = 100;
@@ -229,32 +258,53 @@ public class KittenLayout extends ViewGroup {
 
                     mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
                 }
+                mLastTouchY = y;
+
+                Log.d(TAG, "getScrollY(): " + getScrollY());
 
                 return true;
             case MotionEvent.ACTION_UP:
-                // Ignore some action.
-                if (isRefreshing) {
-                    releaseViewToRefreshingStatus();
-                }
-                if (isLoadingMore) {
-                    releaseViewToLoadingStatus();
-                }
-                if (canAbortThisScrollAction()) {
-                    releaseViewToDefaultStatus();
+
+
+                if (getScrollY() < 0) {
+                    if (null != mRefreshHeaderIndicator) {
+                        Log.d(TAG, "onTouchEvent: " + -getScrollY() + "," + mRefreshHeaderIndicator.getMeasuredHeight());
+                        if (isRefreshing) {
+                            releaseViewToRefreshingStatus();
+                        } else if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight()) {
+                            // Start refreshing while scrollY exceeded refresh header indicator height.
+                            releaseViewToRefreshingStatus();
+                            startRefresh();
+                        } else {
+                            // Cancel some move events while it not meet refresh or loading demands.
+                            releaseViewToDefaultStatus();
+                        }
+                    } else {
+                        releaseViewToDefaultStatus();
+                    }
+                } else {
+                    if (null != mLoadingFooterIndicator) {
+                        if (isLoadingMore) {
+                            releaseViewToLoadingStatus();
+                        } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight()) {
+                            releaseViewToLoadingStatus();
+                            startLoading();
+                        } else {
+                            releaseViewToDefaultStatus();
+                        }
+                    } else {
+                        releaseViewToDefaultStatus();
+                    }
                 }
 
-                // Start refresh while scrollY over refresh header indicator height.
-                if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight() && !isRefreshing) {
-                    releaseViewToRefreshingStatus();
-                    startRefresh();
-                } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight() && !isLoadingMore) {
-                    releaseViewToLoadingStatus();
-                    startLoading();
-                }
+
 
                 return true;
         }
-        return super.onTouchEvent(event);
+
+        boolean touch = super.onTouchEvent(event);
+        Log.d(TAG, "event--> onTouchEvent: " + event.getAction() + ", " + touch);
+        return touch;
     }
 
     private boolean canAbortThisScrollAction() {
@@ -265,24 +315,20 @@ public class KittenLayout extends ViewGroup {
     }
 
     private void releaseViewToRefreshingStatus() {
-        Log.d(TAG, "releaseViewToRefreshingStatus: ");
         mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderIndicator.getMeasuredHeight() + getScrollY()),
                 SCROLLER_DURATION);
     }
 
     private void releaseViewToLoadingStatus() {
-        Log.d(TAG, "releaseViewToLoadingStatus: ");
         mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterIndicator.getMeasuredHeight()),
                 SCROLLER_DURATION);
     }
 
     private void releaseViewToDefaultStatus() {
-        Log.d(TAG, "releaseViewToDefaultStatus: ");
         mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
     }
 
     private void startRefresh() {
-        Log.d(TAG, "startRefresh: ");
         isRefreshing = true;
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
@@ -293,7 +339,6 @@ public class KittenLayout extends ViewGroup {
     }
 
     private void startLoading() {
-        Log.d(TAG, "startLoading: ");
         isLoadingMore = true;
         if (null != mOnLoadMoreListener) {
             mOnLoadMoreListener.onLoadMore();
@@ -304,7 +349,6 @@ public class KittenLayout extends ViewGroup {
     }
 
     public void refreshComplete() {
-        Log.d(TAG, "refreshComplete: ");
         releaseViewToDefaultStatus();
         isRefreshing = false;
         if (null != mRefreshHeaderIndicatorProvider) {
@@ -313,22 +357,11 @@ public class KittenLayout extends ViewGroup {
     }
 
     public void loadMoreComplete() {
-        Log.d(TAG, "loadMoreComplete: ");
         releaseViewToDefaultStatus();
         isLoadingMore = false;
         if (null != mLoadingFooterIndicatorProvider) {
             mLoadingFooterIndicatorProvider.onLoadingComplete();
         }
-    }
-
-    private boolean contentViewScrolledToTop() {
-        Log.d(TAG, "contentViewScrolledToTop: " + ViewScrollHelper.viewScrolledToTop(mContentView));
-        return ViewScrollHelper.viewScrolledToTop(mContentView);
-    }
-
-    private boolean contentViewScrolledToBottom() {
-        Log.d(TAG, "contentViewScrolledToBottom: " + ViewScrollHelper.viewScrolledToBottom(mContentView));
-        return ViewScrollHelper.viewScrolledToBottom(mContentView);
     }
 
     private void initialize() {
@@ -342,6 +375,30 @@ public class KittenLayout extends ViewGroup {
             scrollTo(0, mScroller.getCurrY());
         }
         postInvalidate();
+    }
+
+
+    public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
+        mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
+        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.getContentView();
+        if (null != mRefreshHeaderIndicator) {
+            mRefreshHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            addView(mRefreshHeaderIndicator);
+        }
+    }
+
+    public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
+        mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
+        mLoadingFooterIndicator = loadingFooterIndicatorProvider.getContentView();
+        if (null != mLoadingFooterIndicator) {
+            mLoadingFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+                    LayoutParams.WRAP_CONTENT));
+            addView(mLoadingFooterIndicator);
+        }
+
+        // You can only choose a load more style.
+        autoTriggerLoadMore = false;
     }
 
     /**
@@ -411,6 +468,16 @@ public class KittenLayout extends ViewGroup {
      */
     public void setIndicatorScrollResistance(@FloatRange(from = 0, to = 1.0f) float indicatorScrollResistance) {
         mIndicatorScrollResistance = indicatorScrollResistance;
+    }
+
+    /**
+     * It is used for check content view whether can be refresh/loading or other action.
+     * You can do some custom edition for do refresh/loading checking.
+     *
+     * @param viewScrollChecker
+     */
+    public void setViewScrollChecker(@NonNull ViewScrollChecker viewScrollChecker) {
+        mViewScrollChecker = viewScrollChecker;
     }
 
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {

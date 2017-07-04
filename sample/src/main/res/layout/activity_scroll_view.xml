@@ -21,6 +21,12 @@
                 android:layout_height="100dp"
                 android:layout_marginTop="100dp"/>
 
+            <Button
+                android:id="@+id/test_dispatch_btn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="ClickButton"/>
+
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"

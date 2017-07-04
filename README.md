@@ -1,5 +1,5 @@
 # Kitten
-An Android RecyclerView including custom refresh header and sticky header.
+An Android Refresh layout including some powerful features.
 
 ## Feature
 - Custom Refresh Header/Footer Indicator

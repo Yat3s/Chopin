@@ -1,37 +1,35 @@
 package com.yat3s.nimblerecyclerview;
 
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yat3s.kitten.KittenLayout;
-import com.yat3s.kitten.ViewScrollChecker;
-import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
 import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Yat3s on 27/06/2017.
+ * Created by Yat3s on 03/07/2017.
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class LinearLayoutActivity extends AppCompatActivity {
+public class ViewPagerActivity extends AppCompatActivity {
+
     private KittenLayout mKittenLayout;
+    private ViewPager mViewPager;
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_linearlayout);
-
+        setContentView(R.layout.activity_viewpager);
         mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
+        mViewPager = (ViewPager) findViewById(R.id.view_pager);
 
         // Configure refresh header.
         KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
@@ -45,32 +43,10 @@ public class LinearLayoutActivity extends AppCompatActivity {
                     public void run() {
                         mKittenLayout.refreshComplete();
                     }
-                }, 15000);
+                }, 1500);
             }
         });
-//
-//        // Configure loading footer.
-//        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
-//        kittenLoadingFooterView.setScale(0.2f);
-//        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
-//        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore() {
-//                mKittenLayout.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mKittenLayout.loadMoreComplete();
-//                    }
-//                }, 1500);
-//            }
-//        });
 
-        findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(LinearLayoutActivity.this, "LinearLayout Ok!", Toast.LENGTH_SHORT).show();
-            }
-        });
 
         final int[] pagesColors = {R.color.md_blue_grey_100, R.color.md_blue_grey_600, R.color.md_red_300};
         final List<TextView> pageViews = new ArrayList<>();
@@ -79,8 +55,7 @@ public class LinearLayoutActivity extends AppCompatActivity {
             textView.setBackgroundResource(pagesColor);
             pageViews.add(textView);
         }
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setAdapter(new PagerAdapter() {
+        mViewPager.setAdapter(new PagerAdapter() {
             @Override
             public int getCount() {
                 return pageViews.size();

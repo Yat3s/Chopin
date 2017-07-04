@@ -16,10 +16,11 @@ public class KittenRefreshHeaderIndicator extends LottieAnimationView implements
 
     public KittenRefreshHeaderIndicator(Context context) {
         super(context);
+        initialize();
     }
 
     public KittenRefreshHeaderIndicator(Context context, String animationFileName) {
-        super(context);
+        this(context);
         setAnimation(animationFileName);
     }
 
@@ -29,15 +30,20 @@ public class KittenRefreshHeaderIndicator extends LottieAnimationView implements
     }
 
     public KittenRefreshHeaderIndicator(Context context, AttributeSet attrs) {
-        super(context, attrs);
+        this(context, attrs, 0);
     }
 
     public KittenRefreshHeaderIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
+        initialize();
+    }
+
+    private void initialize() {
+        loop(true);
     }
 
     @Override
-    public View provideContentView() {
+    public View getContentView() {
         return this;
     }
 
@@ -48,7 +54,7 @@ public class KittenRefreshHeaderIndicator extends LottieAnimationView implements
 
     @Override
     public void onRefreshComplete() {
-        clearAnimation();
+        cancelAnimation();
     }
 
     @Override

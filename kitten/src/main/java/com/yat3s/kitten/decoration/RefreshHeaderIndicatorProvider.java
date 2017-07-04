@@ -4,7 +4,7 @@ import android.support.annotation.IntRange;
 import android.view.View;
 
 public interface RefreshHeaderIndicatorProvider {
-    View provideContentView();
+    View getContentView();
 
     void onRefreshStart();
 
