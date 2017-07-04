@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.kitten.sample;
 
 /**
  * Created by Yat3s on 16/06/2017.

@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.kitten.sample;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;

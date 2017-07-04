@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.kitten.sample.cases;
 
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -6,14 +6,15 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.View;
 
 import com.yat3s.kitten.KittenLayout;
-import com.yat3s.kitten.ViewScrollChecker;
 import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
 import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
+import com.yat3s.kitten.sample.Music;
+import com.yat3s.kitten.sample.MusicAdapter;
+import com.yat3s.kitten.sample.R;
 
 import java.util.ArrayList;
 
@@ -22,8 +23,8 @@ import java.util.ArrayList;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class RecyclerViewActivity extends AppCompatActivity {
-    private static final String TAG = "RecyclerViewActivity";
+public class CaseRecyclerViewActivity extends AppCompatActivity {
+    private static final String TAG = "CaseRecyclerViewActivity";
 
     private KittenLayout mKittenLayout;
     private RecyclerView mRecyclerView;
@@ -31,7 +32,7 @@ public class RecyclerViewActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_recycler_view);
+        setContentView(R.layout.case_activity_recycler_view);
         mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 

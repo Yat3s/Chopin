@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.yat3s.nimblerecyclerview">
+          package="com.yat3s.kitten.sample">
 
     <application
         android:allowBackup="true"
@@ -9,7 +9,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.yat3s.kitten.sample.MainActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
@@ -19,10 +19,11 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".RecyclerViewActivity"/>
-        <activity android:name=".ScrollViewActivity"/>
-        <activity android:name=".LinearLayoutActivity"/>
-        <activity android:name=".ViewPagerActivity"/>
+        <activity android:name="com.yat3s.kitten.sample.cases.CaseRecyclerViewActivity"/>
+        <activity android:name="com.yat3s.kitten.sample.cases.CaseScrollViewActivity"/>
+        <activity android:name="com.yat3s.kitten.sample.cases.CaseLinearLayoutActivity"/>
+        <activity android:name="com.yat3s.kitten.sample.cases.CaseViewPagerActivity"/>
+        <activity android:name="com.yat3s.kitten.sample.cases.CaseFragmentActivity"/>
     </application>
 
 </manifest>

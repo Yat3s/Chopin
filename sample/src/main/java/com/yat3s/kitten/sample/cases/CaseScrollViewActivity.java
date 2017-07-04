@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview;
+package com.yat3s.kitten.sample.cases;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -11,64 +11,64 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.yat3s.kitten.KittenLayout;
-import com.yat3s.kitten.ViewScrollChecker;
-import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
 import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
+import com.yat3s.kitten.sample.R;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Yat3s on 27/06/2017.
+ * Created by Yat3s on 26/06/2017.
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class LinearLayoutActivity extends AppCompatActivity {
+public class CaseScrollViewActivity extends AppCompatActivity {
+
+    private static final String TAG = "CaseScrollViewActivity";
     private KittenLayout mKittenLayout;
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_linearlayout);
-
+        setContentView(R.layout.case_activity_scroll_view);
         mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
 
         // Configure refresh header.
-//        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
-//        kittenRefreshHeaderView.setScale(0.2f);
-//        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
-//        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
-//            @Override
-//            public void onRefresh() {
-//                mKittenLayout.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mKittenLayout.refreshComplete();
-//                    }
-//                }, 3000);
-//            }
-//        });
-
-        // Configure loading footer.
-        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
-        kittenLoadingFooterView.setScale(0.2f);
-        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
-        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
+        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
+        kittenRefreshHeaderView.setScale(0.2f);
+        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
             @Override
-            public void onLoadMore() {
+            public void onRefresh() {
                 mKittenLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mKittenLayout.loadMoreComplete();
+                        mKittenLayout.refreshComplete();
                     }
-                }, 1500);
+                }, 15000);
             }
         });
+
+//        // Configure loading footer.
+//        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "loading.json");
+//        kittenLoadingFooterView.setScale(0.2f);
+//        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
+//        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore() {
+//                mKittenLayout.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mKittenLayout.loadMoreComplete();
+//                    }
+//                }, 1500);
+//            }
+//        });
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Toast.makeText(LinearLayoutActivity.this, "LinearLayout Ok!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(CaseScrollViewActivity.this, "Ok!", Toast.LENGTH_SHORT).show();
             }
         });
 

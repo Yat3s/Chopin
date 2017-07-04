@@ -1,4 +1,4 @@
-package com.yat3s.nimblerecyclerview.widget;
+package com.yat3s.kitten.sample.widget;
 
 import android.content.Context;
 import android.support.v4.view.ViewConfigurationCompat;
