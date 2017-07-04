@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yat3s.kitten.KittenLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.yat3s.kitten.KittenLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/kitten_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -16,19 +15,19 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/app_name"/>
+            android:text="@string/app_name" />
 
         <Button
             android:id="@+id/test_dispatch_btn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="ClickButton"/>
+            android:text="ClickButton" />
 
         <android.support.v4.view.ViewPager
             android:id="@+id/view_pager"
             android:layout_width="match_parent"
             android:layout_height="100dp"
-            android:layout_marginTop="100dp"/>
+            android:layout_marginTop="100dp" />
 
 
     </LinearLayout>
