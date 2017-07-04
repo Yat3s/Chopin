@@ -12,12 +12,12 @@ import android.widget.TextView;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class NimbleViewHolder extends RecyclerView.ViewHolder {
+public class KittenViewHolder extends RecyclerView.ViewHolder {
 
     // A sparse array for cache item view.
     private final SparseArray<View> mCachedViews = new SparseArray<>();
 
-    public NimbleViewHolder(View itemView) {
+    public KittenViewHolder(View itemView) {
         super(itemView);
     }
 
@@ -39,31 +39,31 @@ public class NimbleViewHolder extends RecyclerView.ViewHolder {
         return (TView) view;
     }
 
-    public NimbleViewHolder setTextView(@IdRes int viewId, CharSequence value) {
+    public KittenViewHolder setTextView(@IdRes int viewId, CharSequence value) {
         TextView view = getView(viewId);
         view.setText(value);
         return this;
     }
 
-    public NimbleViewHolder setTextSizeInSp(@IdRes int viewId, int sp) {
+    public KittenViewHolder setTextSizeInSp(@IdRes int viewId, int sp) {
         TextView view = getView(viewId);
         view.setTextSize(TypedValue.COMPLEX_UNIT_SP, sp);
         return this;
     }
 
-    public NimbleViewHolder setBackgroundResource(@IdRes int viewId, int backgroundRes) {
+    public KittenViewHolder setBackgroundResource(@IdRes int viewId, int backgroundRes) {
         View view = getView(viewId);
         view.setBackgroundResource(backgroundRes);
         return this;
     }
 
-    public NimbleViewHolder setVisible(@IdRes int viewId, boolean visible) {
+    public KittenViewHolder setVisible(@IdRes int viewId, boolean visible) {
         View view = getView(viewId);
         view.setVisibility(visible ? View.VISIBLE : View.GONE);
         return this;
     }
 
-    public NimbleViewHolder setOnClickListener(@IdRes int viewId, View.OnClickListener listener) {
+    public KittenViewHolder setOnClickListener(@IdRes int viewId, View.OnClickListener listener) {
         View view = getView(viewId);
         view.setOnClickListener(listener);
         return this;

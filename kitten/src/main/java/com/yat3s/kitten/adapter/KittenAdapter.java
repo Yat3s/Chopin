@@ -14,9 +14,9 @@ import java.util.List;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public abstract class NimbleAdapter<T, VH extends NimbleViewHolder> extends RecyclerView.Adapter<VH> {
+public abstract class KittenAdapter<T, VH extends KittenViewHolder> extends RecyclerView.Adapter<VH> {
 
-    private static final String TAG = "NimbleAdapter";
+    private static final String TAG = "KittenAdapter";
 
     private int mCurrentViewTypeValue = 0x0100;
 
@@ -35,11 +35,11 @@ public abstract class NimbleAdapter<T, VH extends NimbleViewHolder> extends Recy
     // Save all view type, key is layout id, value is view type.
     private SparseIntArray mViewTypeCacheArray;
 
-    public NimbleAdapter(Context context) {
+    public KittenAdapter(Context context) {
         this(context, null);
     }
 
-    public NimbleAdapter(Context context, List<T> dataSource) {
+    public KittenAdapter(Context context, List<T> dataSource) {
         mDataSource = null == dataSource ? new ArrayList<T>() : dataSource;
         mContext = context;
         mInflater = LayoutInflater.from(context);
@@ -66,7 +66,7 @@ public abstract class NimbleAdapter<T, VH extends NimbleViewHolder> extends Recy
     @Override
     @SuppressWarnings("unchecked")
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return (VH) new NimbleViewHolder(mInflater.inflate(mLayoutIdCacheArray.get(viewType), parent, false));
+        return (VH) new KittenViewHolder(mInflater.inflate(mLayoutIdCacheArray.get(viewType), parent, false));
     }
 
     @Override

@@ -43,8 +43,8 @@ public class KittenLayout extends ViewGroup {
      * It is used for check content view whether can be refresh/loading or other action.
      * The default checker is only check whether view has scrolled to top or bottom.
      * <p>
-     * {@see} {@link DefaultViewScrollChecker#canBeRefresh(KittenLayout, View)},
-     * {@link DefaultViewScrollChecker#canBeLoading(KittenLayout, View)}
+     * {@see} {@link DefaultViewScrollChecker#canDoRefresh(KittenLayout, View)},
+     * {@link DefaultViewScrollChecker#canDoLoading(KittenLayout, View)}
      */
     private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
@@ -200,13 +200,13 @@ public class KittenLayout extends ViewGroup {
 
                 // Intercept pull down event when it is scrolling to top.
                 if (null != mRefreshHeaderIndicator && offsetY > Math.abs(offsetX)) {
-                    Log.d(TAG, "canBeRefresh: " + mViewScrollChecker.canBeRefresh(this, mContentView));
-                    return mViewScrollChecker.canBeRefresh(this, mContentView);
+                    Log.d(TAG, "canDoRefresh: " + mViewScrollChecker.canDoRefresh(this, mContentView));
+                    return mViewScrollChecker.canDoRefresh(this, mContentView);
                 }
 
                 // Intercept pull up event when it is scrolling to bottom.
                 if (null != mLoadingFooterIndicator && -offsetY > Math.abs(offsetX)) {
-                    return mViewScrollChecker.canBeLoading(this, mContentView);
+                    return mViewScrollChecker.canDoLoading(this, mContentView);
                 }
         }
 

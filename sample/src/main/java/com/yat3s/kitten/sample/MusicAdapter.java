@@ -4,8 +4,8 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
-import com.yat3s.kitten.adapter.NimbleAdapter;
-import com.yat3s.kitten.adapter.NimbleViewHolder;
+import com.yat3s.kitten.adapter.KittenViewHolder;
+import com.yat3s.kitten.adapter.SampleKittenAdapter;
 import com.yat3s.kitten.adapter.StickyHeaderAdapter;
 
 import java.util.List;
@@ -16,8 +16,8 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 
-public class MusicAdapter extends NimbleAdapter<Music, NimbleViewHolder> implements
-        StickyHeaderAdapter<NimbleViewHolder> {
+public class MusicAdapter extends SampleKittenAdapter<Music> implements
+        StickyHeaderAdapter<KittenViewHolder> {
     private static final String TAG = "MusicAdapter";
 
     public MusicAdapter(Context context, List<Music> data) {
@@ -25,7 +25,7 @@ public class MusicAdapter extends NimbleAdapter<Music, NimbleViewHolder> impleme
     }
 
     @Override
-    protected void bindDataToItemView(NimbleViewHolder holder, Music music, final int position) {
+    protected void bindDataToItemView(KittenViewHolder holder, Music music, final int position) {
         holder.setTextView(R.id.title_tv, music.name);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -41,7 +41,7 @@ public class MusicAdapter extends NimbleAdapter<Music, NimbleViewHolder> impleme
     }
 
     @Override
-    public void onBindHeaderViewHolder(NimbleViewHolder holder, final int position) {
+    public void onBindHeaderViewHolder(KittenViewHolder holder, final int position) {
         holder.setTextView(R.id.header_tv, mDataSource.get(position).name);
         holder.getView(R.id.header_tv).setOnClickListener(new View.OnClickListener() {
             @Override

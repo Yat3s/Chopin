@@ -17,7 +17,7 @@ public interface ViewScrollChecker {
      * @param contentView  The View nested in {@link KittenLayout}
      * @return
      */
-    boolean canBeRefresh(KittenLayout kittenLayout, View contentView);
+    boolean canDoRefresh(KittenLayout kittenLayout, View contentView);
 
     /**
      * Check content view whether can do loading,
@@ -27,5 +27,5 @@ public interface ViewScrollChecker {
      * @param contentView
      * @return
      */
-    boolean canBeLoading(KittenLayout kittenLayout, View contentView);
+    boolean canDoLoading(KittenLayout kittenLayout, View contentView);
 }

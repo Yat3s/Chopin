@@ -17,7 +17,7 @@ public class DefaultViewScrollChecker implements ViewScrollChecker {
      * @return
      */
     @Override
-    public boolean canBeRefresh(KittenLayout kittenLayout, View contentView) {
+    public boolean canDoRefresh(KittenLayout kittenLayout, View contentView) {
         return ViewScrollHelper.viewHasScrolledToTop(contentView);
     }
 
@@ -29,7 +29,7 @@ public class DefaultViewScrollChecker implements ViewScrollChecker {
      * @return
      */
     @Override
-    public boolean canBeLoading(KittenLayout kittenLayout, View contentView) {
+    public boolean canDoLoading(KittenLayout kittenLayout, View contentView) {
         return ViewScrollHelper.viewHasScrolledToBottom(contentView);
     }
 }

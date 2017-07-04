@@ -11,7 +11,7 @@ import android.util.SparseArray;
 import android.view.LayoutInflater;
 import android.view.View;
 
-import com.yat3s.kitten.adapter.NimbleViewHolder;
+import com.yat3s.kitten.adapter.KittenViewHolder;
 import com.yat3s.kitten.adapter.StickyHeaderAdapter;
 
 /**
@@ -155,7 +155,7 @@ public class StickyHeaderItemDecoration extends RecyclerView.ItemDecoration {
                     .from(mContext)
                     .inflate(layoutResId, parent, false);
 
-            RecyclerView.ViewHolder vh = new NimbleViewHolder(inflatedView);
+            RecyclerView.ViewHolder vh = new KittenViewHolder(inflatedView);
             mStickyHeaderAdapter.onBindHeaderViewHolder(vh, position);
             headerView = vh.itemView;
 
