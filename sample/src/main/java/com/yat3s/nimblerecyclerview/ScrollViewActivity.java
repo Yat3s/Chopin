@@ -49,21 +49,21 @@ public class ScrollViewActivity extends AppCompatActivity {
             }
         });
 
-        // Configure loading footer.
-        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "loading.json");
-        kittenLoadingFooterView.setScale(0.2f);
-        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
-        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                mKittenLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mKittenLayout.loadMoreComplete();
-                    }
-                }, 1500);
-            }
-        });
+//        // Configure loading footer.
+//        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "loading.json");
+//        kittenLoadingFooterView.setScale(0.2f);
+//        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
+//        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
+//            @Override
+//            public void onLoadMore() {
+//                mKittenLayout.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mKittenLayout.loadMoreComplete();
+//                    }
+//                }, 1500);
+//            }
+//        });
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
             @Override

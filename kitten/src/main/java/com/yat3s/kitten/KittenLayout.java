@@ -227,12 +227,14 @@ public class KittenLayout extends ViewGroup {
 
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
+                int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
 
                 if (null != mRefreshHeaderIndicator) {
-                    if (getScrollY() <= 0) {
-                        // Scroll whole view while it is needed.
-                        scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    // ONLY scroll whole view while pull down.
+                    if (getScrollY() <= 0 && offsetY < 0) {
+                        scrollBy(0, scrollOffsetY);
                     }
+
                     int progress;
                     // Scroll distance has over refresh header indicator height.
                     if (-getScrollY() > mRefreshHeaderIndicator.getMeasuredHeight()) {
@@ -244,9 +246,9 @@ public class KittenLayout extends ViewGroup {
                 }
 
                 if (null != mLoadingFooterIndicator) {
-                    if (getScrollY() >= 0) {
-                        // Scroll whole view while it is needed.
-                        scrollBy(0, (int) (offsetY * (1 - mIndicatorScrollResistance)));
+                    // ONLY scroll whole view while pull down.
+                    if (getScrollY() >= 0 && offsetY > 0) {
+                        scrollBy(0, scrollOffsetY);
                     }
 
                     int progress;
@@ -259,16 +261,10 @@ public class KittenLayout extends ViewGroup {
                     mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
                 }
                 mLastTouchY = y;
-
-                Log.d(TAG, "getScrollY(): " + getScrollY());
-
                 return true;
             case MotionEvent.ACTION_UP:
-
-
                 if (getScrollY() < 0) {
                     if (null != mRefreshHeaderIndicator) {
-                        Log.d(TAG, "onTouchEvent: " + -getScrollY() + "," + mRefreshHeaderIndicator.getMeasuredHeight());
                         if (isRefreshing) {
                             releaseViewToRefreshingStatus();
                         } else if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight()) {
@@ -280,6 +276,7 @@ public class KittenLayout extends ViewGroup {
                             releaseViewToDefaultStatus();
                         }
                     } else {
+                        // Abort this scroll "journey" if has some unexpected exceptions.
                         releaseViewToDefaultStatus();
                     }
                 } else {
@@ -296,9 +293,6 @@ public class KittenLayout extends ViewGroup {
                         releaseViewToDefaultStatus();
                     }
                 }
-
-
-
                 return true;
         }
 

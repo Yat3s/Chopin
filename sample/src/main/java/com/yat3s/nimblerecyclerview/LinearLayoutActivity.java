@@ -34,36 +34,36 @@ public class LinearLayoutActivity extends AppCompatActivity {
         mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
 
         // Configure refresh header.
-        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
-        kittenRefreshHeaderView.setScale(0.2f);
-        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
-        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mKittenLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mKittenLayout.refreshComplete();
-                    }
-                }, 15000);
-            }
-        });
-//
-//        // Configure loading footer.
-//        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
-//        kittenLoadingFooterView.setScale(0.2f);
-//        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
-//        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
+//        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
+//        kittenRefreshHeaderView.setScale(0.2f);
+//        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+//        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
 //            @Override
-//            public void onLoadMore() {
+//            public void onRefresh() {
 //                mKittenLayout.postDelayed(new Runnable() {
 //                    @Override
 //                    public void run() {
-//                        mKittenLayout.loadMoreComplete();
+//                        mKittenLayout.refreshComplete();
 //                    }
-//                }, 1500);
+//                }, 3000);
 //            }
 //        });
+
+        // Configure loading footer.
+        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
+        kittenLoadingFooterView.setScale(0.2f);
+        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
+        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                mKittenLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mKittenLayout.loadMoreComplete();
+                    }
+                }, 1500);
+            }
+        });
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
             @Override
