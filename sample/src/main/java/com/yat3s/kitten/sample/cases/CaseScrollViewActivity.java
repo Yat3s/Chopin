@@ -1,17 +1,12 @@
 package com.yat3s.kitten.sample.cases;
 
-import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.yat3s.kitten.KittenLayout;
-import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.sample.R;
 
 import java.util.ArrayList;
@@ -22,48 +17,17 @@ import java.util.List;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class CaseScrollViewActivity extends AppCompatActivity {
-
-    private static final String TAG = "CaseScrollViewActivity";
-    private KittenLayout mKittenLayout;
+public class CaseScrollViewActivity extends BaseCaseActivity {
 
     @Override
-    protected void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.case_activity_scroll_view);
-        mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
+    protected int getContentLayoutId() {
+        return R.layout.case_activity_scroll_view;
+    }
 
-        // Configure refresh header.
-        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
-        kittenRefreshHeaderView.setScale(0.2f);
-        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
-        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mKittenLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mKittenLayout.refreshComplete();
-                    }
-                }, 15000);
-            }
-        });
-
-//        // Configure loading footer.
-//        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "loading.json");
-//        kittenLoadingFooterView.setScale(0.2f);
-//        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
-//        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
-//            @Override
-//            public void onLoadMore() {
-//                mKittenLayout.postDelayed(new Runnable() {
-//                    @Override
-//                    public void run() {
-//                        mKittenLayout.loadMoreComplete();
-//                    }
-//                }, 1500);
-//            }
-//        });
+    @Override
+    protected void initialize() {
+        setupRefreshHeader("refresh.json", 0.2f, 3000);
+        setupLoadingFooter("Plane.json", 0.2f, 1500);
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
             @Override

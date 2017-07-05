@@ -1,16 +1,9 @@
 package com.yat3s.kitten.sample.cases;
 
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.view.View;
 
-import com.yat3s.kitten.KittenLayout;
-import com.yat3s.kitten.decoration.KittenLoadingFooterIndicator;
-import com.yat3s.kitten.decoration.KittenRefreshHeaderIndicator;
 import com.yat3s.kitten.decoration.StickyHeaderItemDecoration;
 import com.yat3s.kitten.sample.Music;
 import com.yat3s.kitten.sample.MusicAdapter;
@@ -23,66 +16,28 @@ import java.util.ArrayList;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class CaseRecyclerViewActivity extends AppCompatActivity {
-    private static final String TAG = "CaseRecyclerViewActivity";
-
-    private KittenLayout mKittenLayout;
-    private RecyclerView mRecyclerView;
+public class CaseRecyclerViewActivity extends BaseCaseActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.case_activity_recycler_view);
-        mKittenLayout = (KittenLayout) findViewById(R.id.kitten_layout);
-        mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+    protected int getContentLayoutId() {
+        return R.layout.case_activity_recycler_view;
+    }
 
-        final FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-            }
-        });
+    @Override
+    protected void initialize() {
+        setupRefreshHeader("refresh.json", 0.2f, 3000);
+        setupLoadingFooter("Plane.json", 0.2f, 1500);
+
+        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // Configure adapter.
         MusicAdapter musicAdapter = new MusicAdapter(this, generateMusicData());
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        mRecyclerView.setAdapter(musicAdapter);
-
-        // Configure refresh header.
-        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, "refresh.json");
-        kittenRefreshHeaderView.setScale(0.2f);
-        mKittenLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
-        mKittenLayout.setOnRefreshListener(new KittenLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mKittenLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mKittenLayout.refreshComplete();
-                    }
-                }, 1500);
-            }
-        });
-
-        // Configure loading footer.
-        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, "Plane.json");
-        kittenLoadingFooterView.setScale(0.2f);
-        mKittenLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
-        mKittenLayout.setOnLoadMoreListener(new KittenLayout.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                mKittenLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mKittenLayout.loadMoreComplete();
-                    }
-                }, 1500);
-            }
-        });
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        recyclerView.setAdapter(musicAdapter);
 
         // Add Sticky header item decoration.
-        mRecyclerView.addItemDecoration(new StickyHeaderItemDecoration(this, musicAdapter));
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
+        recyclerView.addItemDecoration(new StickyHeaderItemDecoration(this, musicAdapter));
+        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
     }
 
     private ArrayList<Music> generateMusicData() {
