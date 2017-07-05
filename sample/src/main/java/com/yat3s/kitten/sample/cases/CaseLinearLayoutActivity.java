@@ -32,8 +32,7 @@ public class CaseLinearLayoutActivity extends BaseCaseActivity {
     @Override
     protected void initialize() {
         setupRefreshHeader("refresh.json", 0.2f, 3000);
-        setupLoadingFooter("Plane.json", 0.2f, 1500);
-
+//        setupLoadingFooter("Plane.json", 0.2f, 1500);
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
             @Override

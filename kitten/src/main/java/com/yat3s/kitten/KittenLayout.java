@@ -88,6 +88,17 @@ public class KittenLayout extends ViewGroup {
      */
     private boolean autoTriggerLoadMore = false;
 
+
+    /**
+     * If true, it means user try to pull down {@link #getScrollY()} < 0,
+     */
+    private boolean intendToRefresh = false;
+
+    /**
+     * If true, it means user try to pull up {@link #getScrollY()} > 0,
+     */
+    private boolean intendToLoading = false;
+
     public KittenLayout(Context context) {
         this(context, null);
     }
@@ -231,7 +242,9 @@ public class KittenLayout extends ViewGroup {
 
                 if (null != mRefreshHeaderIndicator) {
                     // ONLY scroll whole view while pull down.
-                    if (getScrollY() <= 0 && offsetY < 0) {
+                    // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
+                    // It can avoid/stop user pull up from default while user don't set loading footer.
+                    if ((getScrollY() == 0 && offsetY < 0) || getScrollY() < 0) {
                         scrollBy(0, scrollOffsetY);
                     }
 
@@ -246,8 +259,7 @@ public class KittenLayout extends ViewGroup {
                 }
 
                 if (null != mLoadingFooterIndicator) {
-                    // ONLY scroll whole view while pull down.
-                    if (getScrollY() >= 0 && offsetY > 0) {
+                    if ((getScrollY() == 0 && offsetY > 0) || getScrollY() > 0) {
                         scrollBy(0, scrollOffsetY);
                     }
 
@@ -262,6 +274,7 @@ public class KittenLayout extends ViewGroup {
                 }
                 mLastTouchY = y;
                 return true;
+            case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 if (getScrollY() < 0) {
                     if (null != mRefreshHeaderIndicator) {
@@ -299,13 +312,6 @@ public class KittenLayout extends ViewGroup {
         boolean touch = super.onTouchEvent(event);
         Log.d(TAG, "event--> onTouchEvent: " + event.getAction() + ", " + touch);
         return touch;
-    }
-
-    private boolean canAbortThisScrollAction() {
-        return !isLoadingMore
-                && !isRefreshing
-                && -getScrollY() < mRefreshHeaderIndicator.getMeasuredHeight()
-                && getScrollY() < mLoadingFooterIndicator.getMeasuredHeight();
     }
 
     private void releaseViewToRefreshingStatus() {
