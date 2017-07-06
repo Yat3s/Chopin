@@ -90,12 +90,14 @@ public class KittenLayout extends ViewGroup {
 
 
     /**
-     * If true, it means user try to pull down {@link #getScrollY()} < 0,
+     * If true, it means the content view has scrolled to top and
+     * user try to pull down {@link #getScrollY()} < 0,
      */
     private boolean intendToRefresh = false;
 
     /**
-     * If true, it means user try to pull up {@link #getScrollY()} > 0,
+     * If true, it means the content view has scrolled to bottom and
+     * user try to pull up {@link #getScrollY()} > 0,
      */
     private boolean intendToLoading = false;
 

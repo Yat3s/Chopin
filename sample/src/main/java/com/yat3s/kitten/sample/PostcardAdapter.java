@@ -1,11 +1,14 @@
 package com.yat3s.kitten.sample;
 
 import android.content.Context;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.yat3s.kitten.adapter.KittenViewHolder;
 import com.yat3s.kitten.adapter.SimpleKittenAdapter;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -14,6 +17,8 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 public class PostcardAdapter extends SimpleKittenAdapter<PostcardAdapter.Postcard> {
+    private static final int POSITION_RECYCLER_VIEW = 1;
+    private static final int POSITION_VIEWPAGER = 3;
 
     public PostcardAdapter(Context context, List<Postcard> dataSource) {
         super(context, dataSource);
@@ -21,12 +26,26 @@ public class PostcardAdapter extends SimpleKittenAdapter<PostcardAdapter.Postcar
 
     @Override
     protected void bindDataToItemView(KittenViewHolder holder, Postcard postcard, int position) {
-        ImageView img = holder.getView(R.id.card_iv);
-        img.setImageResource(postcard.imageResId);
+        if (position == POSITION_RECYCLER_VIEW) {
+            List<Integer> stampResIds = new ArrayList<>();
+            stampResIds.add(R.mipmap.stamp_2);
+            stampResIds.add(R.mipmap.stamp_1);
+            stampResIds.add(R.mipmap.stamp_3);
+            stampResIds.add(R.mipmap.stamp_4);
+            RecyclerView recyclerView = holder.getView(R.id.recycler_view);
+            recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
+            recyclerView.setAdapter(new StampAdapater(mContext, stampResIds));
+        } else {
+            ImageView img = holder.getView(R.id.card_iv);
+            img.setImageResource(postcard.imageResId);
+        }
     }
 
     @Override
     protected int getItemViewLayoutId(int position, Postcard postcard) {
+        if (position == POSITION_RECYCLER_VIEW) {
+            return R.layout.item_recycler_view;
+        }
         return R.layout.item_postcard;
     }
 
@@ -35,6 +54,23 @@ public class PostcardAdapter extends SimpleKittenAdapter<PostcardAdapter.Postcar
 
         public Postcard(int imageResId) {
             this.imageResId = imageResId;
+        }
+    }
+
+    public static class StampAdapater extends SimpleKittenAdapter<Integer> {
+
+        public StampAdapater(Context context, List<Integer> dataSource) {
+            super(context, dataSource);
+        }
+
+        @Override
+        protected void bindDataToItemView(KittenViewHolder holder, Integer resId, int position) {
+            ((ImageView) holder.getView(R.id.stamp_iv)).setImageResource(resId);
+        }
+
+        @Override
+        protected int getItemViewLayoutId(int position, Integer resId) {
+            return R.layout.item_nested_stamp;
         }
     }
 }
