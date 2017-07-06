@@ -88,7 +88,6 @@ public class KittenLayout extends ViewGroup {
      */
     private boolean autoTriggerLoadMore = false;
 
-
     /**
      * If true, it means the content view has scrolled to top and
      * user try to pull down {@link #getScrollY()} < 0,
