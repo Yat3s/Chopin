@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.util.SparseIntArray;
 import android.view.LayoutInflater;
+import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
@@ -34,6 +35,9 @@ public abstract class KittenAdapter<T, VH extends KittenViewHolder> extends Recy
 
     // Save all view type, key is layout id, value is view type.
     private SparseIntArray mViewTypeCacheArray;
+
+    private OnItemClickListener mOnItemClickListener;
+    private OnItemLongClickListener mOnItemLongClickListener;
 
     public KittenAdapter(Context context) {
         this(context, null);
@@ -66,12 +70,44 @@ public abstract class KittenAdapter<T, VH extends KittenViewHolder> extends Recy
     @Override
     @SuppressWarnings("unchecked")
     public VH onCreateViewHolder(ViewGroup parent, int viewType) {
-        return (VH) new KittenViewHolder(mInflater.inflate(mLayoutIdCacheArray.get(viewType), parent, false));
+        KittenViewHolder kittenViewHolder =  new KittenViewHolder(mInflater.inflate(mLayoutIdCacheArray.get(viewType), parent, false));
+        bindClickListenerToItemView(kittenViewHolder);
+        return (VH) kittenViewHolder;
     }
 
     @Override
     public void onBindViewHolder(VH holder, int position) {
         bindDataToItemView(holder, getItem(position), position);
+    }
+
+    protected final void bindClickListenerToItemView(final KittenViewHolder holder) {
+        final int position = holder.getAdapterPosition();
+        if (null != mOnItemClickListener) {
+            holder.itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mOnItemClickListener.onClick(view, mDataSource.get(position), position);
+                }
+            });
+        }
+
+        if (null != mOnItemLongClickListener) {
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mOnItemLongClickListener.onLongClick(v, mDataSource.get(position), position);
+                    return true;
+                }
+            });
+        }
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener) {
+        mOnItemClickListener = onItemClickListener;
+    }
+
+    public void setOnItemLongClickListener(OnItemLongClickListener onItemLongClickListener) {
+        mOnItemLongClickListener = onItemLongClickListener;
     }
 
     /**
@@ -88,6 +124,14 @@ public abstract class KittenAdapter<T, VH extends KittenViewHolder> extends Recy
     @Override
     public int getItemCount() {
         return mDataSource.size();
+    }
+
+    public interface OnItemClickListener<T> {
+        void onClick(View view, T item, int position);
+    }
+
+    public interface OnItemLongClickListener<T> {
+        void onLongClick(View view, T item, int position);
     }
 
 }

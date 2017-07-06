@@ -16,8 +16,6 @@ import android.widget.ScrollView;
 import android.widget.Scroller;
 import android.widget.TextView;
 
-import com.yat3s.kitten.sample.R;
-
 
 public class SmartRefreshLayout extends ViewGroup {
     // 事件监听接口
@@ -95,7 +93,7 @@ public class SmartRefreshLayout extends ViewGroup {
         // 实例化Scroller
         mLayoutScroller = new Scroller(context);
         // 计算最小有效滑动距离
-        mEffectiveScroll = (int) (context.getResources().getDimension(R.dimen.srl_effective_scroll));
+//        mEffectiveScroll = (int) (context.getResources().getDimension(R.dimen.srl_effective_scroll));
     }
 
     @Override
