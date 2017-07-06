@@ -3,8 +3,8 @@ package com.yat3s.kitten.sample.cases;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
-import android.widget.Button;
 
 import com.yat3s.kitten.sample.Music;
 import com.yat3s.kitten.sample.MusicAdapter;
@@ -18,13 +18,8 @@ import java.util.ArrayList;
  * GitHub: https://github.com/yat3s
  */
 public class CaseRecyclerViewActivity extends BaseCaseActivity {
-    private static final int GRID_SPAN = 3;
+    private static final int SPAN_COUNT = 3;
 
-    private static final int STYLE_GRID = 0x1001;
-    private static final int STYLE_LINEAR = 0x1002;
-
-
-     RecyclerView recyclerView;
     @Override
     protected int getContentLayoutId() {
         return R.layout.case_activity_recycler_view;
@@ -35,29 +30,29 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
         setupRefreshHeader("refresh.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
 
-        recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        final Button styleSwitchBtn = (Button) findViewById(R.id.style_switch_btn);
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // Configure adapter.
         MusicAdapter musicAdapter = new MusicAdapter(this, generateMusicData());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(musicAdapter);
 
-        // Add Sticky header item decoration.
-//        recyclerView.addItemDecoration(new StickyHeaderItemDecoration(this, musicAdapter));
-//        recyclerView.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
-
-        styleSwitchBtn.setText("Switch to GridLayoutManager");
-        styleSwitchBtn.setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.linear_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (recyclerView.getLayoutManager() instanceof GridLayoutManager) {
-                    recyclerView.setLayoutManager(new LinearLayoutManager(CaseRecyclerViewActivity.this));
-                    styleSwitchBtn.setText("Switch to GridLayoutManager");
-                }  else {
-                    recyclerView.setLayoutManager(new GridLayoutManager(CaseRecyclerViewActivity.this, GRID_SPAN));
-                    styleSwitchBtn.setText("Switch to LinearLayoutManager");
-                }
+                recyclerView.setLayoutManager(new LinearLayoutManager(CaseRecyclerViewActivity.this));
+            }
+        });
+        findViewById(R.id.grid_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setLayoutManager(new GridLayoutManager(CaseRecyclerViewActivity.this, SPAN_COUNT));
+            }
+        });
+        findViewById(R.id.staggered_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                recyclerView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL));
             }
         });
     }
