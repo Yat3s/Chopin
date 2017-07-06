@@ -13,6 +13,7 @@ import com.yat3s.kitten.sample.cases.CaseNestedRecyclerViewActivity;
 import com.yat3s.kitten.sample.cases.CaseRecyclerViewActivity;
 import com.yat3s.kitten.sample.cases.CaseScrollViewActivity;
 import com.yat3s.kitten.sample.cases.CaseViewPagerActivity;
+import com.yat3s.kitten.sample.cases.CaseWebViewActivity;
 
 /**
  * Created by Yat3s on 26/06/2017.
@@ -64,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, CaseFragmentActivity.class));
+            }
+        });
+
+        findViewById(R.id.web_view_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CaseWebViewActivity.class));
             }
         });
     }

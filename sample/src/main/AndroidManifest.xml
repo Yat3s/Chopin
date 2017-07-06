@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.yat3s.kitten.sample">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -19,11 +21,12 @@
         </activity>
 
         <activity android:name=".cases.CaseRecyclerViewActivity"/>
-        <activity android:name="com.yat3s.kitten.sample.cases.CaseNestedRecyclerViewActivity"/>
-        <activity android:name="com.yat3s.kitten.sample.cases.CaseScrollViewActivity"/>
-        <activity android:name="com.yat3s.kitten.sample.cases.CaseLinearLayoutActivity"/>
-        <activity android:name="com.yat3s.kitten.sample.cases.CaseViewPagerActivity"/>
-        <activity android:name="com.yat3s.kitten.sample.cases.CaseFragmentActivity"/>
+        <activity android:name=".cases.CaseNestedRecyclerViewActivity"/>
+        <activity android:name=".cases.CaseScrollViewActivity"/>
+        <activity android:name=".cases.CaseLinearLayoutActivity"/>
+        <activity android:name=".cases.CaseViewPagerActivity"/>
+        <activity android:name=".cases.CaseFragmentActivity"/>
+        <activity android:name=".cases.CaseWebViewActivity"/>
     </application>
 
 </manifest>
