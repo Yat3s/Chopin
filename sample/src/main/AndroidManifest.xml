@@ -19,7 +19,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="com.yat3s.kitten.sample.cases.CaseRecyclerViewActivity"/>
+        <activity android:name=".cases.CaseRecyclerViewActivity"/>
+        <activity android:name="com.yat3s.kitten.sample.cases.CaseNestedRecyclerViewActivity"/>
         <activity android:name="com.yat3s.kitten.sample.cases.CaseScrollViewActivity"/>
         <activity android:name="com.yat3s.kitten.sample.cases.CaseLinearLayoutActivity"/>
         <activity android:name="com.yat3s.kitten.sample.cases.CaseViewPagerActivity"/>

@@ -6,7 +6,6 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
-import com.yat3s.kitten.sample.Music;
 import com.yat3s.kitten.sample.MusicAdapter;
 import com.yat3s.kitten.sample.R;
 
@@ -57,11 +56,11 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
         });
     }
 
-    private ArrayList<Music> generateMusicData() {
+    private ArrayList<MusicAdapter.Music> generateMusicData() {
         String[] musicNames = getResources().getStringArray(R.array.musics);
-        ArrayList<Music> musics = new ArrayList<>();
+        ArrayList<MusicAdapter.Music> musics = new ArrayList<>();
         for (String taskName : musicNames) {
-            musics.add(new Music(taskName));
+            musics.add(new MusicAdapter.Music(taskName));
         }
         return musics;
     }

@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.yat3s.kitten.sample.cases.CaseFragmentActivity;
 import com.yat3s.kitten.sample.cases.CaseLinearLayoutActivity;
+import com.yat3s.kitten.sample.cases.CaseNestedRecyclerViewActivity;
 import com.yat3s.kitten.sample.cases.CaseRecyclerViewActivity;
 import com.yat3s.kitten.sample.cases.CaseScrollViewActivity;
 import com.yat3s.kitten.sample.cases.CaseViewPagerActivity;
@@ -29,6 +30,12 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, CaseRecyclerViewActivity.class));
+            }
+        });
+        findViewById(R.id.nested_recycler_view_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, CaseNestedRecyclerViewActivity.class));
             }
         });
 

@@ -9,13 +9,13 @@ import java.util.List;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public abstract class SampleKittenAdapter<T> extends KittenAdapter<T, KittenViewHolder> {
+public abstract class SimpleKittenAdapter<T> extends KittenAdapter<T, KittenViewHolder> {
 
-    public SampleKittenAdapter(Context context) {
+    public SimpleKittenAdapter(Context context) {
         super(context);
     }
 
-    public SampleKittenAdapter(Context context, List<T> dataSource) {
+    public SimpleKittenAdapter(Context context, List<T> dataSource) {
         super(context, dataSource);
     }
 }

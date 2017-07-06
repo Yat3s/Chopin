@@ -5,7 +5,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.yat3s.kitten.adapter.KittenViewHolder;
-import com.yat3s.kitten.adapter.SampleKittenAdapter;
+import com.yat3s.kitten.adapter.SimpleKittenAdapter;
 import com.yat3s.kitten.adapter.StickyHeaderAdapter;
 
 import java.util.List;
@@ -16,7 +16,7 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 
-public class MusicAdapter extends SampleKittenAdapter<Music> implements
+public class MusicAdapter extends SimpleKittenAdapter<MusicAdapter.Music> implements
         StickyHeaderAdapter<KittenViewHolder> {
     private static final String TAG = "MusicAdapter";
 
@@ -59,6 +59,14 @@ public class MusicAdapter extends SampleKittenAdapter<Music> implements
     @Override
     public boolean hasHeader(int position) {
         return position % 8 == 0 && position != 0;
+    }
+
+    public static class Music {
+        public String name;
+
+        public Music(String name) {
+            this.name = name;
+        }
     }
 
 }

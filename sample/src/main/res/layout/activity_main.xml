@@ -12,6 +12,13 @@
         android:text="RecyclerView" />
 
     <Button
+        android:id="@+id/nested_recycler_view_btn"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:text="NestedRecyclerView" />
+
+    <Button
         android:id="@+id/scroll_view_btn"
         android:layout_width="match_parent"
         android:layout_height="0dp"
