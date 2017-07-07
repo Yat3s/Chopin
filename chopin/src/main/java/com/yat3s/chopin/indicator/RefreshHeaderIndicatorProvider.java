@@ -1,4 +1,4 @@
-package com.yat3s.chopin.decoration;
+package com.yat3s.chopin.indicator;
 
 import android.support.annotation.IntRange;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.View;
 public interface RefreshHeaderIndicatorProvider {
     View getContentView();
 
-    void onRefreshStart();
+    void onRefreshing();
 
     void onRefreshComplete();
 

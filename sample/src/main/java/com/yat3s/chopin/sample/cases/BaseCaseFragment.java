@@ -8,8 +8,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.decoration.ChopinLoadingFooterIndicator;
-import com.yat3s.chopin.decoration.ChopinRefreshHeaderIndicator;
+import com.yat3s.chopin.indicator.ChopinLoadingFooterIndicator;
+import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
 import com.yat3s.chopin.sample.R;
 
 /**

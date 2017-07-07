@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.decoration.ChopinLoadingFooterIndicator;
-import com.yat3s.chopin.decoration.ChopinRefreshHeaderIndicator;
+import com.yat3s.chopin.indicator.ChopinLoadingFooterIndicator;
+import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
 import com.yat3s.chopin.sample.R;
 
 /**

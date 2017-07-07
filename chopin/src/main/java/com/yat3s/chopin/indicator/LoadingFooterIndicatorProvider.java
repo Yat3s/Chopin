@@ -1,4 +1,4 @@
-package com.yat3s.chopin.decoration;
+package com.yat3s.chopin.indicator;
 
 import android.support.annotation.IntRange;
 import android.view.View;
@@ -6,7 +6,7 @@ import android.view.View;
 public interface LoadingFooterIndicatorProvider {
     View getContentView();
 
-    void onLoadingStart();
+    void onLoading();
 
     void onLoadingComplete();
 

@@ -11,7 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.decoration.ChopinRefreshHeaderIndicator;
+import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
 import com.yat3s.chopin.sample.cases.CaseFragmentActivity;
 import com.yat3s.chopin.sample.cases.CaseLinearLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseNestedRecyclerViewActivity;
@@ -49,14 +49,14 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new GridLayoutManager(this, GRID_SPAN_COUNT));
 
         List<CaseDemo> caseDemos = new ArrayList<>();
-        caseDemos.add(new CaseDemo("RecyclerView", R.mipmap.abstract_4, CaseRecyclerViewActivity.class));
-        caseDemos.add(new CaseDemo("Advanced\nSetting", R.color.black, AdvancedSettingActivity.class));
+        caseDemos.add(new CaseDemo("RecyclerView", R.mipmap.abstract_1, CaseRecyclerViewActivity.class));
         caseDemos.add(new CaseDemo("Nested\nRecyclerView", R.mipmap.abstract_2, CaseNestedRecyclerViewActivity.class));
         caseDemos.add(new CaseDemo("ViewPager", R.mipmap.abstract_4, CaseViewPagerActivity.class));
         caseDemos.add(new CaseDemo("ScrollView", R.mipmap.abstract_3, CaseScrollViewActivity.class));
-        caseDemos.add(new CaseDemo("LinearLayout", R.mipmap.abstract_3, CaseLinearLayoutActivity.class));
-        caseDemos.add(new CaseDemo("Fragment", R.mipmap.abstract_1, CaseFragmentActivity.class));
-        caseDemos.add(new CaseDemo("WebView", R.mipmap.abstract_2, CaseWebViewActivity.class));
+        caseDemos.add(new CaseDemo("LinearLayout", R.mipmap.abstract_1, CaseLinearLayoutActivity.class));
+        caseDemos.add(new CaseDemo("Fragment", R.mipmap.abstract_2, CaseFragmentActivity.class));
+        caseDemos.add(new CaseDemo("WebView", R.mipmap.abstract_3, CaseWebViewActivity.class));
+        caseDemos.add(new CaseDemo("Advanced\nSetting", R.color.md_grey_600, AdvancedSettingActivity.class));
 
         CaseDemoAdapter caseDemoAdapter = new CaseDemoAdapter(this, caseDemos);
         recyclerView.setAdapter(caseDemoAdapter);

@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
-import com.yat3s.chopin.decoration.LoadingFooterIndicatorProvider;
-import com.yat3s.chopin.decoration.RefreshHeaderIndicatorProvider;
+import com.yat3s.chopin.indicator.LoadingFooterIndicatorProvider;
+import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
 
 /**
  * Created by Yat3s on 03/06/2017.
@@ -23,7 +23,7 @@ import com.yat3s.chopin.decoration.RefreshHeaderIndicatorProvider;
 public class ChopinLayout extends ViewGroup {
     private static final String TAG = "ChopinLayout";
 
-    // Support child view count nested in this.
+    // Support child view count nested in this, NOW only support one child.
     private static final int SUPPORT_CHILD_COUNT = 1;
 
     // Scroller duration while release to do some action.
@@ -335,7 +335,7 @@ public class ChopinLayout extends ViewGroup {
             mOnRefreshListener.onRefresh();
         }
         if (null != mRefreshHeaderIndicatorProvider) {
-            mRefreshHeaderIndicatorProvider.onRefreshStart();
+            mRefreshHeaderIndicatorProvider.onRefreshing();
         }
     }
 
@@ -345,7 +345,7 @@ public class ChopinLayout extends ViewGroup {
             mOnLoadMoreListener.onLoadMore();
         }
         if (null != mLoadingFooterIndicatorProvider) {
-            mLoadingFooterIndicatorProvider.onLoadingStart();
+            mLoadingFooterIndicatorProvider.onLoading();
         }
     }
 
