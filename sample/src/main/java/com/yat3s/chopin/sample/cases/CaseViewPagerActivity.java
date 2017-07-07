@@ -1,12 +1,15 @@
 package com.yat3s.chopin.sample.cases;
 
-import android.support.v4.view.PagerAdapter;
+import android.support.design.widget.TabLayout;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
+import com.yat3s.chopin.ChopinLayout;
+import com.yat3s.chopin.ViewScrollChecker;
 import com.yat3s.chopin.sample.R;
+import com.yat3s.chopin.sample.RecyclerViewFragment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -17,6 +20,9 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 public class CaseViewPagerActivity extends BaseCaseActivity {
+    private static final String SLOGAN = "YAT3S";
+
+    private RecyclerViewFragment mCurrentFragment;
 
     @Override
     protected int getContentLayoutId() {
@@ -28,35 +34,58 @@ public class CaseViewPagerActivity extends BaseCaseActivity {
         setupRefreshHeader("refresh.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
 
-        final int[] pagesColors = {R.color.md_blue_grey_100, R.color.md_blue_grey_600, R.color.md_red_300};
-        final List<TextView> pageViews = new ArrayList<>();
-        for (int pagesColor : pagesColors) {
-            TextView textView = new TextView(this);
-            textView.setBackgroundResource(pagesColor);
-            pageViews.add(textView);
-        }
+        final List<RecyclerViewFragment> fragments = new ArrayList<>();
+        fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_1));
+        fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_2));
+        fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_3));
+        fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_4));
+        fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_3));
         ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        viewPager.setAdapter(new PagerAdapter() {
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
+            @Override
+            public Fragment getItem(int position) {
+                return fragments.get(position);
+            }
+
             @Override
             public int getCount() {
-                return pageViews.size();
+                return fragments.size();
             }
 
             @Override
-            public boolean isViewFromObject(View view, Object object) {
-                return object == view;
+            public CharSequence getPageTitle(int position) {
+                return SLOGAN.subSequence(position, position + 1);
+            }
+        });
+        tabLayout.setupWithViewPager(viewPager);
+        mCurrentFragment = fragments.get(0);
+        viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
             }
 
             @Override
-            public Object instantiateItem(ViewGroup container, int position) {
-                View view = pageViews.get(position);
-                container.addView(pageViews.get(position));
-                return view;
+            public void onPageSelected(int position) {
+                mCurrentFragment = fragments.get(position);
             }
 
             @Override
-            public void destroyItem(ViewGroup container, int position, Object object) {
-                container.removeView(pageViews.get(position));
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
+
+        mChopinLayout.setViewScrollChecker(new ViewScrollChecker() {
+            @Override
+            public boolean canDoRefresh(ChopinLayout chopinLayout, View contentView) {
+                return mCurrentFragment.canDoRefresh();
+            }
+
+            @Override
+            public boolean canDoLoading(ChopinLayout chopinLayout, View contentView) {
+                return mCurrentFragment.canDoLoading();
             }
         });
     }

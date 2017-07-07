@@ -5,7 +5,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <TextView
+    <com.yat3s.chopin.sample.widget.TitleTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
@@ -13,10 +13,7 @@
         android:text="Nested with RecyclerView"
         android:textColor="@color/md_grey_800"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+    <include layout="@layout/layout_recycler_view"/>
 
 </LinearLayout>
 

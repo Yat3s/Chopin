@@ -48,7 +48,7 @@ public class PostcardAdapter extends SimpleChopinAdapter<PostcardAdapter.Postcar
     @Override
     protected int getItemViewLayoutId(int position, Postcard postcard) {
         if (position == POSITION_RECYCLER_VIEW) {
-            return R.layout.item_recycler_view;
+            return R.layout.item_nested_recycler_view;
         }
         return R.layout.item_postcard;
     }
