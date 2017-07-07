@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.yat3s.kitten.sample.cases.CaseRecyclerViewActivity">
+    tools:context="com.yat3s.chopin.sample.cases.CaseRecyclerViewActivity">
 
-    <com.yat3s.kitten.KittenLayout
-        android:id="@+id/kitten_layout"
+    <com.yat3s.chopin.ChopinLayout
+        android:id="@+id/chopin_layout"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="1">
@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"/>
 
-    </com.yat3s.kitten.KittenLayout>
+    </com.yat3s.chopin.ChopinLayout>
 
     <LinearLayout
         android:layout_width="match_parent"

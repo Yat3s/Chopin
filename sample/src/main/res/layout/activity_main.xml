@@ -1,60 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yat3s.kitten.KittenLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/kitten_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<com.yat3s.chopin.ChopinLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                               android:id="@+id/chopin_layout"
+                               android:layout_width="match_parent"
+                               android:layout_height="match_parent">
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
-
-    <!--<Button-->
-        <!--android:id="@+id/recycler_view_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="RecyclerView" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/nested_recycler_view_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="NestedRecyclerView" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/scroll_view_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="ScrollView" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/linear_layout_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="LinearLayout" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/view_pager_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="ViewPager" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/fragment_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="Fragment" />-->
-
-    <!--<Button-->
-        <!--android:id="@+id/web_view_btn"-->
-        <!--android:layout_width="match_parent"-->
-        <!--android:layout_height="0dp"-->
-        <!--android:layout_weight="1"-->
-        <!--android:text="WebView" />-->
-</com.yat3s.kitten.KittenLayout>
+</com.yat3s.chopin.ChopinLayout>

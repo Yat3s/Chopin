@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yat3s.kitten.KittenLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/kitten_layout"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<com.yat3s.chopin.ChopinLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                               android:id="@+id/chopin_layout"
+                               android:layout_width="match_parent"
+                               android:layout_height="match_parent">
 
     <fragment
-        android:name="com.yat3s.kitten.sample.MusicFragment"
+        android:name="com.yat3s.chopin.sample.MusicFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 
-</com.yat3s.kitten.KittenLayout>
+</com.yat3s.chopin.ChopinLayout>
