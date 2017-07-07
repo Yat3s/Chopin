@@ -176,9 +176,10 @@ public class ChopinLayout extends ViewGroup {
         if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
             return super.dispatchTouchEvent(ev);
         }
-        boolean dispatch = super.dispatchTouchEvent(ev);
+
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                Log.d(TAG, "event--> dispatchTouchEvent: DOWN, true");
 
                 // Dispatch ACTION_DOWN event to child for process if child never consume
                 // this event.
@@ -191,7 +192,10 @@ public class ChopinLayout extends ViewGroup {
                 // REF: it is a Recursion method, so it will execute the last child dispatch method.
                 return true;
         }
-        Log.d(TAG, "event--> dispatchTouchEvent: " + ev.getAction() + ", " + dispatch);
+        boolean dispatch = super.dispatchTouchEvent(ev);
+        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
+                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
+        Log.d(TAG, "event--> dispatchTouchEvent: " + actionName + ", " + dispatch);
         return super.dispatchTouchEvent(ev);
     }
 
@@ -209,11 +213,19 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int offsetX = x - mLastTouchX;
                 int offsetY = y - mLastTouchY;
+//
+//                if (isRefreshing || isLoadingMore) {
+//                    Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
+//                    return true;
+//                }
 
                 // Intercept pull down event when it is scrolling to top.
                 if (null != mRefreshHeaderIndicator && offsetY > Math.abs(offsetX)) {
-                    Log.d(TAG, "canDoRefresh: " + mViewScrollChecker.canDoRefresh(this, mContentView));
-                    return mViewScrollChecker.canDoRefresh(this, mContentView);
+                    boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentView);
+                    if (canDoRefresh) {
+                        Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
+                    }
+                    return canDoRefresh;
                 }
 
                 // Intercept pull up event when it is scrolling to bottom.
@@ -223,29 +235,34 @@ public class ChopinLayout extends ViewGroup {
         }
 
         boolean intercept = super.onInterceptTouchEvent(ev);
-        Log.d(TAG, "event--> onInterceptTouchEvent: " + ev.getAction() + ", " + intercept);
+        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
+                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
+        Log.d(TAG, "event--> onInterceptTouchEvent: " + actionName + ", " + intercept);
         return intercept;
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
+    public boolean onTouchEvent(MotionEvent ev) {
         if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
-            return super.onTouchEvent(event);
+            return super.onTouchEvent(ev);
         }
-        int y = (int) event.getY();
-        switch (event.getAction()) {
+
+        int y = (int) ev.getY();
+        switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
                 break;
 
             case MotionEvent.ACTION_MOVE:
                 int offsetY = mLastTouchY - y;
                 int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
+                boolean pullDown = offsetY < 0;
+                boolean pullUp = offsetY > 0;
 
                 if (null != mRefreshHeaderIndicator) {
                     // ONLY scroll whole view while pull down.
                     // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
                     // It can avoid/stop user pull up from default while user don't set loading footer.
-                    if ((getScrollY() == 0 && offsetY < 0) || getScrollY() < 0) {
+                    if ((getScrollY() == 0 && pullDown) || getScrollY() < 0) {
                         scrollBy(0, scrollOffsetY);
                     }
 
@@ -260,7 +277,7 @@ public class ChopinLayout extends ViewGroup {
                 }
 
                 if (null != mLoadingFooterIndicator) {
-                    if ((getScrollY() == 0 && offsetY > 0) || getScrollY() > 0) {
+                    if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
                         scrollBy(0, scrollOffsetY);
                     }
 
@@ -274,6 +291,7 @@ public class ChopinLayout extends ViewGroup {
                     mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
                 }
                 mLastTouchY = y;
+                Log.d(TAG, "event--> onTouchEvent: MOVE, true");
                 return true;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
@@ -309,9 +327,10 @@ public class ChopinLayout extends ViewGroup {
                 }
                 return true;
         }
-
-        boolean touch = super.onTouchEvent(event);
-        Log.d(TAG, "event--> onTouchEvent: " + event.getAction() + ", " + touch);
+        boolean touch = super.onTouchEvent(ev);
+        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
+                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
+        Log.d(TAG, "event--> onTouchEvent: " + actionName + ", " + touch);
         return touch;
     }
 
