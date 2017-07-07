@@ -12,28 +12,28 @@ import com.airbnb.lottie.LottieAnimationView;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class KittenRefreshHeaderIndicator extends LottieAnimationView implements RefreshHeaderIndicatorProvider {
+public class ChopinRefreshHeaderIndicator extends LottieAnimationView implements RefreshHeaderIndicatorProvider {
 
-    public KittenRefreshHeaderIndicator(Context context) {
+    public ChopinRefreshHeaderIndicator(Context context) {
         super(context);
         initialize();
     }
 
-    public KittenRefreshHeaderIndicator(Context context, String animationFileName) {
+    public ChopinRefreshHeaderIndicator(Context context, String animationFileName) {
         this(context);
         setAnimation(animationFileName);
     }
 
-    public KittenRefreshHeaderIndicator(Context context, String animationFileName, float scale) {
+    public ChopinRefreshHeaderIndicator(Context context, String animationFileName, float scale) {
         this(context, animationFileName);
         setScale(scale);
     }
 
-    public KittenRefreshHeaderIndicator(Context context, AttributeSet attrs) {
+    public ChopinRefreshHeaderIndicator(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public KittenRefreshHeaderIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ChopinRefreshHeaderIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize();
     }

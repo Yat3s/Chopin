@@ -5,4 +5,7 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="case_item_height">140dp</dimen>
     <dimen name="common_recycler_view_header_height">256dp</dimen>
+    <dimen name="text_size_display">34sp</dimen>
+    <dimen name="text_size_medium">18sp</dimen>
+    <dimen name="text_size_small">12sp</dimen>
 </resources>

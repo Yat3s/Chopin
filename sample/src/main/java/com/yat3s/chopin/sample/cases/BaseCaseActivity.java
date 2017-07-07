@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.decoration.KittenLoadingFooterIndicator;
-import com.yat3s.chopin.decoration.KittenRefreshHeaderIndicator;
+import com.yat3s.chopin.decoration.ChopinLoadingFooterIndicator;
+import com.yat3s.chopin.decoration.ChopinRefreshHeaderIndicator;
 import com.yat3s.chopin.sample.R;
 
 /**
@@ -36,7 +36,7 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
     }
 
     protected void setupRefreshHeader(String fileName, float scale, final long refreshCompleteDelay) {
-        KittenRefreshHeaderIndicator kittenRefreshHeaderView = new KittenRefreshHeaderIndicator(this, fileName);
+        ChopinRefreshHeaderIndicator kittenRefreshHeaderView = new ChopinRefreshHeaderIndicator(this, fileName);
         kittenRefreshHeaderView.setScale(scale);
         mChopinLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
@@ -53,7 +53,7 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
     }
 
     protected void setupLoadingFooter(String fileName, float scale, final long refreshCompleteDelay) {
-        KittenLoadingFooterIndicator kittenLoadingFooterView = new KittenLoadingFooterIndicator(this, fileName);
+        ChopinLoadingFooterIndicator kittenLoadingFooterView = new ChopinLoadingFooterIndicator(this, fileName);
         kittenLoadingFooterView.setScale(scale);
         mChopinLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
         mChopinLayout.setOnLoadMoreListener(new ChopinLayout.OnLoadMoreListener() {

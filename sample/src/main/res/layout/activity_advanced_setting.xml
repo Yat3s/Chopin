@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.yat3s.chopin.ChopinLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/chopin_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="24dp"
+        android:background="@color/md_teal_200"
+        android:orientation="vertical">
+
+        <com.yat3s.chopin.sample.widget.TitleTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Advanced Setting"
+            android:textColor="@color/black"
+            android:textSize="@dimen/text_size_display"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <com.yat3s.chopin.sample.widget.TitleTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_medium"
+                android:text="Resistance:  "/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small"
+                android:text="Smooth(0.0)"/>
+
+            <android.support.v7.widget.AppCompatSeekBar
+                android:id="@+id/seek_bar"
+                android:layout_width="0dp"
+                android:layout_weight="1"
+                android:layout_height="wrap_content"/>
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="@dimen/text_size_small"
+                android:text="Hard(1.0)"/>
+        </LinearLayout>
+    </LinearLayout>
+
+</com.yat3s.chopin.ChopinLayout>

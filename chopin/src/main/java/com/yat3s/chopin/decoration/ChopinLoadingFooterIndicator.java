@@ -12,28 +12,28 @@ import com.airbnb.lottie.LottieAnimationView;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class KittenLoadingFooterIndicator extends LottieAnimationView implements LoadingFooterIndicatorProvider {
+public class ChopinLoadingFooterIndicator extends LottieAnimationView implements LoadingFooterIndicatorProvider {
 
-    public KittenLoadingFooterIndicator(Context context) {
+    public ChopinLoadingFooterIndicator(Context context) {
         super(context);
         initialize();
     }
 
-    public KittenLoadingFooterIndicator(Context context, String animationFileName) {
+    public ChopinLoadingFooterIndicator(Context context, String animationFileName) {
         this(context);
         setAnimation(animationFileName);
     }
 
-    public KittenLoadingFooterIndicator(Context context, String animationFileName, float scale) {
+    public ChopinLoadingFooterIndicator(Context context, String animationFileName, float scale) {
         this(context, animationFileName);
         setScale(scale);
     }
 
-    public KittenLoadingFooterIndicator(Context context, AttributeSet attrs) {
+    public ChopinLoadingFooterIndicator(Context context, AttributeSet attrs) {
         this(context, attrs, 0);
     }
 
-    public KittenLoadingFooterIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
+    public ChopinLoadingFooterIndicator(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
         initialize();
     }
