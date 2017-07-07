@@ -32,6 +32,8 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 public class MainActivity extends AppCompatActivity {
+
+    // Hecate, Iapetus, Hera, Ares, Athene
     private static final int GRID_SPAN_COUNT = 2;
     private ChopinLayout mChopinLayout;
 
@@ -48,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
 
         List<CaseDemo> caseDemos = new ArrayList<>();
         caseDemos.add(new CaseDemo("RecyclerView", R.mipmap.abstract_1, CaseRecyclerViewActivity.class));
-        caseDemos.add(new CaseDemo("NestedRecyclerView", R.mipmap.abstract_2, CaseNestedRecyclerViewActivity.class));
+        caseDemos.add(new CaseDemo("Nested\nRecyclerView", R.mipmap.abstract_2, CaseNestedRecyclerViewActivity.class));
         caseDemos.add(new CaseDemo("ScrollView", R.mipmap.abstract_3, CaseScrollViewActivity.class));
         caseDemos.add(new CaseDemo("LinearLayout", R.mipmap.abstract_3, CaseLinearLayoutActivity.class));
         caseDemos.add(new CaseDemo("ViewPager", R.mipmap.abstract_4, CaseViewPagerActivity.class));
