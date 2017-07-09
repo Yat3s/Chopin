@@ -1,22 +1,8 @@
 <resources>
-    <string name="app_name">Kitten</string>
+    <string name="app_name">Chopin</string>
     <string name="action_settings">Settings</string>
 
-
-    <string name="mock_long_string">When I was young I\'d listen to the radio\nWaiting for my
-    favorite songs\nWhen they played I\'d sing along\nIt make me smile\nThose were such happy
-    times and not so long ago\nHow I wondered where they\'d gone\nBut they\'re back again just like
-    a long lost friend\nAll the songs I love so well\nEvery shalala every wo\'wostill
-    shines\nEvery shing-a-ling-a-ling that they\'re starting to sing so fine\nWhen they get to the
-    part\nWhere he\'s breaking her heart\nIt can really make me cry\nJust like before\nIt\'s
-    yesterday once more\n(Shoobie do lang lang*)\n(Shoobie do lang lang)\nLooking back on how it
-    was in years gone by\nAnd the good times that I had\nMakes today seem rather sad\nSo much has
-    changed\nIt was songs of love that I would sing to them\nAnd I\'d memorise each word\nThose
-    old melodies still sound so good to me\nAs they melt the years away\nEvery shalala every
-    wo\'wo still shines\nEvery shing-a-ling-a-ling that they\'re starting to sing so fine\nAll my
-    best memories\nCome back clearly to me\nSome can even make me cry\nJust like before\nIt\'s
-    yesterday once more\n(Shoobie do lang lang)\nEvery shalala every wo\'wo still shines\nEvery
-    shing-a-ling-a-ling that they\'re starting to sing so fine\nEvery shalala every wo\'wo still
-    shines\nEvery shing-a-ling-a-ling that they\'re starting to sing so fine</string>
+    <string name="mock_long_string">Frédéric François Chopin (1 March 1810 – 17 October 1849), born Fryderyk Franciszek Chopin,[n 1] was a Polish composer and virtuoso pianist of the Romantic era who wrote primarily for the solo piano. He gained and has maintained renown worldwide as a leading musician of his era, whose "poetic genius was based on a professional technique that was without equal in his generation."[1] Chopin was born in what was then the Duchy of Warsaw and grew up in Warsaw, which in 1815 became part of Congress Poland. A child prodigy, he completed his musical education and composed his earlier works in Warsaw before leaving Poland at the age of 20, less than a month before the outbreak of the November 1830 Uprising.\nAt 21 he settled in Paris. Thereafter, during the last 18 years of his life, he gave only some 30 public performances, preferring the more intimate atmosphere of the salon. He supported himself by selling his compositions and by teaching piano, for which he was in high demand. Chopin formed a friendship with Franz Liszt and was admired by many of his musical contemporaries, including Robert Schumann. In 1835 he obtained French citizenship. After a failed engagement to Maria Wodzińska from 1836 to 1837, he maintained an often troubled relationship with the French woman writer George Sand. A brief and unhappy visit to Majorca with Sand in 1838–39 was one of his most productive periods of composition. In his last years, he was financially supported by his admirer Jane Stirling, who also arranged for him to visit Scotland in 1848. Through most of his life, Chopin suffered from poor health. He died in Paris in 1849, at the age of 39, probably of tuberculosis.</string>
 
 </resources>
+

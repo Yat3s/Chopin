@@ -28,6 +28,7 @@
         <activity android:name=".cases.CaseViewPagerActivity"/>
         <activity android:name=".cases.CaseFragmentActivity"/>
         <activity android:name=".cases.CaseWebViewActivity"/>
+        <activity android:name=".cases.CaseCoordinatorLayoutActivity"/>
         <activity android:name=".AdvancedSettingActivity"/>
     </application>
 

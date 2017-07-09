@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
+import com.yat3s.chopin.sample.cases.CaseCoordinatorLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseFragmentActivity;
 import com.yat3s.chopin.sample.cases.CaseLinearLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseNestedRecyclerViewActivity;
@@ -56,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
         caseDemos.add(new CaseDemo("LinearLayout", R.mipmap.abstract_1, CaseLinearLayoutActivity.class));
         caseDemos.add(new CaseDemo("Fragment", R.mipmap.abstract_2, CaseFragmentActivity.class));
         caseDemos.add(new CaseDemo("WebView", R.mipmap.abstract_3, CaseWebViewActivity.class));
+        caseDemos.add(new CaseDemo("Coordinator\nLayout", R.mipmap.abstract_4, CaseCoordinatorLayoutActivity.class));
         caseDemos.add(new CaseDemo("Advanced\nSetting", R.color.md_grey_600, AdvancedSettingActivity.class));
 
         CaseDemoAdapter caseDemoAdapter = new CaseDemoAdapter(this, caseDemos);
