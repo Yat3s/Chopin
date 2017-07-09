@@ -6,6 +6,7 @@
     <color name="white">#FFFFFF</color>
     <color name="black">#000000</color>
     <color name="grey">#EEEEEE</color>
+    <color name="transparent">#0000</color>
 
     <color name="srl_colorPrimary">#3F51B5</color>
     <color name="srl_colorPrimaryDark">#303F9F</color>

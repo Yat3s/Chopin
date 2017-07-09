@@ -2,6 +2,7 @@ package com.yat3s.chopin.sample.cases;
 
 import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
@@ -30,7 +31,7 @@ public class CaseCoordinatorLayoutActivity extends BaseCaseActivity {
         setupRefreshHeader("refresh.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
 
-        final AppBarLayout barLayout = (AppBarLayout) findViewById(R.id.flexible_example_appbar);
+        final AppBarLayout barLayout = (AppBarLayout) findViewById(R.id.appbar);
         barLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -54,5 +55,14 @@ public class CaseCoordinatorLayoutActivity extends BaseCaseActivity {
             }
         });
 
+        // Setup navigation back button.
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressed();
+            }
+        });
     }
 }
