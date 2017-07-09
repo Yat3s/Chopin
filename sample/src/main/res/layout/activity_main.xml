@@ -1,13 +1,41 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yat3s.chopin.ChopinLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chopin_layout"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <com.yat3s.chopin.ChopinLayout
+        android:id="@+id/chopin_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="2dp"/>
-</com.yat3s.chopin.ChopinLayout>
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:padding="2dp" />
+
+    </com.yat3s.chopin.ChopinLayout>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/advanced_setting_btn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:cardBackgroundColor="@color/md_grey_800"
+        app:cardCornerRadius="4dp"
+        app:cardElevation="4dp"
+        app:contentPadding="12dp">
+
+        <com.yat3s.chopin.sample.widget.TitleTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:text="Advanced Setting"
+            android:textColor="@color/white"
+            android:textSize="22sp" />
+    </android.support.v7.widget.CardView>
+</LinearLayout>

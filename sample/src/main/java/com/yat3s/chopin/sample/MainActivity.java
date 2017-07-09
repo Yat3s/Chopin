@@ -53,12 +53,11 @@ public class MainActivity extends AppCompatActivity {
         caseDemos.add(new CaseDemo("RecyclerView", R.mipmap.abstract_1, CaseRecyclerViewActivity.class));
         caseDemos.add(new CaseDemo("Nested\nRecyclerView", R.mipmap.abstract_2, CaseNestedRecyclerViewActivity.class));
         caseDemos.add(new CaseDemo("ViewPager", R.mipmap.abstract_4, CaseViewPagerActivity.class));
-        caseDemos.add(new CaseDemo("ScrollView", R.mipmap.abstract_3, CaseScrollViewActivity.class));
-        caseDemos.add(new CaseDemo("LinearLayout", R.mipmap.abstract_1, CaseLinearLayoutActivity.class));
-        caseDemos.add(new CaseDemo("Fragment", R.mipmap.abstract_2, CaseFragmentActivity.class));
+        caseDemos.add(new CaseDemo("Coordinator\nLayout", R.mipmap.abstract_3, CaseCoordinatorLayoutActivity.class));
+        caseDemos.add(new CaseDemo("ScrollView", R.mipmap.abstract_1, CaseScrollViewActivity.class));
+        caseDemos.add(new CaseDemo("LinearLayout", R.mipmap.abstract_2, CaseLinearLayoutActivity.class));
+        caseDemos.add(new CaseDemo("Fragment", R.mipmap.abstract_4, CaseFragmentActivity.class));
         caseDemos.add(new CaseDemo("WebView", R.mipmap.abstract_3, CaseWebViewActivity.class));
-        caseDemos.add(new CaseDemo("Coordinator\nLayout", R.mipmap.abstract_4, CaseCoordinatorLayoutActivity.class));
-        caseDemos.add(new CaseDemo("Advanced\nSetting", R.color.md_grey_600, AdvancedSettingActivity.class));
 
         CaseDemoAdapter caseDemoAdapter = new CaseDemoAdapter(this, caseDemos);
         recyclerView.setAdapter(caseDemoAdapter);
@@ -66,6 +65,13 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view, CaseDemo item, int position) {
                 startActivity(new Intent(MainActivity.this, item.targetActivity));
+            }
+        });
+
+        findViewById(R.id.advanced_setting_btn).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(MainActivity.this, AdvancedSettingActivity.class));
             }
         });
     }
