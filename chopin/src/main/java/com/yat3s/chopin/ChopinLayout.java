@@ -48,17 +48,17 @@ public class ChopinLayout extends ViewGroup {
      */
     private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
-    // The Refresh Header View.
-    private View mRefreshHeaderIndicator;
+    // The header indicator.
+    private View mHeaderIndicator;
 
-    // The Loading Footer View.
-    private View mLoadingFooterIndicator;
+    // The footer indicator.
+    private View mFooterIndicator;
 
-    // The provider for provide header indicator and some interfaces for interaction,
+    // The provider for provide header indicator and some interfaces with interaction,
     // eg. header indicator animation.
     private RefreshHeaderIndicatorProvider mRefreshHeaderIndicatorProvider;
 
-    // The provider for provide footer indicator and some interfaces for interaction,
+    // The provider for provide footer indicator and some interfaces with interaction,
     // eg. footer indicator animation.
     private LoadingFooterIndicatorProvider mLoadingFooterIndicatorProvider;
 
@@ -157,23 +157,23 @@ public class ChopinLayout extends ViewGroup {
         mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
 
         // Layout refresh header indicator on top of content view.
-        if (null != mRefreshHeaderIndicator) {
-            mRefreshHeaderIndicator.layout(0, -mRefreshHeaderIndicator.getMeasuredHeight(),
-                    mRefreshHeaderIndicator.getMeasuredWidth(), 0);
+        if (null != mHeaderIndicator) {
+            mHeaderIndicator.layout(0, -mHeaderIndicator.getMeasuredHeight(),
+                    mHeaderIndicator.getMeasuredWidth(), 0);
         }
 
         // Layout loading footer indicator on the bottom of content view.
-        if (null != mLoadingFooterIndicator) {
-            mLoadingFooterIndicator.layout(0,
+        if (null != mFooterIndicator) {
+            mFooterIndicator.layout(0,
                     mContentView.getMeasuredHeight(),
-                    mLoadingFooterIndicator.getMeasuredWidth(),
-                    mContentView.getMeasuredHeight() + mLoadingFooterIndicator.getMeasuredHeight());
+                    mFooterIndicator.getMeasuredWidth(),
+                    mContentView.getMeasuredHeight() + mFooterIndicator.getMeasuredHeight());
         }
     }
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+        if (null == mHeaderIndicator && null == mFooterIndicator) {
             return super.dispatchTouchEvent(ev);
         }
 
@@ -201,7 +201,7 @@ public class ChopinLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+        if (null == mHeaderIndicator && null == mFooterIndicator) {
             return super.onInterceptTouchEvent(ev);
         }
         int x = (int) ev.getX(), y = (int) ev.getY();
@@ -220,7 +220,7 @@ public class ChopinLayout extends ViewGroup {
 //                }
 
                 // Intercept pull down event when it is scrolling to top.
-                if (null != mRefreshHeaderIndicator && offsetY > Math.abs(offsetX)) {
+                if (null != mHeaderIndicator && offsetY > Math.abs(offsetX)) {
                     boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentView);
                     if (canDoRefresh) {
                         Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
@@ -229,7 +229,7 @@ public class ChopinLayout extends ViewGroup {
                 }
 
                 // Intercept pull up event when it is scrolling to bottom.
-                if (null != mLoadingFooterIndicator && -offsetY > Math.abs(offsetX)) {
+                if (null != mFooterIndicator && -offsetY > Math.abs(offsetX)) {
                     return mViewScrollChecker.canDoLoading(this, mContentView);
                 }
         }
@@ -243,7 +243,7 @@ public class ChopinLayout extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (null == mRefreshHeaderIndicator && null == mLoadingFooterIndicator) {
+        if (null == mHeaderIndicator && null == mFooterIndicator) {
             return super.onTouchEvent(ev);
         }
 
@@ -258,7 +258,7 @@ public class ChopinLayout extends ViewGroup {
                 boolean pullDown = offsetY < 0;
                 boolean pullUp = offsetY > 0;
 
-                if (null != mRefreshHeaderIndicator) {
+                if (null != mHeaderIndicator) {
                     // ONLY scroll whole view while pull down.
                     // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
                     // It can avoid/stop user pull up from default while user don't set loading footer.
@@ -266,29 +266,32 @@ public class ChopinLayout extends ViewGroup {
                         scrollBy(0, scrollOffsetY);
                     }
 
-                    int progress;
-                    // Scroll distance has over refresh header indicator height.
-                    if (-getScrollY() > mRefreshHeaderIndicator.getMeasuredHeight()) {
-                        progress = 100;
-                    } else {
-                        progress = 100 * -getScrollY() / mRefreshHeaderIndicator.getMeasuredHeight();
+                    if (null != mRefreshHeaderIndicatorProvider) {
+                        int progress;
+                        // Scroll distance has over refresh header indicator height.
+                        if (-getScrollY() > mHeaderIndicator.getMeasuredHeight()) {
+                            progress = 100;
+                        } else {
+                            progress = 100 * -getScrollY() / mHeaderIndicator.getMeasuredHeight();
+                        }
+                        mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                     }
-                    mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                 }
 
-                if (null != mLoadingFooterIndicator) {
+                if (null != mFooterIndicator) {
                     if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
                         scrollBy(0, scrollOffsetY);
                     }
 
-                    int progress;
-                    if (getScrollY() > mLoadingFooterIndicator.getMeasuredHeight()) {
-                        progress = 100;
-                    } else {
-                        progress = 100 * getScrollY() / mLoadingFooterIndicator.getMeasuredHeight();
+                    if (null != mLoadingFooterIndicatorProvider) {
+                        int progress;
+                        if (getScrollY() > mFooterIndicator.getMeasuredHeight()) {
+                            progress = 100;
+                        } else {
+                            progress = 100 * getScrollY() / mFooterIndicator.getMeasuredHeight();
+                        }
+                        mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
                     }
-
-                    mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
                 }
                 mLastTouchY = y;
                 Log.d(TAG, "event--> onTouchEvent: MOVE, true");
@@ -296,10 +299,10 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 if (getScrollY() < 0) {
-                    if (null != mRefreshHeaderIndicator) {
+                    if (null != mRefreshHeaderIndicatorProvider) {
                         if (isRefreshing) {
                             releaseViewToRefreshingStatus();
-                        } else if (-getScrollY() >= mRefreshHeaderIndicator.getMeasuredHeight()) {
+                        } else if (-getScrollY() >= mHeaderIndicator.getMeasuredHeight()) {
                             // Start refreshing while scrollY exceeded refresh header indicator height.
                             releaseViewToRefreshingStatus();
                             startRefresh();
@@ -312,10 +315,10 @@ public class ChopinLayout extends ViewGroup {
                         releaseViewToDefaultStatus();
                     }
                 } else {
-                    if (null != mLoadingFooterIndicator) {
+                    if (null != mLoadingFooterIndicatorProvider) {
                         if (isLoadingMore) {
                             releaseViewToLoadingStatus();
-                        } else if (getScrollY() >= mLoadingFooterIndicator.getMeasuredHeight()) {
+                        } else if (getScrollY() >= mFooterIndicator.getMeasuredHeight()) {
                             releaseViewToLoadingStatus();
                             startLoading();
                         } else {
@@ -335,12 +338,12 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void releaseViewToRefreshingStatus() {
-        mScroller.startScroll(0, getScrollY(), 0, -(mRefreshHeaderIndicator.getMeasuredHeight() + getScrollY()),
+        mScroller.startScroll(0, getScrollY(), 0, -(mHeaderIndicator.getMeasuredHeight() + getScrollY()),
                 SCROLLER_DURATION);
     }
 
     private void releaseViewToLoadingStatus() {
-        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mLoadingFooterIndicator.getMeasuredHeight()),
+        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mFooterIndicator.getMeasuredHeight()),
                 SCROLLER_DURATION);
     }
 
@@ -397,24 +400,40 @@ public class ChopinLayout extends ViewGroup {
         postInvalidate();
     }
 
+    /**
+     * Set Header indicator but it can not do refresh and it is hide in default status, you should
+     * scroll over screen and will find it.
+     * If you want enable refresh you can use {@link #setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider)}
+     * to setup refresh effect and tie something like refresh header scroll progress.
+     *
+     * @param headerIndicator
+     */
+    public void setHeaderIndicator(View headerIndicator) {
+        mHeaderIndicator = headerIndicator;
+        addView(mHeaderIndicator);
+    }
+
+    public void setFooterIndicator(View footerIndicator) {
+        mFooterIndicator = footerIndicator;
+    }
 
     public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
         mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
-        mRefreshHeaderIndicator = refreshHeaderIndicatorProvider.getContentView();
-        if (null != mRefreshHeaderIndicator) {
-            mRefreshHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+        mHeaderIndicator = refreshHeaderIndicatorProvider.getContentView();
+        if (null != mHeaderIndicator) {
+            mHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-            addView(mRefreshHeaderIndicator);
+            addView(mHeaderIndicator);
         }
     }
 
     public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
         mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
-        mLoadingFooterIndicator = loadingFooterIndicatorProvider.getContentView();
-        if (null != mLoadingFooterIndicator) {
-            mLoadingFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+        mFooterIndicator = loadingFooterIndicatorProvider.getContentView();
+        if (null != mFooterIndicator) {
+            mFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-            addView(mLoadingFooterIndicator);
+            addView(mFooterIndicator);
         }
 
         // You can only choose a load more style.

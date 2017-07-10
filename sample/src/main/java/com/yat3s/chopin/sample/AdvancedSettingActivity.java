@@ -1,7 +1,6 @@
 package com.yat3s.chopin.sample;
 
 import android.os.Bundle;
-import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -10,7 +9,6 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
 
 /**
  * Created by Yat3s on 07/07/2017.
@@ -34,43 +32,45 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         // Configure refresh header indicator.
         final View refreshHeaderView = getLayoutInflater().inflate(R.layout.layout_custom_refresh_header, null);
         final TextView progressTv = (TextView) refreshHeaderView.findViewById(R.id.progress_tv);
-        mChopinLayout.setRefreshHeaderIndicator(new RefreshHeaderIndicatorProvider() {
-            @Override
-            public View getContentView() {
-                return refreshHeaderView;
-            }
+        mChopinLayout.setHeaderIndicator(refreshHeaderView);
 
-            @Override
-            public void onRefreshing() {
-                progressTv.setText("Refreshing~");
-            }
-
-            @Override
-            public void onRefreshComplete() {
-                progressTv.setText("Refresh completed!");
-            }
-
-            @Override
-            public void onRefreshHeaderViewScrollChange(@IntRange(from = 0, to = 100) int progress) {
-                if (progress == 100) {
-                    progressTv.setText("Release to refresh~");
-                } else {
-                    progressTv.setText("You can release to refresh when reach to 100 --> " + progress);
-                }
-            }
-        });
-
-        mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mChopinLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mChopinLayout.refreshComplete();
-                    }
-                }, 3000);
-            }
-        });
+//        mChopinLayout.setRefreshHeaderIndicator(new RefreshHeaderIndicatorProvider() {
+//            @Override
+//            public View getContentView() {
+//                return refreshHeaderView;
+//            }
+//
+//            @Override
+//            public void onRefreshing() {
+//                progressTv.setText("Refreshing~");
+//            }
+//
+//            @Override
+//            public void onRefreshComplete() {
+//                progressTv.setText("Refresh completed!");
+//            }
+//
+//            @Override
+//            public void onRefreshHeaderViewScrollChange(@IntRange(from = 0, to = 100) int progress) {
+//                if (progress == 100) {
+//                    progressTv.setText("Release to refresh~");
+//                } else {
+//                    progressTv.setText("You can release to refresh when reach to 100 --> " + progress);
+//                }
+//            }
+//        });
+//
+//        mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
+//            @Override
+//            public void onRefresh() {
+//                mChopinLayout.postDelayed(new Runnable() {
+//                    @Override
+//                    public void run() {
+//                        mChopinLayout.refreshComplete();
+//                    }
+//                }, 3000);
+//            }
+//        });
 
         // Resistance setting.
         AppCompatSeekBar seekBar = (AppCompatSeekBar) findViewById(R.id.seek_bar);
