@@ -100,6 +100,9 @@ public class ChopinLayout extends ViewGroup {
      */
     private boolean intendToLoading = false;
 
+    // The user can drag content over screen, like iOS TableView default scroll effect.
+    private boolean enableOverScroll = true;
+
     public ChopinLayout(Context context) {
         this(context, null);
     }
@@ -173,7 +176,7 @@ public class ChopinLayout extends ViewGroup {
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
-        if (null == mHeaderIndicator && null == mFooterIndicator) {
+        if (!enableOverScroll) {
             return super.dispatchTouchEvent(ev);
         }
 
@@ -201,7 +204,7 @@ public class ChopinLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (null == mHeaderIndicator && null == mFooterIndicator) {
+        if (!enableOverScroll) {
             return super.onInterceptTouchEvent(ev);
         }
         int x = (int) ev.getX(), y = (int) ev.getY();
@@ -213,14 +216,9 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int offsetX = x - mLastTouchX;
                 int offsetY = y - mLastTouchY;
-//
-//                if (isRefreshing || isLoadingMore) {
-//                    Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
-//                    return true;
-//                }
 
                 // Intercept pull down event when it is scrolling to top.
-                if (null != mHeaderIndicator && offsetY > Math.abs(offsetX)) {
+                if (offsetY > Math.abs(offsetX)) {
                     boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentView);
                     if (canDoRefresh) {
                         Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
@@ -229,7 +227,7 @@ public class ChopinLayout extends ViewGroup {
                 }
 
                 // Intercept pull up event when it is scrolling to bottom.
-                if (null != mFooterIndicator && -offsetY > Math.abs(offsetX)) {
+                if (-offsetY > Math.abs(offsetX)) {
                     return mViewScrollChecker.canDoLoading(this, mContentView);
                 }
         }
@@ -243,7 +241,7 @@ public class ChopinLayout extends ViewGroup {
 
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
-        if (null == mHeaderIndicator && null == mFooterIndicator) {
+        if (!enableOverScroll) {
             return super.onTouchEvent(ev);
         }
 
@@ -258,7 +256,6 @@ public class ChopinLayout extends ViewGroup {
                 boolean pullDown = offsetY < 0;
                 boolean pullUp = offsetY > 0;
 
-                if (null != mHeaderIndicator) {
                     // ONLY scroll whole view while pull down.
                     // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
                     // It can avoid/stop user pull up from default while user don't set loading footer.
@@ -276,9 +273,7 @@ public class ChopinLayout extends ViewGroup {
                         }
                         mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                     }
-                }
 
-                if (null != mFooterIndicator) {
                     if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
                         scrollBy(0, scrollOffsetY);
                     }
@@ -292,7 +287,6 @@ public class ChopinLayout extends ViewGroup {
                         }
                         mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
                     }
-                }
                 mLastTouchY = y;
                 Log.d(TAG, "event--> onTouchEvent: MOVE, true");
                 return true;
@@ -507,6 +501,16 @@ public class ChopinLayout extends ViewGroup {
      */
     public void setIndicatorScrollResistance(@FloatRange(from = 0, to = 1.0f) float indicatorScrollResistance) {
         mIndicatorScrollResistance = indicatorScrollResistance;
+    }
+
+    /**
+     * If true user can drag content view over screen, it like iOS default TableView scroll effect.
+     * The default value is true.
+     *
+     * @param enableOverScroll
+     */
+    public void setEnableOverScroll(boolean enableOverScroll) {
+        this.enableOverScroll = enableOverScroll;
     }
 
     /**
