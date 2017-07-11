@@ -217,6 +217,11 @@ public class ChopinLayout extends ViewGroup {
                 int offsetX = x - mLastTouchX;
                 int offsetY = y - mLastTouchY;
 
+                if (isRefreshing || isLoadingMore) {
+                    Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
+                    return true;
+                }
+
                 // Intercept pull down event when it is scrolling to top.
                 if (offsetY > Math.abs(offsetX)) {
                     boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentView);
@@ -256,37 +261,37 @@ public class ChopinLayout extends ViewGroup {
                 boolean pullDown = offsetY < 0;
                 boolean pullUp = offsetY > 0;
 
-                    // ONLY scroll whole view while pull down.
-                    // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
-                    // It can avoid/stop user pull up from default while user don't set loading footer.
-                    if ((getScrollY() == 0 && pullDown) || getScrollY() < 0) {
-                        scrollBy(0, scrollOffsetY);
-                    }
+                // ONLY scroll whole view while pull down.
+                // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
+                // It can avoid/stop user pull up from default while user don't set loading footer.
+                if ((getScrollY() == 0 && pullDown) || getScrollY() < 0) {
+                    scrollBy(0, scrollOffsetY);
+                }
 
-                    if (null != mRefreshHeaderIndicatorProvider) {
-                        int progress;
-                        // Scroll distance has over refresh header indicator height.
-                        if (-getScrollY() > mHeaderIndicator.getMeasuredHeight()) {
-                            progress = 100;
-                        } else {
-                            progress = 100 * -getScrollY() / mHeaderIndicator.getMeasuredHeight();
-                        }
-                        mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
+                if (null != mRefreshHeaderIndicatorProvider) {
+                    int progress;
+                    // Scroll distance has over refresh header indicator height.
+                    if (-getScrollY() > mHeaderIndicator.getMeasuredHeight()) {
+                        progress = 100;
+                    } else {
+                        progress = 100 * -getScrollY() / mHeaderIndicator.getMeasuredHeight();
                     }
+                    mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
+                }
 
-                    if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
-                        scrollBy(0, scrollOffsetY);
-                    }
+                if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
+                    scrollBy(0, scrollOffsetY);
+                }
 
-                    if (null != mLoadingFooterIndicatorProvider) {
-                        int progress;
-                        if (getScrollY() > mFooterIndicator.getMeasuredHeight()) {
-                            progress = 100;
-                        } else {
-                            progress = 100 * getScrollY() / mFooterIndicator.getMeasuredHeight();
-                        }
-                        mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
+                if (null != mLoadingFooterIndicatorProvider) {
+                    int progress;
+                    if (getScrollY() > mFooterIndicator.getMeasuredHeight()) {
+                        progress = 100;
+                    } else {
+                        progress = 100 * getScrollY() / mFooterIndicator.getMeasuredHeight();
                     }
+                    mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
+                }
                 mLastTouchY = y;
                 Log.d(TAG, "event--> onTouchEvent: MOVE, true");
                 return true;
@@ -322,7 +327,6 @@ public class ChopinLayout extends ViewGroup {
                         releaseViewToDefaultStatus();
                     }
                 }
-                return true;
         }
         boolean touch = super.onTouchEvent(ev);
         String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
