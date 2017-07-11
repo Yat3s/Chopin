@@ -26,13 +26,7 @@ public class CaseScrollViewActivity extends BaseCaseActivity {
 
     @Override
     protected void initialize() {
-        // Configure refresh header indicator.
-        final View refreshHeaderView = getLayoutInflater().inflate(R.layout.layout_custom_refresh_header, null);
-        final TextView progressTv = (TextView) refreshHeaderView.findViewById(R.id.progress_tv);
-        mChopinLayout.setHeaderIndicator(refreshHeaderView);
-
-
-//        setupRefreshHeader("refresh.json", 0.2f, 3000);
+        setupRefreshHeader("refresh.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
