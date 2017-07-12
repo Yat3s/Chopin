@@ -6,10 +6,9 @@ import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.view.View;
 
+import com.yat3s.chopin.sample.DataRepo;
 import com.yat3s.chopin.sample.MusicAdapter;
 import com.yat3s.chopin.sample.R;
-
-import java.util.ArrayList;
 
 /**
  * Created by Yat3s on 16/06/2017.
@@ -32,7 +31,7 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
 
         // Configure adapter.
-        MusicAdapter musicAdapter = new MusicAdapter(this, generateMusicData());
+        MusicAdapter musicAdapter = new MusicAdapter(this, DataRepo.generateMusicData());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(musicAdapter);
 
@@ -54,14 +53,5 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
                 recyclerView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL));
             }
         });
-    }
-
-    private ArrayList<MusicAdapter.Music> generateMusicData() {
-        String[] musicNames = getResources().getStringArray(R.array.musics);
-        ArrayList<MusicAdapter.Music> musics = new ArrayList<>();
-        for (String taskName : musicNames) {
-            musics.add(new MusicAdapter.Music(taskName));
-        }
-        return musics;
     }
 }

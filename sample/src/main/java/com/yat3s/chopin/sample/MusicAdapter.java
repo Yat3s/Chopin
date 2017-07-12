@@ -4,8 +4,6 @@ import android.content.Context;
 import android.view.View;
 import android.widget.Toast;
 
-import com.yat3s.chopin.adapter.ChopinViewHolder;
-import com.yat3s.chopin.adapter.StickyHeaderAdapter;
 import com.yat3s.library.adapter.BaseAdapter;
 import com.yat3s.library.adapter.BaseViewHolder;
 
@@ -17,7 +15,7 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 
-public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> implements StickyHeaderAdapter<ChopinViewHolder> {
+public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> {
     private static final String TAG = "MusicAdapter";
 
     public MusicAdapter(Context context, List<Music> data) {
@@ -26,7 +24,8 @@ public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> implements Sti
 
     @Override
     protected void bindDataToItemView(BaseViewHolder holder, Music item, final int position) {
-        holder.setText(R.id.title_tv, item.name);
+        holder.setText(R.id.title_tv, item.name)
+        .setBackgroundResource(R.id.background_iv, item.coverImageResId);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -40,32 +39,14 @@ public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> implements Sti
         return R.layout.item_music;
     }
 
-    @Override
-    public void onBindHeaderViewHolder(ChopinViewHolder holder, final int position) {
-        holder.setTextView(R.id.header_tv, getDataSource().get(position).name);
-        holder.getView(R.id.header_tv).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Toast.makeText(getContext(), "StickyHeader" + position + "", Toast.LENGTH_SHORT).show();
-            }
-        });
-    }
-
-    @Override
-    public int getHeaderViewLayoutId(int position) {
-        return R.layout.layout_sticky_header;
-    }
-
-    @Override
-    public boolean hasHeader(int position) {
-        return position % 8 == 0 && position != 0;
-    }
-
     public static class Music {
         public String name;
 
-        public Music(String name) {
+        public int coverImageResId;
+
+        public Music(String name, int coverImageResId) {
             this.name = name;
+            this.coverImageResId = coverImageResId;
         }
     }
 }

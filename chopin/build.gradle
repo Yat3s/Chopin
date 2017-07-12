@@ -19,6 +19,6 @@ android {
 }
 
 dependencies {
-    compile 'com.android.support:design:25.3.1'
+    compile 'com.android.support:recyclerview-v7:25.3.1'
     compile 'com.airbnb.android:lottie:2.0.0'
 }

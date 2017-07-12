@@ -1,6 +1,5 @@
 package com.yat3s.chopin.sample;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,8 +11,6 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.yat3s.chopin.ViewScrollHelper;
-
-import java.util.ArrayList;
 
 /**
  * Created by Yat3s on 07/07/2017.
@@ -45,7 +42,7 @@ public class RecyclerViewFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
         // Configure adapter.
-        MusicAdapter musicAdapter = new MusicAdapter(getActivity(), generateMusicData());
+        MusicAdapter musicAdapter = new MusicAdapter(getActivity(), DataRepo.generateMusicData());
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(musicAdapter);
 
@@ -65,15 +62,6 @@ public class RecyclerViewFragment extends Fragment {
 
     public boolean canDoLoading() {
         return ViewScrollHelper.viewHasScrolledToBottom(mRecyclerView);
-    }
-
-    private ArrayList<MusicAdapter.Music> generateMusicData() {
-        String[] musicNames = getResources().getStringArray(R.array.musics);
-        ArrayList<MusicAdapter.Music> musics = new ArrayList<>();
-        for (String taskName : musicNames) {
-            musics.add(new MusicAdapter.Music(taskName));
-        }
-        return musics;
     }
 }
 
