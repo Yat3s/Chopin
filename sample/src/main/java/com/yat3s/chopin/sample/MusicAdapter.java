@@ -24,8 +24,7 @@ public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> {
 
     @Override
     protected void bindDataToItemView(BaseViewHolder holder, Music item, final int position) {
-        holder.setText(R.id.title_tv, item.name)
-        .setBackgroundResource(R.id.background_iv, item.coverImageResId);
+        holder.setText(R.id.title_tv, item.name);
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
