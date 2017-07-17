@@ -21,6 +21,16 @@ import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
  * GitHub: https://github.com/yat3s
  */
 public class ChopinLayout extends ViewGroup {
+    private static final int STATE_IDLE = 0;
+
+    private static final int STATE_DRAGGING_DOWN = 1;
+
+    private static final int STATE_DRAGGING_UP = 2;
+
+    private static final int STATE_REFRESHING = 3;
+
+    private static final int STATE_LOADING = 4;
+
     private static final String TAG = "ChopinLayout";
 
     // Support child view count nested in this, NOW only support one child.
@@ -75,7 +85,7 @@ public class ChopinLayout extends ViewGroup {
     private OnLoadMoreListener mOnLoadMoreListener;
 
     // The content view of user set.
-    private View mContentView;
+    private ContentViewWrapper mContentViewWrapper;
 
     /**
      * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
@@ -125,22 +135,16 @@ public class ChopinLayout extends ViewGroup {
         if (getChildCount() > SUPPORT_CHILD_COUNT) {
             throw new IllegalArgumentException("It can ONLY set ONE child view!");
         } else if (getChildCount() == SUPPORT_CHILD_COUNT) {
-            mContentView = getChildAt(0);
+            mContentViewWrapper = new ContentViewWrapper(getChildAt(0));
 
             // Set up auto load more if content view is RecyclerView.
-            if (mContentView instanceof RecyclerView) {
-                setupRecyclerViewAutoLoadMore((RecyclerView) mContentView);
+            if (mContentViewWrapper.getContentView() instanceof RecyclerView) {
+                setupRecyclerViewAutoLoadMore((RecyclerView) mContentViewWrapper.getContentView());
             }
         }
         super.onFinishInflate();
     }
 
-    /**
-     * Measure children.
-     *
-     * @param widthMeasureSpec
-     * @param heightMeasureSpec
-     */
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
@@ -157,7 +161,7 @@ public class ChopinLayout extends ViewGroup {
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         // Layout content view.
-        mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
+        mContentViewWrapper.layout();
 
         // Layout refresh header indicator on top of content view.
         if (null != mHeaderIndicator) {
@@ -168,9 +172,10 @@ public class ChopinLayout extends ViewGroup {
         // Layout loading footer indicator on the bottom of content view.
         if (null != mFooterIndicator) {
             mFooterIndicator.layout(0,
-                    mContentView.getMeasuredHeight(),
+                    mContentViewWrapper.getContentView().getMeasuredHeight(),
                     mFooterIndicator.getMeasuredWidth(),
-                    mContentView.getMeasuredHeight() + mFooterIndicator.getMeasuredHeight());
+                    mContentViewWrapper.getContentView().getMeasuredHeight()
+                            + mFooterIndicator.getMeasuredHeight());
         }
     }
 
@@ -224,7 +229,7 @@ public class ChopinLayout extends ViewGroup {
 
                 // Intercept pull down event when it is scrolling to top.
                 if (offsetY > Math.abs(offsetX)) {
-                    boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentView);
+                    boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getContentView());
                     if (canDoRefresh) {
                         Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
                     }
@@ -233,7 +238,7 @@ public class ChopinLayout extends ViewGroup {
 
                 // Intercept pull up event when it is scrolling to bottom.
                 if (-offsetY > Math.abs(offsetX)) {
-                    return mViewScrollChecker.canDoLoading(this, mContentView);
+                    return mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getContentView());
                 }
         }
 
@@ -256,17 +261,24 @@ public class ChopinLayout extends ViewGroup {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                int offsetY = mLastTouchY - y;
+                int offsetY = y -  mLastTouchY;
                 int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
                 boolean pullDown = offsetY < 0;
                 boolean pullUp = offsetY > 0;
 
-                // ONLY scroll whole view while pull down.
-                // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
-                // It can avoid/stop user pull up from default while user don't set loading footer.
-                if ((getScrollY() == 0 && pullDown) || getScrollY() < 0) {
-                    scrollBy(0, scrollOffsetY);
-                }
+                mContentViewWrapper.scrollVerticalWithOffset(scrollOffsetY);
+
+
+//                // ONLY scroll whole view while pull down.
+//                // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
+//                // It can avoid/stop user pull up from default while user don't set loading footer.
+//                if ((getScrollY() == 0 && pullDown) || getScrollY() < 0) {
+//                    mContentViewWrapper.scrollVerticalWithOffset(scrollOffsetY);
+//                }
+
+//                if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
+//                    scrollBy(0, scrollOffsetY);
+//                }
 
                 if (null != mRefreshHeaderIndicatorProvider) {
                     int progress;
@@ -277,10 +289,6 @@ public class ChopinLayout extends ViewGroup {
                         progress = 100 * -getScrollY() / mHeaderIndicator.getMeasuredHeight();
                     }
                     mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
-                }
-
-                if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
-                    scrollBy(0, scrollOffsetY);
                 }
 
                 if (null != mLoadingFooterIndicatorProvider) {
@@ -297,7 +305,11 @@ public class ChopinLayout extends ViewGroup {
                 return true;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                if (getScrollY() < 0) {
+                if (mContentViewWrapper.hasTranslated()) {
+
+                }
+
+                if (mContentViewWrapper.hasTranslated()) {
                     if (null != mRefreshHeaderIndicatorProvider) {
                         if (isRefreshing) {
                             releaseViewToRefreshingStatus();
