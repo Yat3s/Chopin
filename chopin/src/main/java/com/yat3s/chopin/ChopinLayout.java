@@ -271,30 +271,19 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_MOVE:
                 int offsetY = y - mStartInterceptTouchY;
                 int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
-                boolean pullDown = offsetY < 0;
-                boolean pullUp = offsetY > 0;
-
                 mContentViewWrapper.translateVerticalWithOffset(scrollOffsetY);
 
-                if (null != mRefreshHeaderIndicatorProvider) {
-                    int progress;
+                if (null != mRefreshHeaderIndicatorProvider && mContentViewWrapper.getTranlatedY() > 0) {
                     // Scroll distance has over refresh header indicator height.
-                    if (-getScrollY() > mHeaderIndicator.getMeasuredHeight()) {
-                        progress = 100;
-                    } else {
-                        progress = 100 * -getScrollY() / mHeaderIndicator.getMeasuredHeight();
-                    }
+                    int progress = 100 * mContentViewWrapper.getTranlatedY() / mHeaderIndicator.getMeasuredHeight();
                     mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
+                    Log.d(TAG, "progressR: " + progress);
                 }
 
-                if (null != mLoadingFooterIndicatorProvider) {
-                    int progress;
-                    if (getScrollY() > mFooterIndicator.getMeasuredHeight()) {
-                        progress = 100;
-                    } else {
-                        progress = 100 * getScrollY() / mFooterIndicator.getMeasuredHeight();
-                    }
+                if (null != mLoadingFooterIndicatorProvider && mContentViewWrapper.getTranlatedY() < 0) {
+                    int progress = 100 * -mContentViewWrapper.getTranlatedY() / mFooterIndicator.getMeasuredHeight();
                     mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
+                    Log.d(TAG, "progressF: " + progress);
                 }
                 mLastTouchY = y;
                 Log.d(TAG, "event--> onTouchEvent: MOVE, true");
