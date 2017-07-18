@@ -113,6 +113,9 @@ public class ChopinLayout extends ViewGroup {
     // The user can drag content over screen, like iOS TableView default scroll effect.
     private boolean enableOverScroll = true;
 
+
+    private int mStartInterceptTouchY;
+
     public ChopinLayout(Context context) {
         this(context, null);
     }
@@ -231,6 +234,7 @@ public class ChopinLayout extends ViewGroup {
                 if (offsetY > Math.abs(offsetX)) {
                     boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getContentView());
                     if (canDoRefresh) {
+                        mStartInterceptTouchY = y;
                         Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
                     }
                     return canDoRefresh;
@@ -238,7 +242,11 @@ public class ChopinLayout extends ViewGroup {
 
                 // Intercept pull up event when it is scrolling to bottom.
                 if (-offsetY > Math.abs(offsetX)) {
-                    return mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getContentView());
+                    boolean canDoLoading = mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getContentView());
+                    if (canDoLoading) {
+                        mStartInterceptTouchY = y;
+                    }
+                    return canDoLoading;
                 }
         }
 
@@ -261,24 +269,12 @@ public class ChopinLayout extends ViewGroup {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                int offsetY = y -  mLastTouchY;
+                int offsetY = y - mStartInterceptTouchY;
                 int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
                 boolean pullDown = offsetY < 0;
                 boolean pullUp = offsetY > 0;
 
-                mContentViewWrapper.scrollVerticalWithOffset(scrollOffsetY);
-
-
-//                // ONLY scroll whole view while pull down.
-//                // (getScrollY() == 0 && offsetY < 0) Means it can scroll when user pull down from default status,
-//                // It can avoid/stop user pull up from default while user don't set loading footer.
-//                if ((getScrollY() == 0 && pullDown) || getScrollY() < 0) {
-//                    mContentViewWrapper.scrollVerticalWithOffset(scrollOffsetY);
-//                }
-
-//                if ((getScrollY() == 0 && pullUp) || getScrollY() > 0) {
-//                    scrollBy(0, scrollOffsetY);
-//                }
+                mContentViewWrapper.translateVerticalWithOffset(scrollOffsetY);
 
                 if (null != mRefreshHeaderIndicatorProvider) {
                     int progress;
@@ -306,7 +302,7 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 if (mContentViewWrapper.hasTranslated()) {
-
+                    mContentViewWrapper.releaseToDefaultState();
                 }
 
                 if (mContentViewWrapper.hasTranslated()) {
@@ -404,10 +400,11 @@ public class ChopinLayout extends ViewGroup {
     @Override
     public void computeScroll() {
         super.computeScroll();
+        Log.d(TAG, "computeScroll: ");
         if (mScroller.computeScrollOffset()) {
             scrollTo(0, mScroller.getCurrY());
+            postInvalidate();
         }
-        postInvalidate();
     }
 
     /**

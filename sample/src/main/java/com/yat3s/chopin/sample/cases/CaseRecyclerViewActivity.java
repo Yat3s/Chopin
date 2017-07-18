@@ -4,6 +4,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
+import android.util.Log;
 import android.view.View;
 
 import com.yat3s.chopin.sample.DataRepo;
@@ -16,6 +17,7 @@ import com.yat3s.chopin.sample.R;
  * GitHub: https://github.com/yat3s
  */
 public class CaseRecyclerViewActivity extends BaseCaseActivity {
+    private static final String TAG = "CaseRecyclerView";
     private static final int SPAN_COUNT = 3;
 
     @Override
@@ -29,6 +31,13 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
         setupLoadingFooter("Plane.json", 0.2f, 1500);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                Log.d(TAG, "onScrolled: " + recyclerView.computeVerticalScrollOffset());
+            }
+        });
 
         // Configure adapter.
         MusicAdapter musicAdapter = new MusicAdapter(this, DataRepo.generateMusicData());

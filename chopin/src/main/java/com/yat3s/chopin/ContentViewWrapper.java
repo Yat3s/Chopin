@@ -25,12 +25,20 @@ public class ContentViewWrapper {
         mContentView.layout(0, 0, mContentView.getMeasuredWidth(), mContentView.getMeasuredHeight());
     }
 
-    public void scrollVerticalWithOffset(int offset) {
-        Log.d(TAG, "scrollVerticalWithOffset: " + offset);
-        ViewCompat.offsetTopAndBottom(mContentView, offset);
+    public void translateVerticalWithOffset(int offset) {
+        Log.d(TAG, "translateVerticalWithOffset: " + offset);
+        ViewCompat.setTranslationY(mContentView, offset);
     }
 
     public boolean hasTranslated() {
-        return mContentView.getTop() != 0 || mContentView.getBottom() != mContentView.getHeight();
+        return mContentView.getTranslationY() != 0;
+    }
+
+    public void releaseToDefaultState() {
+        animateTranslation(0);
+    }
+
+    private void animateTranslation(int dy) {
+        mContentView.animate().translationY(dy).start();
     }
 }
