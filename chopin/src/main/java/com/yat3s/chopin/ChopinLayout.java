@@ -32,6 +32,12 @@ public class ChopinLayout extends ViewGroup {
 
     private static final int STATE_LOADING = 4;
 
+    private static final int INDICATOR_STYLE_BEHIND = 0x100;
+
+    private static final int INDICATOR_STYLE_FRONT = 0x101;
+
+    private static final int INDICATOR_STYLE_BORDER = 0x102;
+
     private static final String TAG = "ChopinLayout";
 
     // Support child view count nested in this, NOW only support one child.
@@ -120,6 +126,10 @@ public class ChopinLayout extends ViewGroup {
 
     private int mStartInterceptTouchY;
 
+    private int mHeaderIndicatorStyle = INDICATOR_STYLE_BORDER;
+
+    private int mFooterIndicatorStyle = INDICATOR_STYLE_BORDER;
+
     public ChopinLayout(Context context) {
         this(context, null);
     }
@@ -170,20 +180,45 @@ public class ChopinLayout extends ViewGroup {
         // Layout content view.
         mContentViewWrapper.layout();
 
-        // Layout refresh header indicator on top of content view.
+        // Layout refresh header indicator.
         if (null != mHeaderIndicator) {
-            mHeaderIndicator.layout(0, -mHeaderIndicator.getMeasuredHeight(),
-                    mHeaderIndicator.getMeasuredWidth(), 0);
+            int top = 0, bottom = 0;
+            switch (mHeaderIndicatorStyle) {
+                case INDICATOR_STYLE_FRONT:
+                    mHeaderIndicator.bringToFront();
+                case INDICATOR_STYLE_BEHIND:
+                    top = 0;
+                    bottom = mHeaderIndicator.getMeasuredHeight();
+                    break;
+                case INDICATOR_STYLE_BORDER:
+                    top = -mHeaderIndicator.getMeasuredHeight();
+                    bottom = 0;
+                    break;
+            }
+            mHeaderIndicator.layout(0, top, mHeaderIndicator.getMeasuredWidth(), bottom);
         }
 
-        // Layout loading footer indicator on the bottom of content view.
+        // Layout loading footer indicator.
         if (null != mFooterIndicator) {
-            mFooterIndicator.layout(0,
-                    mContentViewWrapper.getContentView().getMeasuredHeight(),
-                    mFooterIndicator.getMeasuredWidth(),
-                    mContentViewWrapper.getContentView().getMeasuredHeight()
-                            + mFooterIndicator.getMeasuredHeight());
+            int top = 0, bottom = 0;
+            switch (mFooterIndicatorStyle) {
+                case INDICATOR_STYLE_BEHIND:
+                case INDICATOR_STYLE_FRONT:
+                    mFooterIndicator.bringToFront();
+                    top = mContentViewWrapper.getContentView().getMeasuredHeight() -
+                            mFooterIndicator.getMeasuredHeight();
+                    bottom = mContentViewWrapper.getContentView().getMeasuredHeight();
+                    break;
+                case INDICATOR_STYLE_BORDER:
+                    top = mContentViewWrapper.getContentView().getMeasuredHeight();
+                    bottom = mContentViewWrapper.getContentView().getMeasuredHeight() +
+                            mFooterIndicator.getMeasuredHeight();
+                    break;
+            }
+            mFooterIndicator.layout(0, top, mFooterIndicator.getMeasuredWidth(), bottom);
         }
+
+        mContentViewWrapper.getContentView().bringToFront();
     }
 
     boolean canBeDragOver = false;
@@ -222,19 +257,29 @@ public class ChopinLayout extends ViewGroup {
 
                 // Use intent to pull down
                 boolean pullDown = dy > 0;
-
                 if (canBeDragOver) {
                     int offsetY = y - mStartInterceptTouchY;
                     int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
                     mContentViewWrapper.translateVerticalWithOffset(scrollOffsetY);
+                    mLastTouchY = y;
                     if (!mHasDispatchCancelEvent) {
                         sendCancelEvent();
                         mHasDispatchCancelEvent = true;
                     }
-                    if (dy == 0) {
-                        Log.d(TAG, "dispatchTouchEvent: canBeDragOver false");
-                        canBeDragOver = false;
+
+                    if (null != mRefreshHeaderIndicatorProvider && mContentViewWrapper.getTranslationY() > 0) {
+                        // Scroll distance has over refresh header indicator height.
+                        int progress = 100 * mContentViewWrapper.getTranslationY() / mHeaderIndicator.getMeasuredHeight();
+                        mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
+                        Log.d(TAG, "progressR: " + progress);
                     }
+
+                    if (null != mLoadingFooterIndicatorProvider && mContentViewWrapper.getTranslationY() < 0) {
+                        int progress = 100 * -mContentViewWrapper.getTranslationY() / mFooterIndicator.getMeasuredHeight();
+                        mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
+                        Log.d(TAG, "progressF: " + progress);
+                    }
+
                     return true;
                 } else {
                     if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getContentView())
@@ -258,7 +303,8 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_UP:
                 canBeDragOver = false;
                 if (mContentViewWrapper.hasTranslated()) {
-                    mContentViewWrapper.releaseToDefaultState();
+                    Log.d(TAG, "hasTranslated: ");
+                    releaseViewToDefaultStatus();
                 }
                 break;
         }
@@ -402,8 +448,7 @@ public class ChopinLayout extends ViewGroup {
 //    }
 
     private void releaseViewToRefreshingStatus() {
-        mScroller.startScroll(0, getScrollY(), 0, -(mHeaderIndicator.getMeasuredHeight() + getScrollY()),
-                SCROLLER_DURATION);
+
     }
 
     private void releaseViewToLoadingStatus() {
@@ -412,7 +457,13 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void releaseViewToDefaultStatus() {
-        mScroller.startScroll(0, getScrollY(), 0, -getScrollY());
+        mContentViewWrapper.releaseToDefaultState();
+        if (null != mRefreshHeaderIndicatorProvider) {
+            mRefreshHeaderIndicatorProvider.onCancel();
+        }
+        if (null != mLoadingFooterIndicatorProvider) {
+            mLoadingFooterIndicatorProvider.onCancel();
+        }
     }
 
     private void startRefresh() {
