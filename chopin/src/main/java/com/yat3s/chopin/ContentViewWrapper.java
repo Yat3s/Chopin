@@ -30,7 +30,7 @@ public class ContentViewWrapper {
         ViewCompat.setTranslationY(mContentView, offset);
     }
 
-    public int getTranlatedY() {
+    public int getTranslationY() {
         return (int) mContentView.getTranslationY();
     }
 

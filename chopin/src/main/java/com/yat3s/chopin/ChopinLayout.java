@@ -9,6 +9,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.widget.Scroller;
 
@@ -113,6 +114,9 @@ public class ChopinLayout extends ViewGroup {
     // The user can drag content over screen, like iOS TableView default scroll effect.
     private boolean enableOverScroll = true;
 
+    private boolean mHasDispatchCancelEvent = false;
+
+    private MotionEvent mLastMoveEvent;
 
     private int mStartInterceptTouchY;
 
@@ -182,14 +186,20 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
+    boolean canBeDragOver = false;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!enableOverScroll) {
             return super.dispatchTouchEvent(ev);
         }
-
+        int x = (int) ev.getX(), y = (int) ev.getY();
         switch (ev.getAction()) {
             case MotionEvent.ACTION_DOWN:
+                mLastTouchX = x;
+                mLastTouchY = y;
+                canBeDragOver = false;
+                mHasDispatchCancelEvent = false;
                 Log.d(TAG, "event--> dispatchTouchEvent: DOWN, true");
 
                 // Dispatch ACTION_DOWN event to child for process if child never consume
@@ -202,6 +212,55 @@ public class ChopinLayout extends ViewGroup {
                 // for disable dispatch this motion.
                 // REF: it is a Recursion method, so it will execute the last child dispatch method.
                 return true;
+
+            case MotionEvent.ACTION_MOVE:
+                mLastMoveEvent = ev;
+                int dx = x - mLastTouchX;
+                int dy = y - mLastTouchY;
+
+                Log.d(TAG, "dispatchTouchEvent: dy " + dy);
+
+                // Use intent to pull down
+                boolean pullDown = dy > 0;
+
+                if (canBeDragOver) {
+                    int offsetY = y - mStartInterceptTouchY;
+                    int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
+                    mContentViewWrapper.translateVerticalWithOffset(scrollOffsetY);
+                    if (!mHasDispatchCancelEvent) {
+                        sendCancelEvent();
+                        mHasDispatchCancelEvent = true;
+                    }
+                    if (dy == 0) {
+                        Log.d(TAG, "dispatchTouchEvent: canBeDragOver false");
+                        canBeDragOver = false;
+                    }
+                    return true;
+                } else {
+                    if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getContentView())
+                            && dy > Math.abs(dx)) {
+                        mStartInterceptTouchY = y;
+                        canBeDragOver = true;
+                        Log.d(TAG, "dispatchTouchEvent: canBeDragOver pull down");
+                        return true;
+                    } else if (mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getContentView())
+                            && -dy > Math.abs(dx)) {
+                        canBeDragOver = true;
+                        mStartInterceptTouchY = y;
+                        Log.d(TAG, "dispatchTouchEvent: canBeDragOver pull up");
+                        return true;
+                    }
+                }
+
+                break;
+
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                canBeDragOver = false;
+                if (mContentViewWrapper.hasTranslated()) {
+                    mContentViewWrapper.releaseToDefaultState();
+                }
+                break;
         }
         boolean dispatch = super.dispatchTouchEvent(ev);
         String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
@@ -210,127 +269,137 @@ public class ChopinLayout extends ViewGroup {
         return super.dispatchTouchEvent(ev);
     }
 
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent ev) {
-        if (!enableOverScroll) {
-            return super.onInterceptTouchEvent(ev);
+    private void sendCancelEvent() {
+        if (mLastMoveEvent == null) {
+            return;
         }
-        int x = (int) ev.getX(), y = (int) ev.getY();
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                mLastTouchX = x;
-                mLastTouchY = y;
-                break;
-            case MotionEvent.ACTION_MOVE:
-                int offsetX = x - mLastTouchX;
-                int offsetY = y - mLastTouchY;
-
-                if (isRefreshing || isLoadingMore) {
-                    Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
-                    return true;
-                }
-
-                // Intercept pull down event when it is scrolling to top.
-                if (offsetY > Math.abs(offsetX)) {
-                    boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getContentView());
-                    if (canDoRefresh) {
-                        mStartInterceptTouchY = y;
-                        Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
-                    }
-                    return canDoRefresh;
-                }
-
-                // Intercept pull up event when it is scrolling to bottom.
-                if (-offsetY > Math.abs(offsetX)) {
-                    boolean canDoLoading = mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getContentView());
-                    if (canDoLoading) {
-                        mStartInterceptTouchY = y;
-                    }
-                    return canDoLoading;
-                }
-        }
-
-        boolean intercept = super.onInterceptTouchEvent(ev);
-        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
-                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
-        Log.d(TAG, "event--> onInterceptTouchEvent: " + actionName + ", " + intercept);
-        return intercept;
+        MotionEvent last = mLastMoveEvent;
+        MotionEvent event = MotionEvent.obtain(last.getDownTime(), last.getEventTime() + ViewConfiguration.getLongPressTimeout()
+                , MotionEvent.ACTION_CANCEL, mLastTouchX, mLastTouchY, last.getMetaState());
+        super.dispatchTouchEvent(event);
     }
 
-    @Override
-    public boolean onTouchEvent(MotionEvent ev) {
-        if (!enableOverScroll) {
-            return super.onTouchEvent(ev);
-        }
+//    @Override
+//    public boolean onInterceptTouchEvent(MotionEvent ev) {
+//        if (!enableOverScroll) {
+//            return super.onInterceptTouchEvent(ev);
+//        }
+//        int x = (int) ev.getX(), y = (int) ev.getY();
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                mLastTouchX = x;
+//                mLastTouchY = y;
+//                break;
+//            case MotionEvent.ACTION_MOVE:
+//                int offsetX = x - mLastTouchX;
+//                int offsetY = y - mLastTouchY;
+//
+//                if (isRefreshing || isLoadingMore) {
+//                    Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
+//                    return true;
+//                }
+//
+//                // Intercept pull down event when it is scrolling to top.
+//                if (offsetY > Math.abs(offsetX)) {
+//                    boolean canDoRefresh = mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getContentView());
+//                    if (canDoRefresh) {
+//                        mStartInterceptTouchY = y;
+//                        Log.d(TAG, "event--> onInterceptTouchEvent: MOVE ,true intercepted while refreshing!");
+//                    }
+//                    return canDoRefresh;
+//                }
+//
+//                // Intercept pull up event when it is scrolling to bottom.
+//                if (-offsetY > Math.abs(offsetX)) {
+//                    boolean canDoLoading = mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getContentView());
+//                    if (canDoLoading) {
+//                        mStartInterceptTouchY = y;
+//                    }
+//                    return canDoLoading;
+//                }
+//        }
+//
+//        boolean intercept = super.onInterceptTouchEvent(ev);
+//        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
+//                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
+//        Log.d(TAG, "event--> onInterceptTouchEvent: " + actionName + ", " + intercept);
+//        return intercept;
+//    }
 
-        int y = (int) ev.getY();
-        switch (ev.getAction()) {
-            case MotionEvent.ACTION_DOWN:
-                break;
-
-            case MotionEvent.ACTION_MOVE:
-                int offsetY = y - mStartInterceptTouchY;
-                int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
-                mContentViewWrapper.translateVerticalWithOffset(scrollOffsetY);
-
-                if (null != mRefreshHeaderIndicatorProvider && mContentViewWrapper.getTranlatedY() > 0) {
-                    // Scroll distance has over refresh header indicator height.
-                    int progress = 100 * mContentViewWrapper.getTranlatedY() / mHeaderIndicator.getMeasuredHeight();
-                    mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
-                    Log.d(TAG, "progressR: " + progress);
-                }
-
-                if (null != mLoadingFooterIndicatorProvider && mContentViewWrapper.getTranlatedY() < 0) {
-                    int progress = 100 * -mContentViewWrapper.getTranlatedY() / mFooterIndicator.getMeasuredHeight();
-                    mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
-                    Log.d(TAG, "progressF: " + progress);
-                }
-                mLastTouchY = y;
-                Log.d(TAG, "event--> onTouchEvent: MOVE, true");
-                return true;
-            case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
-                if (mContentViewWrapper.hasTranslated()) {
-                    mContentViewWrapper.releaseToDefaultState();
-                }
-
-                if (mContentViewWrapper.hasTranslated()) {
-                    if (null != mRefreshHeaderIndicatorProvider) {
-                        if (isRefreshing) {
-                            releaseViewToRefreshingStatus();
-                        } else if (-getScrollY() >= mHeaderIndicator.getMeasuredHeight()) {
-                            // Start refreshing while scrollY exceeded refresh header indicator height.
-                            releaseViewToRefreshingStatus();
-                            startRefresh();
-                        } else {
-                            // Cancel some move events while it not meet refresh or loading demands.
-                            releaseViewToDefaultStatus();
-                        }
-                    } else {
-                        // Abort this scroll "journey" if has some unexpected exceptions.
-                        releaseViewToDefaultStatus();
-                    }
-                } else {
-                    if (null != mLoadingFooterIndicatorProvider) {
-                        if (isLoadingMore) {
-                            releaseViewToLoadingStatus();
-                        } else if (getScrollY() >= mFooterIndicator.getMeasuredHeight()) {
-                            releaseViewToLoadingStatus();
-                            startLoading();
-                        } else {
-                            releaseViewToDefaultStatus();
-                        }
-                    } else {
-                        releaseViewToDefaultStatus();
-                    }
-                }
-        }
-        boolean touch = super.onTouchEvent(ev);
-        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
-                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
-        Log.d(TAG, "event--> onTouchEvent: " + actionName + ", " + touch);
-        return touch;
-    }
+//    @Override
+//    public boolean onTouchEvent(MotionEvent ev) {
+//        if (!enableOverScroll) {
+//            return super.onTouchEvent(ev);
+//        }
+//
+//        int y = (int) ev.getY();
+//        switch (ev.getAction()) {
+//            case MotionEvent.ACTION_DOWN:
+//                break;
+//
+//            case MotionEvent.ACTION_MOVE:
+//                int offsetY = y - mStartInterceptTouchY;
+//                int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
+//                mContentViewWrapper.translateVerticalWithOffset(scrollOffsetY);
+//
+//                if (null != mRefreshHeaderIndicatorProvider && mContentViewWrapper.getTranslationY() > 0) {
+//                    // Scroll distance has over refresh header indicator height.
+//                    int progress = 100 * mContentViewWrapper.getTranslationY() / mHeaderIndicator.getMeasuredHeight();
+//                    mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
+//                    Log.d(TAG, "progressR: " + progress);
+//                }
+//
+//                if (null != mLoadingFooterIndicatorProvider && mContentViewWrapper.getTranslationY() < 0) {
+//                    int progress = 100 * -mContentViewWrapper.getTranslationY() / mFooterIndicator.getMeasuredHeight();
+//                    mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
+//                    Log.d(TAG, "progressF: " + progress);
+//                }
+//                mLastTouchY = y;
+//                Log.d(TAG, "event--> onTouchEvent: MOVE, true");
+//                return true;
+//            case MotionEvent.ACTION_CANCEL:
+//            case MotionEvent.ACTION_UP:
+//                if (mContentViewWrapper.hasTranslated()) {
+//                    mContentViewWrapper.releaseToDefaultState();
+//                }
+//
+//                if (mContentViewWrapper.hasTranslated()) {
+//                    if (null != mRefreshHeaderIndicatorProvider) {
+//                        if (isRefreshing) {
+//                            releaseViewToRefreshingStatus();
+//                        } else if (-getScrollY() >= mHeaderIndicator.getMeasuredHeight()) {
+//                            // Start refreshing while scrollY exceeded refresh header indicator height.
+//                            releaseViewToRefreshingStatus();
+//                            startRefresh();
+//                        } else {
+//                            // Cancel some move events while it not meet refresh or loading demands.
+//                            releaseViewToDefaultStatus();
+//                        }
+//                    } else {
+//                        // Abort this scroll "journey" if has some unexpected exceptions.
+//                        releaseViewToDefaultStatus();
+//                    }
+//                } else {
+//                    if (null != mLoadingFooterIndicatorProvider) {
+//                        if (isLoadingMore) {
+//                            releaseViewToLoadingStatus();
+//                        } else if (getScrollY() >= mFooterIndicator.getMeasuredHeight()) {
+//                            releaseViewToLoadingStatus();
+//                            startLoading();
+//                        } else {
+//                            releaseViewToDefaultStatus();
+//                        }
+//                    } else {
+//                        releaseViewToDefaultStatus();
+//                    }
+//                }
+//        }
+//        boolean touch = super.onTouchEvent(ev);
+//        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
+//                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
+//        Log.d(TAG, "event--> onTouchEvent: " + actionName + ", " + touch);
+//        return touch;
+//    }
 
     private void releaseViewToRefreshingStatus() {
         mScroller.startScroll(0, getScrollY(), 0, -(mHeaderIndicator.getMeasuredHeight() + getScrollY()),
