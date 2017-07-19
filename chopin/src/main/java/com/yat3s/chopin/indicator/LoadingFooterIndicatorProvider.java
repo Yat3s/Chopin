@@ -1,15 +1,9 @@
 package com.yat3s.chopin.indicator;
 
-import android.view.View;
-
-public interface LoadingFooterIndicatorProvider {
-    View getContentView();
-
-    void onCancel();
-
+public interface LoadingFooterIndicatorProvider extends IBaseIndicator {
     void onLoading();
 
     void onLoadingComplete();
 
-    void onFooterViewScrollChange(int progress);
+    void onFooterIndicatorViewScrollChange(int progress);
 }

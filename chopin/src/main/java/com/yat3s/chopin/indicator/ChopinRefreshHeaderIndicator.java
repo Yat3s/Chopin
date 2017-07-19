@@ -49,8 +49,7 @@ public class ChopinRefreshHeaderIndicator extends LottieAnimationView implements
 
     @Override
     public void onCancel() {
-        setProgress(0);
-        cancelAnimation();
+
     }
 
     @Override
@@ -64,7 +63,7 @@ public class ChopinRefreshHeaderIndicator extends LottieAnimationView implements
     }
 
     @Override
-    public void onRefreshHeaderViewScrollChange(int progress) {
+    public void onHeaderIndicatorViewScrollChange(int progress) {
         setProgress(progress / 100.0f);
     }
 }

@@ -49,8 +49,7 @@ public class ChopinLoadingFooterIndicator extends LottieAnimationView implements
 
     @Override
     public void onCancel() {
-        setProgress(0);
-        cancelAnimation();
+
     }
 
     @Override
@@ -64,7 +63,7 @@ public class ChopinLoadingFooterIndicator extends LottieAnimationView implements
     }
 
     @Override
-    public void onFooterViewScrollChange(int progress) {
+    public void onFooterIndicatorViewScrollChange(int progress) {
         setProgress(progress / 100.0f);
     }
 }

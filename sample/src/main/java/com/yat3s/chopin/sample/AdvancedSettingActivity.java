@@ -51,7 +51,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
 //            }
 //
 //            @Override
-//            public void onRefreshHeaderViewScrollChange(@IntRange(from = 0, to = 100) int progress) {
+//            public void onHeaderIndicatorViewScrollChange(@IntRange(from = 0, to = 100) int progress) {
 //                if (progress == 100) {
 //                    progressTv.setText("Release to refresh~");
 //                } else {
