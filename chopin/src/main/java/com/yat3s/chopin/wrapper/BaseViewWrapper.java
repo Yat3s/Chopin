@@ -3,6 +3,7 @@ package com.yat3s.chopin.wrapper;
 import android.animation.ValueAnimator;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
+import android.util.Log;
 import android.view.View;
 
 /**
@@ -46,14 +47,15 @@ public class BaseViewWrapper {
         ViewCompat.setTranslationY(mContentView, offset);
     }
 
-    public void animateTranslationY(final int start, final int end, @Nullable final AnimateListener
-            animateListener) {
+    public void animateTranslationY(final int start, final int end,
+                                    @Nullable final AnimateListener animateListener) {
         ValueAnimator valueAnimator = ValueAnimator.ofInt(start, end);
         valueAnimator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
                 translateVerticalWithOffset(value);
+                Log.d("sss", "onAnimationUpdate: " + value + ", " + end);
                 if (null != animateListener) {
                     animateListener.onAnimate(value);
                     if (end == value) {

@@ -5,7 +5,12 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.FrameLayout;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
 import com.yat3s.chopin.sample.DataRepo;
 import com.yat3s.chopin.sample.MusicAdapter;
@@ -47,7 +52,9 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
         findViewById(R.id.linear_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(CaseRecyclerViewActivity.this));
+//                recyclerView.setLayoutManager(new LinearLayoutManager(CaseRecyclerViewActivity.this));
+
+
             }
         });
         findViewById(R.id.grid_btn).setOnClickListener(new View.OnClickListener() {
