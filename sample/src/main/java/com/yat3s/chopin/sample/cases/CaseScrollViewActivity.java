@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.sample.R;
 
 import java.util.ArrayList;
@@ -26,9 +27,10 @@ public class CaseScrollViewActivity extends BaseCaseActivity {
 
     @Override
     protected void initialize() {
-//        setupRefreshHeader("refresh.json", 0.2f, 3000);
-//        setupLoadingFooter("Plane.json", 0.2f, 1500);
-        mChopinLayout.setEnableOverScroll(true);
+        setupRefreshHeader("refresh.json", 0.2f, 3000);
+        setupLoadingFooter("Plane.json", 0.2f, 1500);
+        mChopinLayout.setHeaderIndicatorStyle(ChopinLayout.INDICATOR_STYLE_BEHIND);
+        mChopinLayout.setFooterIndicatorStyle(ChopinLayout.INDICATOR_STYLE_BEHIND);
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {
             @Override

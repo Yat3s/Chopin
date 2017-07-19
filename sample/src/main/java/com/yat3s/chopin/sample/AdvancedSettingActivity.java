@@ -32,7 +32,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         // Configure refresh header indicator.
         final View refreshHeaderView = getLayoutInflater().inflate(R.layout.layout_custom_refresh_header, null);
         final TextView progressTv = (TextView) refreshHeaderView.findViewById(R.id.progress_tv);
-        mChopinLayout.setHeaderIndicator(refreshHeaderView);
+        mChopinLayout.setHeaderIndicatorView(refreshHeaderView);
 
 //        mChopinLayout.setRefreshHeaderIndicator(new RefreshHeaderIndicatorProvider() {
 //            @Override

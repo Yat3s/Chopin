@@ -3,6 +3,7 @@ package com.yat3s.chopin;
 import android.content.Context;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -32,11 +33,11 @@ public class ChopinLayout extends ViewGroup {
 
     private static final int STATE_LOADING = 4;
 
-    private static final int INDICATOR_STYLE_BEHIND = 0x100;
+    public static final int INDICATOR_STYLE_BEHIND = 0x100;
 
-    private static final int INDICATOR_STYLE_FRONT = 0x101;
+    public static final int INDICATOR_STYLE_FRONT = 0x101;
 
-    private static final int INDICATOR_STYLE_BORDER = 0x102;
+    public static final int INDICATOR_STYLE_BORDER = 0x102;
 
     private static final String TAG = "ChopinLayout";
 
@@ -66,10 +67,10 @@ public class ChopinLayout extends ViewGroup {
     private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
     // The header indicator.
-    private View mHeaderIndicator;
+    private View mHeaderIndicatorView;
 
     // The footer indicator.
-    private View mFooterIndicator;
+    private View mFooterIndicatorView;
 
     // The provider for provide header indicator and some interfaces with interaction,
     // eg. header indicator animation.
@@ -179,46 +180,45 @@ public class ChopinLayout extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         // Layout content view.
         mContentViewWrapper.layout();
+        mContentViewWrapper.getContentView().bringToFront();
 
         // Layout refresh header indicator.
-        if (null != mHeaderIndicator) {
+        if (null != mHeaderIndicatorView) {
             int top = 0, bottom = 0;
             switch (mHeaderIndicatorStyle) {
                 case INDICATOR_STYLE_FRONT:
-                    mHeaderIndicator.bringToFront();
-                case INDICATOR_STYLE_BEHIND:
-                    top = 0;
-                    bottom = mHeaderIndicator.getMeasuredHeight();
-                    break;
+                    mHeaderIndicatorView.bringToFront();
                 case INDICATOR_STYLE_BORDER:
-                    top = -mHeaderIndicator.getMeasuredHeight();
+                    top = -mHeaderIndicatorView.getMeasuredHeight();
                     bottom = 0;
                     break;
+                case INDICATOR_STYLE_BEHIND:
+                    top = 0;
+                    bottom = mHeaderIndicatorView.getMeasuredHeight();
+                    break;
             }
-            mHeaderIndicator.layout(0, top, mHeaderIndicator.getMeasuredWidth(), bottom);
+            mHeaderIndicatorView.layout(0, top, mHeaderIndicatorView.getMeasuredWidth(), bottom);
         }
 
         // Layout loading footer indicator.
-        if (null != mFooterIndicator) {
+        if (null != mFooterIndicatorView) {
             int top = 0, bottom = 0;
             switch (mFooterIndicatorStyle) {
-                case INDICATOR_STYLE_BEHIND:
                 case INDICATOR_STYLE_FRONT:
-                    mFooterIndicator.bringToFront();
-                    top = mContentViewWrapper.getContentView().getMeasuredHeight() -
-                            mFooterIndicator.getMeasuredHeight();
-                    bottom = mContentViewWrapper.getContentView().getMeasuredHeight();
-                    break;
+                    mFooterIndicatorView.bringToFront();
                 case INDICATOR_STYLE_BORDER:
                     top = mContentViewWrapper.getContentView().getMeasuredHeight();
                     bottom = mContentViewWrapper.getContentView().getMeasuredHeight() +
-                            mFooterIndicator.getMeasuredHeight();
+                            mFooterIndicatorView.getMeasuredHeight();
+                    break;
+                case INDICATOR_STYLE_BEHIND:
+                    top = mContentViewWrapper.getContentView().getMeasuredHeight() -
+                            mFooterIndicatorView.getMeasuredHeight();
+                    bottom = mContentViewWrapper.getContentView().getMeasuredHeight();
                     break;
             }
-            mFooterIndicator.layout(0, top, mFooterIndicator.getMeasuredWidth(), bottom);
+            mFooterIndicatorView.layout(0, top, mFooterIndicatorView.getMeasuredWidth(), bottom);
         }
-
-        mContentViewWrapper.getContentView().bringToFront();
     }
 
     boolean canBeDragOver = false;
@@ -259,23 +259,25 @@ public class ChopinLayout extends ViewGroup {
                 boolean pullDown = dy > 0;
                 if (canBeDragOver) {
                     int offsetY = y - mStartInterceptTouchY;
-                    int scrollOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
-                    mContentViewWrapper.translateVerticalWithOffset(scrollOffsetY);
-                    mLastTouchY = y;
+                    int translationOffsetY = (int) (offsetY * (1 - mIndicatorScrollResistance));
+                    translateView(translationOffsetY);
                     if (!mHasDispatchCancelEvent) {
                         sendCancelEvent();
                         mHasDispatchCancelEvent = true;
                     }
 
-                    if (null != mRefreshHeaderIndicatorProvider && mContentViewWrapper.getTranslationY() > 0) {
+                    Log.d(TAG, "mContentViewWrapper.getTranslationY(): " + mContentViewWrapper.getTranslationY() + ", " +
+                            translationOffsetY);
+
+                    if (null != mRefreshHeaderIndicatorProvider && translationOffsetY > 0) {
                         // Scroll distance has over refresh header indicator height.
-                        int progress = 100 * mContentViewWrapper.getTranslationY() / mHeaderIndicator.getMeasuredHeight();
+                        int progress = 100 * translationOffsetY / mHeaderIndicatorView.getMeasuredHeight();
                         mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
                         Log.d(TAG, "progressR: " + progress);
                     }
 
-                    if (null != mLoadingFooterIndicatorProvider && mContentViewWrapper.getTranslationY() < 0) {
-                        int progress = 100 * -mContentViewWrapper.getTranslationY() / mFooterIndicator.getMeasuredHeight();
+                    if (null != mLoadingFooterIndicatorProvider && translationOffsetY < 0) {
+                        int progress = 100 * -translationOffsetY / mFooterIndicatorView.getMeasuredHeight();
                         mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
                         Log.d(TAG, "progressF: " + progress);
                     }
@@ -302,10 +304,7 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 canBeDragOver = false;
-                if (mContentViewWrapper.hasTranslated()) {
-                    Log.d(TAG, "hasTranslated: ");
-                    releaseViewToDefaultStatus();
-                }
+                releaseViewToDefaultStatus();
                 break;
         }
         boolean dispatch = super.dispatchTouchEvent(ev);
@@ -313,6 +312,58 @@ public class ChopinLayout extends ViewGroup {
                 ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
         Log.d(TAG, "event--> dispatchTouchEvent: " + actionName + ", " + dispatch);
         return super.dispatchTouchEvent(ev);
+    }
+
+    private void translateView(int translationOffsetY) {
+        if (translationOffsetY > 0) {
+            switch (mHeaderIndicatorStyle) {
+                case INDICATOR_STYLE_FRONT:
+                    if (null != mHeaderIndicatorView) {
+                        ViewCompat.setTranslationY(mHeaderIndicatorView, translationOffsetY);
+                    }
+                    break;
+                case INDICATOR_STYLE_BEHIND:
+                    mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
+                    break;
+                case INDICATOR_STYLE_BORDER:
+                    if (null != mHeaderIndicatorView) {
+                        ViewCompat.setTranslationY(mHeaderIndicatorView, translationOffsetY);
+                    }
+                    mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
+                    break;
+            }
+        } else {
+            switch (mFooterIndicatorStyle) {
+                case INDICATOR_STYLE_FRONT:
+                    if (null != mFooterIndicatorView) {
+                        ViewCompat.setTranslationY(mFooterIndicatorView, translationOffsetY);
+                    }
+                    break;
+                case INDICATOR_STYLE_BEHIND:
+                    mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
+                    break;
+                case INDICATOR_STYLE_BORDER:
+                    if (null != mFooterIndicatorView) {
+                        ViewCompat.setTranslationY(mFooterIndicatorView, translationOffsetY);
+                    }
+                    mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
+                    break;
+            }
+        }
+
+    }
+
+    private void releaseViewToDefaultStatus() {
+        mContentViewWrapper.releaseToDefaultState();
+
+        if (null != mRefreshHeaderIndicatorProvider) {
+            mHeaderIndicatorView.animate().translationY(0).start();
+            mRefreshHeaderIndicatorProvider.onCancel();
+        }
+        if (null != mLoadingFooterIndicatorProvider) {
+            mFooterIndicatorView.animate().translationY(0).start();
+            mLoadingFooterIndicatorProvider.onCancel();
+        }
     }
 
     private void sendCancelEvent() {
@@ -390,13 +441,13 @@ public class ChopinLayout extends ViewGroup {
 //
 //                if (null != mRefreshHeaderIndicatorProvider && mContentViewWrapper.getTranslationY() > 0) {
 //                    // Scroll distance has over refresh header indicator height.
-//                    int progress = 100 * mContentViewWrapper.getTranslationY() / mHeaderIndicator.getMeasuredHeight();
+//                    int progress = 100 * mContentViewWrapper.getTranslationY() / mHeaderIndicatorView.getMeasuredHeight();
 //                    mRefreshHeaderIndicatorProvider.onRefreshHeaderViewScrollChange(progress);
 //                    Log.d(TAG, "progressR: " + progress);
 //                }
 //
 //                if (null != mLoadingFooterIndicatorProvider && mContentViewWrapper.getTranslationY() < 0) {
-//                    int progress = 100 * -mContentViewWrapper.getTranslationY() / mFooterIndicator.getMeasuredHeight();
+//                    int progress = 100 * -mContentViewWrapper.getTranslationY() / mFooterIndicatorView.getMeasuredHeight();
 //                    mLoadingFooterIndicatorProvider.onFooterViewScrollChange(progress);
 //                    Log.d(TAG, "progressF: " + progress);
 //                }
@@ -413,7 +464,7 @@ public class ChopinLayout extends ViewGroup {
 //                    if (null != mRefreshHeaderIndicatorProvider) {
 //                        if (isRefreshing) {
 //                            releaseViewToRefreshingStatus();
-//                        } else if (-getScrollY() >= mHeaderIndicator.getMeasuredHeight()) {
+//                        } else if (-getScrollY() >= mHeaderIndicatorView.getMeasuredHeight()) {
 //                            // Start refreshing while scrollY exceeded refresh header indicator height.
 //                            releaseViewToRefreshingStatus();
 //                            startRefresh();
@@ -429,7 +480,7 @@ public class ChopinLayout extends ViewGroup {
 //                    if (null != mLoadingFooterIndicatorProvider) {
 //                        if (isLoadingMore) {
 //                            releaseViewToLoadingStatus();
-//                        } else if (getScrollY() >= mFooterIndicator.getMeasuredHeight()) {
+//                        } else if (getScrollY() >= mFooterIndicatorView.getMeasuredHeight()) {
 //                            releaseViewToLoadingStatus();
 //                            startLoading();
 //                        } else {
@@ -452,19 +503,10 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void releaseViewToLoadingStatus() {
-        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mFooterIndicator.getMeasuredHeight()),
+        mScroller.startScroll(0, getScrollY(), 0, -(getScrollY() - mFooterIndicatorView.getMeasuredHeight()),
                 SCROLLER_DURATION);
     }
 
-    private void releaseViewToDefaultStatus() {
-        mContentViewWrapper.releaseToDefaultState();
-        if (null != mRefreshHeaderIndicatorProvider) {
-            mRefreshHeaderIndicatorProvider.onCancel();
-        }
-        if (null != mLoadingFooterIndicatorProvider) {
-            mLoadingFooterIndicatorProvider.onCancel();
-        }
-    }
 
     private void startRefresh() {
         isRefreshing = true;
@@ -522,34 +564,34 @@ public class ChopinLayout extends ViewGroup {
      * If you want enable refresh you can use {@link #setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider)}
      * to setup refresh effect and tie something like refresh header scroll progress.
      *
-     * @param headerIndicator
+     * @param headerIndicatorView
      */
-    public void setHeaderIndicator(View headerIndicator) {
-        mHeaderIndicator = headerIndicator;
-        addView(mHeaderIndicator);
+    public void setHeaderIndicatorView(View headerIndicatorView) {
+        mHeaderIndicatorView = headerIndicatorView;
+        addView(mHeaderIndicatorView);
     }
 
-    public void setFooterIndicator(View footerIndicator) {
-        mFooterIndicator = footerIndicator;
+    public void setFooterIndicatorView(View footerIndicatorView) {
+        mFooterIndicatorView = footerIndicatorView;
     }
 
     public void setRefreshHeaderIndicator(RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
         mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
-        mHeaderIndicator = refreshHeaderIndicatorProvider.getContentView();
-        if (null != mHeaderIndicator) {
-            mHeaderIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+        mHeaderIndicatorView = refreshHeaderIndicatorProvider.getContentView();
+        if (null != mHeaderIndicatorView) {
+            mHeaderIndicatorView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-            addView(mHeaderIndicator);
+            addView(mHeaderIndicatorView);
         }
     }
 
     public void setLoadingFooterIndicator(LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
         mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
-        mFooterIndicator = loadingFooterIndicatorProvider.getContentView();
-        if (null != mFooterIndicator) {
-            mFooterIndicator.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
+        mFooterIndicatorView = loadingFooterIndicatorProvider.getContentView();
+        if (null != mFooterIndicatorView) {
+            mFooterIndicatorView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
                     LayoutParams.WRAP_CONTENT));
-            addView(mFooterIndicator);
+            addView(mFooterIndicatorView);
         }
 
         // You can only choose a load more style.
@@ -643,6 +685,14 @@ public class ChopinLayout extends ViewGroup {
      */
     public void setViewScrollChecker(@NonNull com.yat3s.chopin.ViewScrollChecker viewScrollChecker) {
         mViewScrollChecker = viewScrollChecker;
+    }
+
+    public void setHeaderIndicatorStyle(int headerIndicatorStyle) {
+        mHeaderIndicatorStyle = headerIndicatorStyle;
+    }
+
+    public void setFooterIndicatorStyle(int footerIndicatorStyle) {
+        mFooterIndicatorStyle = footerIndicatorStyle;
     }
 
     public void setOnRefreshListener(OnRefreshListener onRefreshListener) {
