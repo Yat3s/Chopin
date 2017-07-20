@@ -20,6 +20,12 @@
 
     </com.yat3s.chopin.ChopinLayout>
 
+    <TextView
+        android:id="@+id/state_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="8dp"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

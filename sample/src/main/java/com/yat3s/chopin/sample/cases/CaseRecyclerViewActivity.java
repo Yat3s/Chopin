@@ -5,13 +5,10 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.sample.DataRepo;
 import com.yat3s.chopin.sample.MusicAdapter;
 import com.yat3s.chopin.sample.R;
@@ -41,6 +38,33 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
                 Log.d(TAG, "onScrolled: " + recyclerView.computeVerticalScrollOffset());
+            }
+        });
+
+        final TextView stateTv = (TextView) findViewById(R.id.state_tv);
+        mChopinLayout.setOnStateChangeListener(new ChopinLayout.OnStateChangeListener() {
+            @Override
+            public void onStateChanged(ChopinLayout layout, int newState) {
+                switch (newState) {
+                    case ChopinLayout.STATE_DEFAULT:
+                        stateTv.setText("STATE_DEFAULT");
+                        break;
+                    case ChopinLayout.STATE_BOUNCING:
+                        stateTv.setText("STATE_BOUNCING");
+                        break;
+                    case ChopinLayout.STATE_DRAGGING_DOWN:
+                        stateTv.setText("STATE_DRAGGING_DOWN");
+                        break;
+                    case ChopinLayout.STATE_DRAGGING_UP:
+                        stateTv.setText("STATE_DRAGGING_UP");
+                        break;
+                    case ChopinLayout.STATE_REFRESHING:
+                        stateTv.setText("STATE_REFRESHING");
+                        break;
+                    case ChopinLayout.STATE_LOADING:
+                        stateTv.setText("STATE_LOADING");
+                        break;
+                }
             }
         });
 
