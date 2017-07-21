@@ -68,8 +68,8 @@ public class ChopinLayout extends ViewGroup {
      * The default checker is only check whether view has scrolled to top or bottom.
      * <p>
      *
-     * @see {@link DefaultViewScrollChecker#canDoRefresh(ChopinLayout, View)},
-     * {@link DefaultViewScrollChecker#canDoLoading(ChopinLayout, View)}
+     * @see DefaultViewScrollChecker#canDoRefresh(ChopinLayout, View),
+     * @see DefaultViewScrollChecker#canDoLoading(ChopinLayout, View)
      */
     private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
