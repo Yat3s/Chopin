@@ -25,23 +25,19 @@ import com.yat3s.chopin.wrapper.IndicatorViewWrapper;
  * GitHub: https://github.com/yat3s
  */
 public class ChopinLayout extends ViewGroup {
-    enum State {
-        IDLE, DRAGGING_DOWN, DRAGGING_UP, REFRESHING, LOADING
-    }
-
     static final boolean DEBUG = true;
 
-    private static final int STATE_DEFAULT = 0;
+    public static final int STATE_DEFAULT = 0;
 
-    private static final int STATE_DRAGGING_DOWN = 1;
+    public static final int STATE_DRAGGING_DOWN = 1;
 
-    private static final int STATE_DRAGGING_UP = 2;
+    public static final int STATE_DRAGGING_UP = 2;
 
-    private static final int STATE_REFRESHING = 3;
+    public static final int STATE_REFRESHING = 3;
 
-    private static final int STATE_LOADING = 4;
+    public static final int STATE_LOADING = 4;
 
-    private static final int STATE_BOUNCING = 5;
+    public static final int STATE_BOUNCING = 5;
 
     public static final int INDICATOR_STYLE_BEHIND = 0x100;
 
@@ -329,7 +325,7 @@ public class ChopinLayout extends ViewGroup {
                 if (translatedOffsetY > 0) {
                     if (null != mRefreshHeaderIndicatorProvider) {
                         if (isRefreshing) {
-                            abortThisDrag();
+                            releaseViewToRefreshingStatus();
                         } else if (translatedOffsetY >= mHeaderIndicatorView.getHeight()) {
                             // Start refreshing while scrollY exceeded refresh header indicator height.
                             releaseViewToRefreshingStatus();
