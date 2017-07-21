@@ -459,11 +459,11 @@ public class ChopinLayout extends ViewGroup {
      * Default
      */
     private void releaseViewToDefaultStatus() {
-        mContentViewWrapper.releaseToDefaultState();
+        mContentViewWrapper.releaseToDefaultStatus();
         if ((mState == STATE_DRAGGING_DOWN || mState == STATE_REFRESHING || mState == STATE_LOADING)
                 && null != mRefreshHeaderIndicatorProvider) {
 
-            // Start bouncing.
+            // Bouncing start.
             setState(STATE_BOUNCING);
 
             int start = mHeaderIndicatorStyle == INDICATOR_STYLE_BEHIND
@@ -480,6 +480,7 @@ public class ChopinLayout extends ViewGroup {
 
                         @Override
                         public void onFinish() {
+                            // Bouncing end.
                             setState(STATE_DEFAULT);
                         }
                     });
@@ -844,7 +845,7 @@ public class ChopinLayout extends ViewGroup {
 //            case MotionEvent.ACTION_CANCEL:
 //            case MotionEvent.ACTION_UP:
 //                if (mContentViewWrapper.hasTranslated()) {
-//                    mContentViewWrapper.releaseToDefaultState();
+//                    mContentViewWrapper.releaseToDefaultStatus();
 //                }
 //
 //                if (mContentViewWrapper.hasTranslated()) {
