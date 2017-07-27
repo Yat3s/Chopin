@@ -5,6 +5,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -22,6 +23,7 @@ import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
  * GitHub: https://github.com/yat3s
  */
 public class AdvancedSettingActivity extends AppCompatActivity {
+    private static final String TAG = "AdvancedSettingActivity";
     private static final int COMPLETE_DELAY = 2000;
 
     private ChopinLayout mChopinLayout;
@@ -140,7 +142,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                 });
 
                 final View footerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
-                final TextView footerProgressTv = (TextView) headerIndicatorView.findViewById(R.id.progress_tv);
+                final TextView footerProgressTv = (TextView) footerIndicatorView.findViewById(R.id.progress_tv);
                 mChopinLayout.setLoadingFooterIndicator(new LoadingFooterIndicatorProvider() {
                     @Override
                     public void onLoading() {
@@ -156,6 +158,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
 
                     @Override
                     public void onFooterIndicatorViewScrollChange(int progress) {
+                        Log.d(TAG, "onFooterIndicatorViewScrollChange: " + progress);
                         if (progress == 100) {
                             footerProgressTv.setText("Release to load~");
                         } else {
