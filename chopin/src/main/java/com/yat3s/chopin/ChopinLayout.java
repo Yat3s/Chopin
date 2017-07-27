@@ -322,17 +322,17 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
                 canBeDragOver = false;
-                int movedOffsetY = y - mLastActionDownY;
 
-                // Pull down.
-                if (movedOffsetY > 0) {
+                int currentTranslatedOffsetY = getCurrentTranslatedOffsetY();
+                // Content view has been dragged down.
+                if (currentTranslatedOffsetY > 0) {
                     if (null != mRefreshHeaderIndicatorProvider) {
                         int translatedOffsetY = mHeaderIndicatorLocation == INDICATOR_LOCATION_FRONT
                                 ? mHeaderIndicatorView.getTranslationY()
                                 : mContentViewWrapper.getTranslationY();
                         // release view to refresh status while is refreshing or scrollY exceeded
                         // refresh header indicator height.
-                        if (mState == STATE_REFRESHING || translatedOffsetY >= mHeaderIndicatorView.getHeight()) {
+                        if (mState == STATE_REFRESHING || Math.abs(translatedOffsetY) >= mHeaderIndicatorView.getHeight()) {
                             releaseViewToRefreshingStatus();
                         } else {
                             // Abort some move events while it not meet refresh or loading demands.
@@ -344,15 +344,13 @@ public class ChopinLayout extends ViewGroup {
                     }
                 }
 
-                // Pull up.
-                if (movedOffsetY < 0) {
+                // Content view has been dragged up.
+                if (currentTranslatedOffsetY < 0) {
                     if (null != mLoadingFooterIndicatorProvider) {
                         int translatedOffsetY = mFooterIndicatorLocation == INDICATOR_LOCATION_FRONT
                                 ? mFooterIndicatorView.getTranslationY()
                                 : mContentViewWrapper.getTranslationY();
-                        if (mState == STATE_LOADING) {
-                            abortThisDrag();
-                        } else if (-translatedOffsetY >= mFooterIndicatorView.getHeight()) {
+                        if (mState == STATE_LOADING || Math.abs(translatedOffsetY) >= mFooterIndicatorView.getHeight()) {
                             releaseViewToLoadingStatus();
                         } else {
                             abortThisDrag();
@@ -371,6 +369,7 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void translateView(int translationOffsetY) {
+        Log.d(TAG, "translateView: ");
         if (translationOffsetY > 0) {
             if (null == mHeaderIndicatorView) {
                 mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
@@ -414,18 +413,18 @@ public class ChopinLayout extends ViewGroup {
      * Refreshing
      */
     private void releaseViewToRefreshingStatus() {
+        if (null == mRefreshHeaderIndicatorProvider) {
+            return;
+        }
+        Log.d(TAG, "releaseViewToRefreshingStatus: ");
         setState(STATE_BOUNCING);
-        if (null != mRefreshHeaderIndicatorProvider) {
-            int start = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
-                    ? mContentViewWrapper.getTranslationY()
-                    : mHeaderIndicatorView.getTranslationY();
-            mHeaderIndicatorView.animateTranslationY(start, mHeaderIndicatorView.getHeight(),
-                    new BaseViewWrapper.AnimateListener() {
+        if (mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK) {
+            mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
+                    mHeaderIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
                         @Override
                         public void onAnimate(int value) {
                             int progress = 100 * value / mHeaderIndicatorView.getHeight();
                             mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
-                            mContentViewWrapper.translateVerticalWithOffset(value);
                         }
 
                         @Override
@@ -433,7 +432,29 @@ public class ChopinLayout extends ViewGroup {
                             if (mState != STATE_REFRESHING) {
                                 startRefresh();
                             } else {
-                                // TODO: 27/07/2017  It may cause state wrong while dragging in refreshing status.
+                                // TODO: 27/07/2017  It may cause wrong state while dragging in refreshing status.
+                                setState(STATE_REFRESHING);
+                            }
+                        }
+                    });
+        } else {
+            mHeaderIndicatorView.animateTranslationY(mHeaderIndicatorView.getTranslationY(),
+                    mHeaderIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
+                        @Override
+                        public void onAnimate(int value) {
+                            int progress = 100 * value / mHeaderIndicatorView.getHeight();
+                            mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
+                            if (mHeaderIndicatorLocation != INDICATOR_LOCATION_FRONT) {
+                                mContentViewWrapper.translateVerticalWithOffset(value);
+                            }
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            if (mState != STATE_REFRESHING) {
+                                startRefresh();
+                            } else {
+                                // TODO: 27/07/2017  It may cause wrong state while dragging in refreshing status.
                                 setState(STATE_REFRESHING);
                             }
                         }
@@ -445,19 +466,18 @@ public class ChopinLayout extends ViewGroup {
      * Loading
      */
     private void releaseViewToLoadingStatus() {
+        if (null == mLoadingFooterIndicatorProvider) {
+            return;
+        }
+        Log.d(TAG, "releaseViewToLoadingStatus: ");
         setState(STATE_BOUNCING);
-        if (null != mLoadingFooterIndicatorProvider) {
-            int start = mFooterIndicatorLocation == INDICATOR_LOCATION_BACK
-                    ? mContentViewWrapper.getTranslationY()
-                    : mFooterIndicatorView.getTranslationY();
-            mFooterIndicatorView.animateTranslationY(start, mFooterIndicatorView.getHeight(),
-                    new BaseViewWrapper.AnimateListener() {
+        if (mFooterIndicatorLocation == INDICATOR_LOCATION_BACK) {
+            mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
+                    -mFooterIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
                         @Override
                         public void onAnimate(int value) {
                             int progress = 100 * value / mFooterIndicatorView.getHeight();
-                            Log.d(TAG, "Refresh progress: " + value);
-                            mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
-                            mContentViewWrapper.translateVerticalWithOffset(value);
+                            mLoadingFooterIndicatorProvider.onFooterIndicatorViewScrollChange(progress);
                         }
 
                         @Override
@@ -465,7 +485,29 @@ public class ChopinLayout extends ViewGroup {
                             if (mState != STATE_LOADING) {
                                 startLoading();
                             } else {
-                                // TODO: 27/07/2017
+                                // TODO: 27/07/2017  It may cause wrong state while dragging in loading status.
+                                setState(STATE_LOADING);
+                            }
+                        }
+                    });
+        } else {
+            mFooterIndicatorView.animateTranslationY(mFooterIndicatorView.getTranslationY(),
+                    -mFooterIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
+                        @Override
+                        public void onAnimate(int value) {
+                            int progress = 100 * value / mFooterIndicatorView.getHeight();
+                            mLoadingFooterIndicatorProvider.onFooterIndicatorViewScrollChange(progress);
+                            if (mFooterIndicatorLocation != INDICATOR_LOCATION_FRONT) {
+                                mContentViewWrapper.translateVerticalWithOffset(value);
+                            }
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            if (mState != STATE_LOADING) {
+                                startLoading();
+                            } else {
+                                // TODO: 27/07/2017  It may cause wrong state while dragging in loading status.
                                 setState(STATE_LOADING);
                             }
                         }
@@ -473,23 +515,32 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
+    private int getCurrentTranslatedOffsetY() {
+        int currentTranslatedOffsetY = 0;
+        if (mContentViewWrapper.getTranslationY() == 0) {
+            if (null != mHeaderIndicatorView && mHeaderIndicatorView.getTranslationY() > 0) {
+                currentTranslatedOffsetY = mHeaderIndicatorView.getTranslationY();
+            }
+            if (null != mFooterIndicatorView && mFooterIndicatorView.getTranslationY() < 0) {
+                currentTranslatedOffsetY = mFooterIndicatorView.getTranslationY();
+            }
+        } else {
+            currentTranslatedOffsetY = mContentViewWrapper.getTranslationY();
+        }
+        if (DEBUG) {
+            Log.d(TAG, "getCurrentTranslatedOffsetY: " + currentTranslatedOffsetY);
+        }
+        return currentTranslatedOffsetY;
+    }
+
     /**
      * Default
      */
     private void releaseViewToDefaultStatus() {
-        int currentMovedOffsetY = 0;
-        if (mContentViewWrapper.getTranslationY() == 0) {
-            if (null != mHeaderIndicatorView && mHeaderIndicatorView.getTranslationY() > 0) {
-                currentMovedOffsetY = mHeaderIndicatorView.getTranslationY();
-            }
-            if (null != mFooterIndicatorView && mFooterIndicatorView.getTranslationY() > 0) {
-                currentMovedOffsetY = mFooterIndicatorView.getTranslationY();
-            }
-        } else {
-            currentMovedOffsetY = mContentViewWrapper.getTranslationY();
-        }
+        Log.d(TAG, "releaseViewToDefaultStatus: ");
 
-        if (currentMovedOffsetY > 0) {
+        int currentTranslatedOffsetY = getCurrentTranslatedOffsetY();
+        if (currentTranslatedOffsetY > 0) {
             // Bouncing start.
             setState(STATE_BOUNCING);
             // ContentView will rebound when it have no HeaderIndicatorView
@@ -504,7 +555,7 @@ public class ChopinLayout extends ViewGroup {
                                         mHeaderIndicatorView.translateVerticalWithOffset(value);
                                     }
                                     if (null != mRefreshHeaderIndicatorProvider) {
-                                        int progress = (100 * value / mHeaderIndicatorView.getHeight());
+                                        int progress = (100 * Math.abs(value) / mHeaderIndicatorView.getHeight());
                                         mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
                                     }
                                 }
@@ -525,7 +576,7 @@ public class ChopinLayout extends ViewGroup {
                                     mHeaderIndicatorView.translateVerticalWithOffset(value);
                                 }
                                 if (null != mRefreshHeaderIndicatorProvider) {
-                                    int progress = (100 * value / mHeaderIndicatorView.getHeight());
+                                    int progress = 100 * Math.abs(value) / mHeaderIndicatorView.getHeight();
                                     mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
                                 }
                             }
@@ -540,7 +591,7 @@ public class ChopinLayout extends ViewGroup {
 
         }
 
-        if (currentMovedOffsetY < 0) {
+        if (currentTranslatedOffsetY < 0) {
             // Bouncing start.
             setState(STATE_BOUNCING);
 
@@ -556,7 +607,7 @@ public class ChopinLayout extends ViewGroup {
                                         mFooterIndicatorView.translateVerticalWithOffset(value);
                                     }
                                     if (null != mLoadingFooterIndicatorProvider) {
-                                        int progress = (100 * value / mFooterIndicatorView.getHeight());
+                                        int progress = 100 * Math.abs(value) / mFooterIndicatorView.getHeight();
                                         mLoadingFooterIndicatorProvider.onFooterIndicatorViewScrollChange(progress);
                                     }
                                 }
@@ -577,7 +628,7 @@ public class ChopinLayout extends ViewGroup {
                                     mFooterIndicatorView.translateVerticalWithOffset(value);
                                 }
                                 if (null != mLoadingFooterIndicatorProvider) {
-                                    int progress = (100 * value / mFooterIndicatorView.getHeight());
+                                    int progress = (100 * Math.abs(value) / mFooterIndicatorView.getHeight());
                                     mLoadingFooterIndicatorProvider.onFooterIndicatorViewScrollChange(progress);
                                 }
                             }
