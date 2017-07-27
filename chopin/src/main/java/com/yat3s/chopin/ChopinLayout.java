@@ -690,6 +690,7 @@ public class ChopinLayout extends ViewGroup {
         if (null != mHeaderIndicatorView) {
             removeView(mHeaderIndicatorView.getView());
         }
+        headerIndicatorView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         mHeaderIndicatorView = new IndicatorViewWrapper(headerIndicatorView);
         addView(headerIndicatorView);
     }
@@ -698,6 +699,7 @@ public class ChopinLayout extends ViewGroup {
         if (null != mFooterIndicatorView) {
             removeView(mFooterIndicatorView.getView());
         }
+        footerIndicatorView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         mFooterIndicatorView = new IndicatorViewWrapper(footerIndicatorView);
         addView(footerIndicatorView);
     }
@@ -705,26 +707,25 @@ public class ChopinLayout extends ViewGroup {
     public void setRefreshHeaderIndicator(@NonNull RefreshHeaderIndicatorProvider refreshHeaderIndicatorProvider) {
         mRefreshHeaderIndicatorProvider = refreshHeaderIndicatorProvider;
         View contentView = refreshHeaderIndicatorProvider.getContentView();
-        mHeaderIndicatorView = new IndicatorViewWrapper(contentView);
         if (null != contentView) {
-            contentView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT));
-            addView(contentView);
+            setHeaderIndicatorView(contentView);
+        } else {
+            mRefreshHeaderIndicatorProvider = null;
+            throw new IllegalArgumentException("The refresh header indicator content view is null!");
         }
     }
 
     public void setLoadingFooterIndicator(@NonNull LoadingFooterIndicatorProvider loadingFooterIndicatorProvider) {
         mLoadingFooterIndicatorProvider = loadingFooterIndicatorProvider;
         View contentView = loadingFooterIndicatorProvider.getContentView();
-        mFooterIndicatorView = new IndicatorViewWrapper(contentView);
         if (null != contentView) {
-            contentView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT,
-                    LayoutParams.WRAP_CONTENT));
-            addView(contentView);
+            setFooterIndicatorView(contentView);
+            // You can only choose a load more style.
+            autoTriggerLoadMore = false;
+        } else {
+            mLoadingFooterIndicatorProvider = null;
+            throw new IllegalArgumentException("The refresh header indicator content view is null!");
         }
-
-        // You can only choose a load more style.
-        autoTriggerLoadMore = false;
     }
 
     public void clearHeaderIndicator() {
