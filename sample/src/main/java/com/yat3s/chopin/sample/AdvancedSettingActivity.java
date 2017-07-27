@@ -106,12 +106,12 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         findViewById(R.id.indicator_style_custom_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final View indicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
-                final TextView progressTv = (TextView) indicatorView.findViewById(R.id.progress_tv);
+                final View headerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
+                final TextView headerProgressTv = (TextView) headerIndicatorView.findViewById(R.id.progress_tv);
                 mChopinLayout.setRefreshHeaderIndicator(new RefreshHeaderIndicatorProvider() {
                     @Override
                     public View getContentView() {
-                        return indicatorView;
+                        return headerIndicatorView;
                     }
 
                     @Override
@@ -121,49 +121,51 @@ public class AdvancedSettingActivity extends AppCompatActivity {
 
                     @Override
                     public void onRefreshing() {
-                        progressTv.setText("Refreshing~");
+                        headerProgressTv.setText("Refreshing~");
                     }
 
                     @Override
                     public void onRefreshComplete() {
-                        progressTv.setText("Refresh completed!");
+                        headerProgressTv.setText("Refresh completed!");
                     }
 
                     @Override
                     public void onHeaderIndicatorViewScrollChange(@IntRange(from = 0, to = 100) int progress) {
                         if (progress == 100) {
-                            progressTv.setText("Release to refresh~");
+                            headerProgressTv.setText("Release to refresh~");
                         } else {
-                            progressTv.setText("You can release to refresh when reach to 100 --> " + progress);
+                            headerProgressTv.setText("You can release to refresh when reach to 100 --> " + progress);
                         }
                     }
                 });
 
+                final View footerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
+                final TextView footerProgressTv = (TextView) headerIndicatorView.findViewById(R.id.progress_tv);
                 mChopinLayout.setLoadingFooterIndicator(new LoadingFooterIndicatorProvider() {
                     @Override
                     public void onLoading() {
-                        progressTv.setText("Loadinging~");
+                        footerProgressTv.setText("Loadinging~");
 
                     }
 
                     @Override
                     public void onLoadingComplete() {
-                        progressTv.setText("Load more completed!");
+                        footerProgressTv.setText("Load more completed!");
 
                     }
 
                     @Override
                     public void onFooterIndicatorViewScrollChange(int progress) {
                         if (progress == 100) {
-                            progressTv.setText("Release to load~");
+                            footerProgressTv.setText("Release to load~");
                         } else {
-                            progressTv.setText("You can release to load when reach to 100 --> " + progress);
+                            footerProgressTv.setText("You can release to load when reach to 100 --> " + progress);
                         }
                     }
 
                     @Override
                     public View getContentView() {
-                        return indicatorView;
+                        return footerIndicatorView;
                     }
 
                     @Override
