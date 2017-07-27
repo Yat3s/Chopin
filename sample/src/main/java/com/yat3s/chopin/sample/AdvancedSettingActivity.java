@@ -158,7 +158,6 @@ public class AdvancedSettingActivity extends AppCompatActivity {
 
                     @Override
                     public void onFooterIndicatorViewScrollChange(int progress) {
-                        Log.d(TAG, "onFooterIndicatorViewScrollChange: " + progress);
                         if (progress == 100) {
                             footerProgressTv.setText("Release to load~");
                         } else {
@@ -203,10 +202,18 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         findViewById(R.id.indicator_style_only_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ImageView indicatorIv = new ImageView(AdvancedSettingActivity.this);
-                indicatorIv.setImageResource(R.mipmap.stamp_1);
-                mChopinLayout.setHeaderIndicatorView(indicatorIv);
-                mChopinLayout.setFooterIndicatorView(indicatorIv);
+                mChopinLayout.clearFooterIndicator();
+                mChopinLayout.clearHeaderIndicator();
+
+                ImageView headerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
+                headerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                headerIndicatorIv.setImageResource(R.mipmap.abstract_1);
+
+                ImageView footerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
+                footerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                footerIndicatorIv.setImageResource(R.mipmap.abstract_2);
+                mChopinLayout.setHeaderIndicatorView(headerIndicatorIv);
+                mChopinLayout.setFooterIndicatorView(footerIndicatorIv);
             }
         });
         findViewById(R.id.indicator_style_null_btn).setOnClickListener(new View.OnClickListener() {

@@ -3,7 +3,6 @@ package com.yat3s.chopin.wrapper;
 import android.animation.ValueAnimator;
 import android.support.annotation.Nullable;
 import android.support.v4.view.ViewCompat;
-import android.util.Log;
 import android.view.View;
 
 /**
@@ -61,7 +60,7 @@ public class BaseViewWrapper {
             }
         });
         int dy = Math.abs(end - start);
-        valueAnimator.setDuration(dy > getHeight() * 2 ? MAX_SCROLL_DURATION : dy);
+        valueAnimator.setDuration(dy > MAX_SCROLL_DURATION ? MAX_SCROLL_DURATION : dy);
         valueAnimator.start();
     }
 

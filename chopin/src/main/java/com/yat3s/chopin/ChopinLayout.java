@@ -49,9 +49,6 @@ public class ChopinLayout extends ViewGroup {
     // Support child view count nested in this, NOW only support one child.
     private static final int SUPPORT_CHILD_COUNT = 1;
 
-    // Scroller duration while release to do some action.
-    private static final int SCROLLER_DURATION = 800;
-
     // Scroll resistance, if it equal 0f will scroll no any friction,
     // if it equal 1f will can not scroll.
     private float mIndicatorScrollResistance = 0.32f;
@@ -86,12 +83,6 @@ public class ChopinLayout extends ViewGroup {
     // eg. footer indicator animation.
     private LoadingFooterIndicatorProvider mLoadingFooterIndicatorProvider;
 
-    // Knowing whether recycler view is refreshing.
-    private boolean isRefreshing;
-
-    // Knowing whether recycler view is loading more.
-    private boolean isLoadingMore;
-
     // The refresh listener
     private OnRefreshListener mOnRefreshListener;
 
@@ -111,18 +102,6 @@ public class ChopinLayout extends ViewGroup {
      * item < {@link #mLoadMoreRemainShowItemCount}
      */
     private boolean autoTriggerLoadMore = false;
-
-    /**
-     * If true, it means the content view has scrolled to top and
-     * user try to pull down {@link #getScrollY()} < 0,
-     */
-    private boolean intendToRefresh = false;
-
-    /**
-     * If true, it means the content view has scrolled to bottom and
-     * user try to pull up {@link #getScrollY()} > 0,
-     */
-    private boolean intendToLoading = false;
 
     // The user can drag content over screen, like iOS TableView default scroll effect.
     private boolean enableOverScroll = true;
@@ -246,7 +225,9 @@ public class ChopinLayout extends ViewGroup {
                 mLastActionDownY = y;
                 canBeDragOver = false;
                 mHasDispatchCancelEvent = false;
-                Log.d(TAG, "event--> dispatchTouchEvent: DOWN, true");
+                if (DEBUG) {
+                    Log.d(TAG, "event--> dispatchTouchEvent: DOWN, true");
+                }
 
                 // Dispatch ACTION_DOWN event to child for process if child never consume
                 // this event.
@@ -264,7 +245,9 @@ public class ChopinLayout extends ViewGroup {
                 int dx = x - mLastActionDownX;
                 int dy = y - mLastActionDownY;
 
-                Log.d(TAG, "dispatchTouchEvent: dy " + dy);
+                if (DEBUG) {
+                    Log.d(TAG, "dispatchTouchEvent: dy " + dy);
+                }
 
                 // Use intent to pull down
                 boolean pullDown = dy > 0;
@@ -290,13 +273,11 @@ public class ChopinLayout extends ViewGroup {
                         // Scroll distance has over refresh header indicator height.
                         int progress = 100 * translationOffsetY / mHeaderIndicatorView.getHeight();
                         mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
-                        Log.d(TAG, "progressR: " + progress);
                     }
 
                     if (null != mLoadingFooterIndicatorProvider && translationOffsetY < 0) {
                         int progress = 100 * -translationOffsetY / mFooterIndicatorView.getHeight();
                         mLoadingFooterIndicatorProvider.onFooterIndicatorViewScrollChange(progress);
-                        Log.d(TAG, "progressF: " + progress);
                     }
 
                     return true;
@@ -361,15 +342,17 @@ public class ChopinLayout extends ViewGroup {
                 }
                 break;
         }
+
         boolean dispatch = super.dispatchTouchEvent(ev);
-        String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
-                ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
-        Log.d(TAG, "event--> dispatchTouchEvent: " + actionName + ", " + dispatch);
-        return super.dispatchTouchEvent(ev);
+        if (DEBUG) {
+            String actionName = ev.getAction() == MotionEvent.ACTION_DOWN ? "DOWN" :
+                    ev.getAction() == MotionEvent.ACTION_MOVE ? "MOVE" : "UP";
+            Log.d(TAG, "event--> dispatchTouchEvent: " + actionName + ", " + dispatch);
+        }
+        return dispatch;
     }
 
     private void translateView(int translationOffsetY) {
-        Log.d(TAG, "translateView: ");
         if (translationOffsetY > 0) {
             if (null == mHeaderIndicatorView) {
                 mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
@@ -416,7 +399,6 @@ public class ChopinLayout extends ViewGroup {
         if (null == mRefreshHeaderIndicatorProvider) {
             return;
         }
-        Log.d(TAG, "releaseViewToRefreshingStatus: ");
         setState(STATE_BOUNCING);
         if (mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK) {
             mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
@@ -469,7 +451,6 @@ public class ChopinLayout extends ViewGroup {
         if (null == mLoadingFooterIndicatorProvider) {
             return;
         }
-        Log.d(TAG, "releaseViewToLoadingStatus: ");
         setState(STATE_BOUNCING);
         if (mFooterIndicatorLocation == INDICATOR_LOCATION_BACK) {
             mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
@@ -537,8 +518,6 @@ public class ChopinLayout extends ViewGroup {
      * Default
      */
     private void releaseViewToDefaultStatus() {
-        Log.d(TAG, "releaseViewToDefaultStatus: ");
-
         int currentTranslatedOffsetY = getCurrentTranslatedOffsetY();
         if (currentTranslatedOffsetY > 0) {
             // Bouncing start.
@@ -643,12 +622,15 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
+    /**
+     * Abort this action while dragging content view and not reach the demands.
+     */
     private void abortThisDrag() {
         releaseViewToDefaultStatus();
-        if (mState == STATE_DRAGGING_DOWN && null != mRefreshHeaderIndicatorProvider) {
+        if (getCurrentTranslatedOffsetY() > 0 && null != mRefreshHeaderIndicatorProvider) {
             mRefreshHeaderIndicatorProvider.onCancel();
         }
-        if (mState == STATE_DRAGGING_UP && null != mLoadingFooterIndicatorProvider) {
+        if (getCurrentTranslatedOffsetY() < 0 && null != mLoadingFooterIndicatorProvider) {
             mLoadingFooterIndicatorProvider.onCancel();
         }
     }
@@ -679,7 +661,6 @@ public class ChopinLayout extends ViewGroup {
 
 
     private void startRefresh() {
-        isRefreshing = true;
         setState(STATE_REFRESHING);
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
@@ -690,7 +671,6 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void startLoading() {
-        isLoadingMore = true;
         setState(STATE_LOADING);
         if (null != mOnLoadMoreListener) {
             mOnLoadMoreListener.onLoadMore();
@@ -810,8 +790,8 @@ public class ChopinLayout extends ViewGroup {
                     // and pull down will auto trigger load more.
                     if (lastVisibleItemPosition >= totalItemCount - mLoadMoreRemainShowItemCount
                             && dy > 0
-                            && !isLoadingMore) {
-                        isLoadingMore = true;
+                            && mState != STATE_LOADING) {
+                        mState = STATE_LOADING;
                         mOnLoadMoreListener.onLoadMore();
                     }
                 }
