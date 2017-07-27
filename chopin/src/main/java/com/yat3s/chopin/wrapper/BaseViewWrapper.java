@@ -12,6 +12,7 @@ import android.view.View;
  * GitHub: https://github.com/yat3s
  */
 public class BaseViewWrapper {
+    private static final int MAX_SCROLL_DURATION = 300;
 
     protected View mContentView;
 
@@ -25,10 +26,6 @@ public class BaseViewWrapper {
 
     public int getTranslationY() {
         return (int) mContentView.getTranslationY();
-    }
-
-    public boolean hasTranslated() {
-        return mContentView.getTranslationY() != 0;
     }
 
     public void layout(int l, int t, int r, int b) {
@@ -55,7 +52,6 @@ public class BaseViewWrapper {
             public void onAnimationUpdate(ValueAnimator animation) {
                 int value = (int) animation.getAnimatedValue();
                 translateVerticalWithOffset(value);
-                Log.d("sss", "onAnimationUpdate: " + value + ", " + end);
                 if (null != animateListener) {
                     animateListener.onAnimate(value);
                     if (end == value) {
@@ -64,6 +60,8 @@ public class BaseViewWrapper {
                 }
             }
         });
+        int dy = Math.abs(end - start);
+        valueAnimator.setDuration(dy > getHeight() * 2 ? MAX_SCROLL_DURATION : dy);
         valueAnimator.start();
     }
 

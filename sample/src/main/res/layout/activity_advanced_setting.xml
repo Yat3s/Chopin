@@ -1,60 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.yat3s.chopin.ChopinLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:id="@+id/chopin_layout"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <ScrollView
+    <com.yat3s.chopin.ChopinLayout
+        android:id="@+id/chopin_layout"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true">
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
 
-        <LinearLayout
+        <ScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:background="@color/md_teal_200"
-            android:orientation="vertical"
-            android:padding="24dp">
-
-            <com.yat3s.chopin.sample.widget.TitleTextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Advanced Setting"
-                android:textColor="@color/black"
-                android:textSize="@dimen/text_size_display" />
+            android:layout_height="match_parent"
+            android:fillViewport="true">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:gravity="center_vertical"
-                android:orientation="horizontal">
+                android:background="@color/md_white_1000"
+                android:orientation="vertical"
+                android:padding="16dp">
 
                 <com.yat3s.chopin.sample.widget.TitleTextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Resistance:  "
-                    android:textSize="@dimen/text_size_medium" />
+                    android:text="Advanced Setting"
+                    android:textColor="@color/black"
+                    android:textSize="@dimen/text_size_display"/>
+
+                <include layout="@layout/include_advanced_drag_resistance"/>
+
+                <include layout="@layout/include_advanced_indicator_style"/>
+
+                <include layout="@layout/include_advanced_indicator_location"/>
 
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Smooth(0.0)"
-                    android:textSize="@dimen/text_size_small" />
-
-                <android.support.v7.widget.AppCompatSeekBar
-                    android:id="@+id/seek_bar"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Hard(1.0)"
-                    android:textSize="@dimen/text_size_small" />
+                    android:layout_marginTop="128dp"
+                    android:fontFamily="sans-serif-light"
+                    android:lineSpacingMultiplier="1.2"
+                    android:text="@string/mock_long_string"
+                    android:textSize="18sp"/>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-</com.yat3s.chopin.ChopinLayout>
+        </ScrollView>
+    </com.yat3s.chopin.ChopinLayout>
+
+    <com.yat3s.chopin.sample.widget.TitleTextView
+        android:id="@+id/state_tv"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="right"
+        android:background="@color/md_grey_200"
+        android:padding="12dp"/>
+</LinearLayout>
