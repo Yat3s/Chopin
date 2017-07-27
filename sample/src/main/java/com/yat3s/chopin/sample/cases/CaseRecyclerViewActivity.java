@@ -76,9 +76,7 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
         findViewById(R.id.linear_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                recyclerView.setLayoutManager(new LinearLayoutManager(CaseRecyclerViewActivity.this));
-
-
+                recyclerView.setLayoutManager(new LinearLayoutManager(CaseRecyclerViewActivity.this));
             }
         });
         findViewById(R.id.grid_btn).setOnClickListener(new View.OnClickListener() {
