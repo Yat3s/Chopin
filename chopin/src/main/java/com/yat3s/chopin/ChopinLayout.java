@@ -495,6 +495,15 @@ public class ChopinLayout extends ViewGroup {
         if (null == mLoadingFooterIndicatorProvider) {
             return;
         }
+
+        int start = mFooterIndicatorLocation == INDICATOR_LOCATION_BACK
+                ? mContentViewWrapper.getTranslationY()
+                : mFooterIndicatorView.getTranslationY();
+
+        int end = mFooterIndicatorView.getHeight();
+        if (start == end) {
+            return;
+        }
         setState(STATE_BOUNCING);
         if (mFooterIndicatorLocation == INDICATOR_LOCATION_BACK) {
             mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
