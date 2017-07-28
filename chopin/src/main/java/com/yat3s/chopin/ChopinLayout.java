@@ -358,6 +358,74 @@ public class ChopinLayout extends ViewGroup {
         return dispatch;
     }
 
+
+    @Override
+    public boolean onInterceptTouchEvent(MotionEvent ev) {
+        if (mState == STATE_REFRESHING || mState == STATE_LOADING) {
+            int x = (int) ev.getX(), y = (int) ev.getY();
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mLastActionDownX = x;
+                    mLastActionDownY = y;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    int dx = x - mLastActionDownX;
+                    int dy = y - mLastActionDownY;
+
+                    boolean pullDown = dy > 0;
+                    boolean pullUp = dy < 0;
+
+                    if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getView())
+                            && dy > Math.abs(dx)) {
+                        mStartInterceptTouchY = y;
+                        Log.d(TAG, "onInterceptTouchEvent: canIntercept pull down");
+                        return true;
+                    }
+                    if (pullUp && mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getView())
+                            && -dy > Math.abs(dx)) {
+                        mStartInterceptTouchY = y;
+                        Log.d(TAG, "onInterceptTouchEvent: canIntercept pull up");
+                        return true;
+                    }
+                    break;
+            }
+        }
+        return super.onInterceptTouchEvent(ev);
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent ev) {
+        if (mState == STATE_REFRESHING || mState == STATE_LOADING) {
+            int x = (int) ev.getX(), y = (int) ev.getY();
+            switch (ev.getAction()) {
+                case MotionEvent.ACTION_DOWN:
+                    mLastActionDownX = x;
+                    mLastActionDownY = y;
+                    break;
+                case MotionEvent.ACTION_MOVE:
+                    int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY;
+                    int actualTranslationOffsetY = (int) (moveOffsetYAfterIntercepted * (1 - mIndicatorScrollResistance));
+
+                    // It should reset intercept event when dragging state has changed.
+                    if ((moveOffsetYAfterIntercepted > 0 && mState == STATE_DRAGGING_UP)
+                            || (moveOffsetYAfterIntercepted < 0 && mState == STATE_DRAGGING_DOWN)) {
+                        resetInterceptEvent(ev);
+                        actualTranslationOffsetY = 0;
+                    }
+
+                    if (DEBUG) {
+                        Log.d(TAG, "Intercepted: \nmoveOffsetYAfterIntercepted--> " + moveOffsetYAfterIntercepted +
+                                "\nactualTranslationOffsetY--> " + actualTranslationOffsetY +
+                                "\ngetCurrentTranslatedOffsetY--> " + getCurrentTranslatedOffsetY());
+                    }
+                    translateViewWithTargetOffsetY(actualTranslationOffsetY);
+                    return true;
+            }
+        }
+
+        return super.onTouchEvent(ev);
+    }
+
     private void translateViewWithTargetOffsetY(int translationOffsetY) {
         if (DEBUG) {
             Log.d(TAG, "translateViewWithTargetOffsetY: " + translationOffsetY);
