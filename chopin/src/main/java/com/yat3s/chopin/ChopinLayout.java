@@ -682,7 +682,6 @@ public class ChopinLayout extends ViewGroup {
 
     public void refreshComplete() {
         releaseViewToDefaultStatus();
-        isRefreshing = false;
         if (null != mRefreshHeaderIndicatorProvider) {
             mRefreshHeaderIndicatorProvider.onRefreshComplete();
         }
@@ -690,7 +689,6 @@ public class ChopinLayout extends ViewGroup {
 
     public void loadMoreComplete() {
         releaseViewToDefaultStatus();
-        isLoadingMore = false;
         if (null != mLoadingFooterIndicatorProvider) {
             mLoadingFooterIndicatorProvider.onLoadingComplete();
         }
