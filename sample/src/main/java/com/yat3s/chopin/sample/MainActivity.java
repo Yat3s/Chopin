@@ -51,7 +51,6 @@ public class MainActivity extends AppCompatActivity {
         mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
         setupRefreshHeader("refresh.json", 0.2f, 3000);
 
-
         RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
