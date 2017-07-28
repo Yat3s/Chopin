@@ -108,8 +108,6 @@ public class ChopinLayout extends ViewGroup {
 
     private boolean mHasDispatchCancelEvent = false;
 
-    private boolean canIntercept = false;
-
     private MotionEvent mLastMoveEvent;
 
     private int mStartInterceptTouchY;
@@ -223,7 +221,6 @@ public class ChopinLayout extends ViewGroup {
             case MotionEvent.ACTION_DOWN:
                 mLastActionDownX = x;
                 mLastActionDownY = y;
-                canIntercept = false;
                 mHasDispatchCancelEvent = false;
                 if (DEBUG) {
                     Log.d(TAG, "event--> dispatchTouchEvent: DOWN, true");
@@ -245,16 +242,26 @@ public class ChopinLayout extends ViewGroup {
                 int dx = x - mLastActionDownX;
                 int dy = y - mLastActionDownY;
 
-                if (DEBUG) {
-                    Log.d(TAG, "canIntercept: " + canIntercept + ", dy" + dy + ", mStartInterceptTouchY-->" +
-                            mStartInterceptTouchY);
-                }
-
-                // Use intent to pull down
                 boolean pullDown = dy > 0;
                 boolean pullUp = dy < 0;
 
-                if (canIntercept) {
+                if (mState == STATE_DEFAULT) {
+                    if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getView())
+                            && dy > Math.abs(dx)) {
+                        mStartInterceptTouchY = y;
+                        setState(STATE_DRAGGING_DOWN);
+                        Log.d(TAG, "dispatchTouchEvent: canIntercept pull down");
+                        return true;
+                    }
+                    if (pullUp && mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getView())
+                            && -dy > Math.abs(dx)) {
+                        mStartInterceptTouchY = y;
+                        setState(STATE_DRAGGING_UP);
+                        Log.d(TAG, "dispatchTouchEvent: canIntercept pull up");
+                        return true;
+                    }
+                }
+                if (mState == STATE_DRAGGING_DOWN || mState == STATE_DRAGGING_UP) {
                     int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY;
                     int actualTranslationOffsetY = (int) (moveOffsetYAfterIntercepted * (1 - mIndicatorScrollResistance));
 
@@ -290,35 +297,19 @@ public class ChopinLayout extends ViewGroup {
                     }
 
                     return true;
-                } else {
-                    setState(STATE_DEFAULT);
-                    if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getView())
-                            && dy > Math.abs(dx)) {
-                        mStartInterceptTouchY = y;
-                        canIntercept = true;
-                        setState(STATE_DRAGGING_DOWN);
-                        Log.d(TAG, "dispatchTouchEvent: canIntercept pull down");
-                        return true;
-                    }
-                    if (pullUp && mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getView())
-                            && -dy > Math.abs(dx)) {
-                        canIntercept = true;
-                        mStartInterceptTouchY = y;
-                        setState(STATE_DRAGGING_UP);
-                        Log.d(TAG, "dispatchTouchEvent: canIntercept pull up");
-                        return true;
-                    }
                 }
                 break;
 
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                canIntercept = false;
-
                 int currentTranslatedOffsetY = getCurrentTranslatedOffsetY();
 
                 if (DEBUG) {
                     Log.d(TAG, "currentTranslatedOffsetY: " + currentTranslatedOffsetY);
+                }
+
+                if (currentTranslatedOffsetY == 0) {
+                    setState(STATE_DEFAULT);
                 }
                 // Content view has been dragged down.
                 if (currentTranslatedOffsetY > 0) {
@@ -445,26 +436,33 @@ public class ChopinLayout extends ViewGroup {
         if (null == mRefreshHeaderIndicatorProvider) {
             return;
         }
+        int start = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
+                ? mContentViewWrapper.getTranslationY()
+                : mHeaderIndicatorView.getTranslationY();
+
+        int end = mHeaderIndicatorView.getHeight();
+        if (start == end) {
+            return;
+        }
         setState(STATE_BOUNCING);
         if (mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK) {
-            mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
-                    mHeaderIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
-                        @Override
-                        public void onAnimate(int value) {
-                            int progress = 100 * value / mHeaderIndicatorView.getHeight();
-                            mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
-                        }
+            mContentViewWrapper.animateTranslationY(start, end, new BaseViewWrapper.AnimateListener() {
+                @Override
+                public void onAnimate(int value) {
+                    int progress = 100 * value / mHeaderIndicatorView.getHeight();
+                    mRefreshHeaderIndicatorProvider.onHeaderIndicatorViewScrollChange(progress);
+                }
 
-                        @Override
-                        public void onFinish() {
-                            if (mState != STATE_REFRESHING) {
-                                startRefresh();
-                            } else {
-                                // TODO: 27/07/2017  It may cause wrong state while dragging in refreshing status.
-                                setState(STATE_REFRESHING);
-                            }
-                        }
-                    });
+                @Override
+                public void onFinish() {
+                    if (mState != STATE_REFRESHING) {
+                        startRefresh();
+                    } else {
+                        // TODO: 27/07/2017  It may cause wrong state while dragging in refreshing status.
+                        setState(STATE_REFRESHING);
+                    }
+                }
+            });
         } else {
             mHeaderIndicatorView.animateTranslationY(mHeaderIndicatorView.getTranslationY(),
                     mHeaderIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
@@ -665,7 +663,7 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void resetInterceptEvent(MotionEvent event) {
-        canIntercept = false;
+        setState(STATE_DEFAULT);
         int x = (int) event.getX(), y = (int) event.getY();
         long eventTime = System.currentTimeMillis();
         MotionEvent mockDownMotionEvent = MotionEvent.obtain(eventTime,

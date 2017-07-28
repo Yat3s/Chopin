@@ -24,7 +24,7 @@ import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
  */
 public class AdvancedSettingActivity extends AppCompatActivity {
     private static final String TAG = "AdvancedSettingActivity";
-    private static final int COMPLETE_DELAY = 2000;
+    private static final int COMPLETE_DELAY = 8000;
 
     private ChopinLayout mChopinLayout;
 
