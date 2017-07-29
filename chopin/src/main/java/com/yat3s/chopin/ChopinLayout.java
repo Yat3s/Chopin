@@ -375,14 +375,12 @@ public class ChopinLayout extends ViewGroup {
                     boolean pullDown = dy > 0;
                     boolean pullUp = dy < 0;
 
-                    if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getView())
-                            && dy > Math.abs(dx)) {
+                    if (pullDown && dy > Math.abs(dx)) {
                         mStartInterceptTouchY = y;
                         Log.d(TAG, "onInterceptTouchEvent: canIntercept pull down");
                         return true;
                     }
-                    if (pullUp && mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getView())
-                            && -dy > Math.abs(dx)) {
+                    if (pullUp && -dy > Math.abs(dx)) {
                         mStartInterceptTouchY = y;
                         Log.d(TAG, "onInterceptTouchEvent: canIntercept pull up");
                         return true;
@@ -403,15 +401,15 @@ public class ChopinLayout extends ViewGroup {
                     mLastActionDownY = y;
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY;
+                    int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY + mHeaderIndicatorView.getHeight();
                     int actualTranslationOffsetY = (int) (moveOffsetYAfterIntercepted * (1 - mIndicatorScrollResistance));
 
-                    // It should reset intercept event when dragging state has changed.
-                    if ((moveOffsetYAfterIntercepted > 0 && mState == STATE_DRAGGING_UP)
-                            || (moveOffsetYAfterIntercepted < 0 && mState == STATE_DRAGGING_DOWN)) {
-                        resetInterceptEvent(ev);
-                        actualTranslationOffsetY = 0;
-                    }
+//                    // It should reset intercept event when dragging state has changed.
+//                    if ((moveOffsetYAfterIntercepted > 0 && mState == STATE_DRAGGING_UP)
+//                            || (moveOffsetYAfterIntercepted < 0 && mState == STATE_DRAGGING_DOWN)) {
+//                        resetInterceptEvent(ev);
+//                        actualTranslationOffsetY = 0;
+//                    }
 
                     if (DEBUG) {
                         Log.d(TAG, "Intercepted: \nmoveOffsetYAfterIntercepted--> " + moveOffsetYAfterIntercepted +

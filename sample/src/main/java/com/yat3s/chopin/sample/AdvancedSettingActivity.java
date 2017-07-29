@@ -5,7 +5,6 @@ import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
-import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -24,7 +23,7 @@ import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
  */
 public class AdvancedSettingActivity extends AppCompatActivity {
     private static final String TAG = "AdvancedSettingActivity";
-    private static final int COMPLETE_DELAY = 8000;
+    private static final int COMPLETE_DELAY = 10000;
 
     private ChopinLayout mChopinLayout;
 
