@@ -3,7 +3,6 @@ package com.yat3s.chopin;
 import android.content.Context;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -92,12 +91,6 @@ public class ChopinLayout extends ViewGroup {
 
     // The content view of user set.
     private ContentViewWrapper mContentViewWrapper;
-
-    // The background of header indicator, and it ONLY show with INDICATOR_LOCATION_OUTSIDE and INDICATOR_LOCATION_BACK.
-    private IndicatorViewWrapper mHeaderIndicatorBackground;
-
-    // The background of header indicator, and it ONLY show with INDICATOR_LOCATION_OUTSIDE and INDICATOR_LOCATION_BACK.
-    private IndicatorViewWrapper mFooterIndicatorBackground;
 
     /**
      * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
@@ -188,39 +181,24 @@ public class ChopinLayout extends ViewGroup {
 
         // Layout refresh header indicator view.
         if (null != mHeaderIndicatorView) {
-            int indicatorTop = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
+            int top = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
                     ? 0 : -mHeaderIndicatorView.getHeight();
-            int indicatorBottom = indicatorTop + mHeaderIndicatorView.getHeight();
+            int bottom = top + mHeaderIndicatorView.getHeight();
             if (mHeaderIndicatorLocation == INDICATOR_LOCATION_FRONT) {
                 mHeaderIndicatorView.getView().bringToFront();
             }
-            mHeaderIndicatorView.layout(0, indicatorTop, mHeaderIndicatorView.getWidth(), indicatorBottom);
-        }
-        // Layout header indicator background.
-        if (null != mHeaderIndicatorBackground) {
-            int headerBgTop = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
-                    ? 0 : -mHeaderIndicatorBackground.getHeight();
-            int headerBgBottom = mHeaderIndicatorBackground.getHeight() + headerBgTop;
-            mHeaderIndicatorBackground.layout(0, headerBgTop,
-                    mHeaderIndicatorBackground.getWidth(), headerBgBottom);
+            mHeaderIndicatorView.layout(0, top, mHeaderIndicatorView.getWidth(), bottom);
         }
 
         // Layout loading footer indicator view.
         if (null != mFooterIndicatorView) {
-            int top = 0, bottom = 0;
-            switch (mFooterIndicatorLocation) {
-                case INDICATOR_LOCATION_FRONT:
-                    mFooterIndicatorView.getView().bringToFront();
-                case INDICATOR_LOCATION_OUTSIDE:
-                    top = mContentViewWrapper.getView().getMeasuredHeight();
-                    bottom = mContentViewWrapper.getView().getMeasuredHeight() +
-                            mFooterIndicatorView.getHeight();
-                    break;
-                case INDICATOR_LOCATION_BACK:
-                    top = mContentViewWrapper.getView().getMeasuredHeight() -
-                            mFooterIndicatorView.getHeight();
-                    bottom = mContentViewWrapper.getView().getMeasuredHeight();
-                    break;
+            int top = mFooterIndicatorLocation == INDICATOR_LOCATION_BACK
+                    ? mContentViewWrapper.getView().getMeasuredHeight()
+                    - mFooterIndicatorView.getHeight()
+                    : mContentViewWrapper.getView().getMeasuredHeight();
+            int bottom = top + mFooterIndicatorView.getHeight();
+            if (mFooterIndicatorLocation == INDICATOR_LOCATION_FRONT) {
+                mFooterIndicatorView.getView().bringToFront();
             }
             mFooterIndicatorView.layout(0, top, mFooterIndicatorView.getWidth(), bottom);
         }
@@ -453,32 +431,22 @@ public class ChopinLayout extends ViewGroup {
             if (null != mFooterIndicatorView) {
                 mFooterIndicatorView.translateVerticalWithOffset(translationOffsetY);
             }
-            if (null != mHeaderIndicatorBackground) {
-                mHeaderIndicatorBackground.translateVerticalWithOffset(translationOffsetY);
-            }
         }
 
         // Pull down.
         if (translationOffsetY > 0) {
-            if (null == mHeaderIndicatorView && null == mHeaderIndicatorBackground) {
+            if (null == mHeaderIndicatorView) {
                 mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
             } else {
                 switch (mHeaderIndicatorLocation) {
                     case INDICATOR_LOCATION_FRONT:
-                        if (null != mHeaderIndicatorView) {
-                            mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
-                        }
+                        mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
                         break;
                     case INDICATOR_LOCATION_BACK:
                         mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
                         break;
                     case INDICATOR_LOCATION_OUTSIDE:
-                        if (null != mHeaderIndicatorView) {
-                            mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
-                        }
-                        if (null != mHeaderIndicatorBackground) {
-                            mHeaderIndicatorBackground.translateVerticalWithOffset(translationOffsetY);
-                        }
+                        mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
                         mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
                         break;
                 }
@@ -910,32 +878,32 @@ public class ChopinLayout extends ViewGroup {
         mFooterIndicatorView = null;
     }
 
-    /**
-     * Configure header indicator background.
-     * NOTE: it is ONLY shown in indicator location {@link #INDICATOR_LOCATION_BACK}
-     * and {@link #INDICATOR_LOCATION_OUTSIDE}
-     *
-     * @param headerIndicatorBackground The view of background.
-     */
-    public void setHeaderIndicatorBackground(@Nullable View headerIndicatorBackground) {
-        if (null != mHeaderIndicatorBackground) {
-            removeView(mHeaderIndicatorBackground.getView());
-        }
-        if (null != headerIndicatorBackground) {
-            mHeaderIndicatorBackground = new IndicatorViewWrapper(headerIndicatorBackground);
-            addView(headerIndicatorBackground);
-        }
-    }
-
-    public void setFooterIndicatorBackground(@Nullable View footerIndicatorBackground) {
-        if (null != mFooterIndicatorBackground) {
-            removeView(mFooterIndicatorBackground.getView());
-        }
-        if (null != footerIndicatorBackground) {
-            mFooterIndicatorBackground = new IndicatorViewWrapper(footerIndicatorBackground);
-            addView(footerIndicatorBackground);
-        }
-    }
+//    /**
+//     * Configure header indicator background.
+//     * NOTE: it is ONLY shown in indicator location {@link #INDICATOR_LOCATION_BACK}
+//     * and {@link #INDICATOR_LOCATION_OUTSIDE}
+//     *
+//     * @param headerIndicatorBackground The view of background.
+//     */
+//    public void setHeaderIndicatorBackground(@Nullable View headerIndicatorBackground) {
+//        if (null != mHeaderIndicatorBackground) {
+//            removeView(mHeaderIndicatorBackground.getView());
+//        }
+//        if (null != headerIndicatorBackground) {
+//            mHeaderIndicatorBackground = new IndicatorViewWrapper(headerIndicatorBackground);
+//            addView(headerIndicatorBackground);
+//        }
+//    }
+//
+//    public void setFooterIndicatorBackground(@Nullable View footerIndicatorBackground) {
+//        if (null != mFooterIndicatorBackground) {
+//            removeView(mFooterIndicatorBackground.getView());
+//        }
+//        if (null != footerIndicatorBackground) {
+//            mFooterIndicatorBackground = new IndicatorViewWrapper(footerIndicatorBackground);
+//            addView(footerIndicatorBackground);
+//        }
+//    }
 
     /**
      * Setup auto trigger load more.

@@ -44,7 +44,6 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureHeaderIndicatorLocation();
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
-        configureIndicatorBackground();
     }
 
     private void configureScrollState() {
@@ -268,31 +267,6 @@ public class AdvancedSettingActivity extends AppCompatActivity {
             }
         });
     }
-
-
-    private void configureIndicatorBackground() {
-        SwitchCompat indicatorBackgroundSwitch = (SwitchCompat) findViewById(R.id.indicator_background_switch);
-        indicatorBackgroundSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
-            @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if (isChecked) {
-                    ImageView headerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
-                    headerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    headerIndicatorIv.setImageResource(R.mipmap.abstract_1);
-                    mChopinLayout.setHeaderIndicatorBackground(headerIndicatorIv);
-
-                    ImageView footerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
-                    footerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                    footerIndicatorIv.setImageResource(R.mipmap.abstract_2);
-                    mChopinLayout.setFooterIndicatorBackground(footerIndicatorIv);
-                } else {
-                    mChopinLayout.setHeaderIndicatorBackground(null);
-                    mChopinLayout.setFooterIndicatorBackground(null);
-                }
-            }
-        });
-    }
-
 
     private void setupLottieIndicator() {
         ChopinRefreshHeaderIndicator kittenRefreshHeaderView = new ChopinRefreshHeaderIndicator

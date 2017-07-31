@@ -43,24 +43,6 @@
 
                 <View style="@style/DividerLineVertically" />
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <com.yat3s.chopin.sample.widget.TitleTextView
-                        style="@style/TextComponent.AdvancedSettingTitle"
-                        android:text="Indicator Background:" />
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:id="@+id/indicator_background_switch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
-
-                <View style="@style/DividerLineVertically" />
-
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
