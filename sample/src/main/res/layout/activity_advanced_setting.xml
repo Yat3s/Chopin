@@ -38,10 +38,34 @@
 
                 <include layout="@layout/include_advanced_indicator_location"/>
 
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:layout_marginTop="12dp"
+                    android:orientation="horizontal">
+
+                    <com.yat3s.chopin.sample.widget.TitleTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Indicator Background:"
+                        android:textSize="@dimen/text_size_medium"/>
+
+                    <Button
+                        android:id="@+id/indicator_style_null_btn"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="Null"/>
+
+                </LinearLayout>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="128dp"
+                    android:layout_marginTop="24dp"
                     android:fontFamily="sans-serif-light"
                     android:lineSpacingMultiplier="1.2"
                     android:text="@string/mock_long_string"

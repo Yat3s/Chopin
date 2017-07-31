@@ -92,6 +92,12 @@ public class ChopinLayout extends ViewGroup {
     // The content view of user set.
     private ContentViewWrapper mContentViewWrapper;
 
+    // The background of header indicator, and it ONLY show with INDICATOR_LOCATION_OUTSIDE and INDICATOR_LOCATION_BACK.
+    private View mHeaderIndicatorBackground;
+
+    // The background of header indicator, and it ONLY show with INDICATOR_LOCATION_OUTSIDE and INDICATOR_LOCATION_BACK.
+    private View mFooterIndicatorBackground;
+
     /**
      * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
      */
@@ -160,11 +166,17 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+    }
+
     /**
      * Layout content view in suitable position.
      * Layout refresh header indicator on top of content view and layout loading footer indicator on
      * the bottom of content view in order to hide in the default status.
      */
+    @SuppressWarnings("ResourceType")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         // Layout content view.
@@ -173,20 +185,20 @@ public class ChopinLayout extends ViewGroup {
 
         // Layout refresh header indicator view.
         if (null != mHeaderIndicatorView) {
-            int top = 0, bottom = 0;
-            switch (mHeaderIndicatorLocation) {
-                case INDICATOR_LOCATION_FRONT:
-                    mHeaderIndicatorView.getView().bringToFront();
-                case INDICATOR_LOCATION_OUTSIDE:
-                    top = -mHeaderIndicatorView.getHeight();
-                    bottom = 0;
-                    break;
-                case INDICATOR_LOCATION_BACK:
-                    top = 0;
-                    bottom = mHeaderIndicatorView.getHeight();
-                    break;
+            int indicatorTop = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
+                    ? 0 : -mHeaderIndicatorView.getHeight();
+            int indicatorBottom = indicatorTop + mHeaderIndicatorView.getHeight();
+            if (mHeaderIndicatorLocation == INDICATOR_LOCATION_FRONT) {
+                mHeaderIndicatorView.getView().bringToFront();
             }
-            mHeaderIndicatorView.layout(0, top, mHeaderIndicatorView.getWidth(), bottom);
+            mHeaderIndicatorView.layout(0, indicatorTop, mHeaderIndicatorView.getWidth(), indicatorBottom);
+        }
+        // Layout header indicator background.
+        if (null != mHeaderIndicatorBackground) {
+            int headerBgTop = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
+                    ? 0 : -mHeaderIndicatorBackground.getMeasuredHeight();
+            int headerBgBottom = mHeaderIndicatorBackground.getHeight() + headerBgTop;
+            mHeaderIndicatorBackground.layout(0, headerBgTop, mHeaderIndicatorBackground.getWidth(), headerBgBottom);
         }
 
         // Layout loading footer indicator view.
@@ -879,6 +891,23 @@ public class ChopinLayout extends ViewGroup {
     public void clearFooterIndicator() {
         mLoadingFooterIndicatorProvider = null;
         mFooterIndicatorView = null;
+    }
+
+    /**
+     * Configure header indicator background.
+     * NOTE: it is ONLY shown in indicator location {@link #INDICATOR_LOCATION_BACK}
+     * and {@link #INDICATOR_LOCATION_OUTSIDE}
+     *
+     * @param headerIndicatorBackground The view of background.
+     */
+    public void setHeaderIndicatorBackground(View headerIndicatorBackground) {
+        mHeaderIndicatorBackground = headerIndicatorBackground;
+        addView(mHeaderIndicatorBackground);
+    }
+
+    public void setFooterIndicatorBackground(View footerIndicatorBackground) {
+        mFooterIndicatorBackground = footerIndicatorBackground;
+        addView(mFooterIndicatorBackground);
     }
 
     /**
