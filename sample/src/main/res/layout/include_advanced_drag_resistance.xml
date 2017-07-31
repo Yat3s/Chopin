@@ -10,10 +10,8 @@
     tools:showIn="@layout/activity_advanced_setting">
 
     <com.yat3s.chopin.sample.widget.TitleTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Drag resistance:  "
-        android:textSize="@dimen/text_size_medium"/>
+        style="@style/TextComponent.AdvancedSettingTitle"
+        android:text="Drag resistance:  "/>
 
     <TextView
         android:layout_width="wrap_content"

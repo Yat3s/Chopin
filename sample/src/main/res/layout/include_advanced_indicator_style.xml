@@ -4,11 +4,8 @@
        tools:showIn="@layout/activity_advanced_setting">
 
     <com.yat3s.chopin.sample.widget.TitleTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Indicator Style:"
-        android:textSize="@dimen/text_size_medium"/>
+        style="@style/TextComponent.AdvancedSettingTitle"
+        android:text="Indicator Style:"/>
 
     <LinearLayout
         android:layout_width="match_parent"

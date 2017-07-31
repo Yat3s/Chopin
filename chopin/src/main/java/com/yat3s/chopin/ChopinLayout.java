@@ -3,6 +3,7 @@ package com.yat3s.chopin;
 import android.content.Context;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -69,12 +70,6 @@ public class ChopinLayout extends ViewGroup {
      */
     private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
-    // The header indicator.
-    private IndicatorViewWrapper mHeaderIndicatorView;
-
-    // The footer indicator.
-    private IndicatorViewWrapper mFooterIndicatorView;
-
     // The provider for provide header indicator and some interfaces with interaction,
     // eg. header indicator animation.
     private RefreshHeaderIndicatorProvider mRefreshHeaderIndicatorProvider;
@@ -89,14 +84,20 @@ public class ChopinLayout extends ViewGroup {
     // The load more listener
     private OnLoadMoreListener mOnLoadMoreListener;
 
+    // The header indicator.
+    private IndicatorViewWrapper mHeaderIndicatorView;
+
+    // The footer indicator.
+    private IndicatorViewWrapper mFooterIndicatorView;
+
     // The content view of user set.
     private ContentViewWrapper mContentViewWrapper;
 
     // The background of header indicator, and it ONLY show with INDICATOR_LOCATION_OUTSIDE and INDICATOR_LOCATION_BACK.
-    private View mHeaderIndicatorBackground;
+    private IndicatorViewWrapper mHeaderIndicatorBackground;
 
     // The background of header indicator, and it ONLY show with INDICATOR_LOCATION_OUTSIDE and INDICATOR_LOCATION_BACK.
-    private View mFooterIndicatorBackground;
+    private IndicatorViewWrapper mFooterIndicatorBackground;
 
     /**
      * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
@@ -161,6 +162,7 @@ public class ChopinLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.d(TAG, "onMeasure: ");
         for (int idx = 0; idx < getChildCount(); idx++) {
             measureChild(getChildAt(idx), widthMeasureSpec, heightMeasureSpec);
         }
@@ -179,6 +181,7 @@ public class ChopinLayout extends ViewGroup {
     @SuppressWarnings("ResourceType")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.d(TAG, "onLayout: ");
         // Layout content view.
         mContentViewWrapper.layout();
         mContentViewWrapper.getView().bringToFront();
@@ -196,9 +199,10 @@ public class ChopinLayout extends ViewGroup {
         // Layout header indicator background.
         if (null != mHeaderIndicatorBackground) {
             int headerBgTop = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
-                    ? 0 : -mHeaderIndicatorBackground.getMeasuredHeight();
+                    ? 0 : -mHeaderIndicatorBackground.getHeight();
             int headerBgBottom = mHeaderIndicatorBackground.getHeight() + headerBgTop;
-            mHeaderIndicatorBackground.layout(0, headerBgTop, mHeaderIndicatorBackground.getWidth(), headerBgBottom);
+            mHeaderIndicatorBackground.layout(0, headerBgTop,
+                    mHeaderIndicatorBackground.getWidth(), headerBgBottom);
         }
 
         // Layout loading footer indicator view.
@@ -440,6 +444,7 @@ public class ChopinLayout extends ViewGroup {
         if (DEBUG) {
             Log.d(TAG, "translateViewWithTargetOffsetY: " + translationOffsetY);
         }
+        // Reset to default.
         if (translationOffsetY == 0) {
             mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
             if (null != mHeaderIndicatorView) {
@@ -448,20 +453,32 @@ public class ChopinLayout extends ViewGroup {
             if (null != mFooterIndicatorView) {
                 mFooterIndicatorView.translateVerticalWithOffset(translationOffsetY);
             }
+            if (null != mHeaderIndicatorBackground) {
+                mHeaderIndicatorBackground.translateVerticalWithOffset(translationOffsetY);
+            }
         }
+
+        // Pull down.
         if (translationOffsetY > 0) {
-            if (null == mHeaderIndicatorView) {
+            if (null == mHeaderIndicatorView && null == mHeaderIndicatorBackground) {
                 mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
             } else {
                 switch (mHeaderIndicatorLocation) {
                     case INDICATOR_LOCATION_FRONT:
-                        mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
+                        if (null != mHeaderIndicatorView) {
+                            mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
+                        }
                         break;
                     case INDICATOR_LOCATION_BACK:
                         mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
                         break;
                     case INDICATOR_LOCATION_OUTSIDE:
-                        mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
+                        if (null != mHeaderIndicatorView) {
+                            mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
+                        }
+                        if (null != mHeaderIndicatorBackground) {
+                            mHeaderIndicatorBackground.translateVerticalWithOffset(translationOffsetY);
+                        }
                         mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
                         break;
                 }
@@ -900,14 +917,24 @@ public class ChopinLayout extends ViewGroup {
      *
      * @param headerIndicatorBackground The view of background.
      */
-    public void setHeaderIndicatorBackground(View headerIndicatorBackground) {
-        mHeaderIndicatorBackground = headerIndicatorBackground;
-        addView(mHeaderIndicatorBackground);
+    public void setHeaderIndicatorBackground(@Nullable View headerIndicatorBackground) {
+        if (null != mHeaderIndicatorBackground) {
+            removeView(mHeaderIndicatorBackground.getView());
+        }
+        if (null != headerIndicatorBackground) {
+            mHeaderIndicatorBackground = new IndicatorViewWrapper(headerIndicatorBackground);
+            addView(headerIndicatorBackground);
+        }
     }
 
-    public void setFooterIndicatorBackground(View footerIndicatorBackground) {
-        mFooterIndicatorBackground = footerIndicatorBackground;
-        addView(mFooterIndicatorBackground);
+    public void setFooterIndicatorBackground(@Nullable View footerIndicatorBackground) {
+        if (null != mFooterIndicatorBackground) {
+            removeView(mFooterIndicatorBackground.getView());
+        }
+        if (null != footerIndicatorBackground) {
+            mFooterIndicatorBackground = new IndicatorViewWrapper(footerIndicatorBackground);
+            addView(footerIndicatorBackground);
+        }
     }
 
     /**

@@ -5,7 +5,9 @@ import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.support.v7.widget.SwitchCompat;
 import android.view.View;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -42,6 +44,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureHeaderIndicatorLocation();
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
+        configureIndicatorBackground();
     }
 
     private void configureScrollState() {
@@ -206,11 +209,11 @@ public class AdvancedSettingActivity extends AppCompatActivity {
 
                 ImageView headerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
                 headerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                headerIndicatorIv.setImageResource(R.mipmap.abstract_1);
+                headerIndicatorIv.setImageResource(R.mipmap.stamp_1);
 
                 ImageView footerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
                 footerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
-                footerIndicatorIv.setImageResource(R.mipmap.abstract_2);
+                footerIndicatorIv.setImageResource(R.mipmap.stamp_2);
                 mChopinLayout.setHeaderIndicatorView(headerIndicatorIv);
                 mChopinLayout.setFooterIndicatorView(footerIndicatorIv);
             }
@@ -265,6 +268,31 @@ public class AdvancedSettingActivity extends AppCompatActivity {
             }
         });
     }
+
+
+    private void configureIndicatorBackground() {
+        SwitchCompat indicatorBackgroundSwitch = (SwitchCompat) findViewById(R.id.indicator_background_switch);
+        indicatorBackgroundSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    ImageView headerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
+                    headerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    headerIndicatorIv.setImageResource(R.mipmap.abstract_1);
+                    mChopinLayout.setHeaderIndicatorBackground(headerIndicatorIv);
+
+                    ImageView footerIndicatorIv = new ImageView(AdvancedSettingActivity.this);
+                    footerIndicatorIv.setScaleType(ImageView.ScaleType.CENTER_CROP);
+                    footerIndicatorIv.setImageResource(R.mipmap.abstract_2);
+                    mChopinLayout.setFooterIndicatorBackground(footerIndicatorIv);
+                } else {
+                    mChopinLayout.setHeaderIndicatorBackground(null);
+                    mChopinLayout.setFooterIndicatorBackground(null);
+                }
+            }
+        });
+    }
+
 
     private void setupLottieIndicator() {
         ChopinRefreshHeaderIndicator kittenRefreshHeaderView = new ChopinRefreshHeaderIndicator
