@@ -69,12 +69,6 @@ public class ChopinLayout extends ViewGroup {
      */
     private ViewScrollChecker mViewScrollChecker = new DefaultViewScrollChecker();
 
-    // The header indicator.
-    private IndicatorViewWrapper mHeaderIndicatorView;
-
-    // The footer indicator.
-    private IndicatorViewWrapper mFooterIndicatorView;
-
     // The provider for provide header indicator and some interfaces with interaction,
     // eg. header indicator animation.
     private RefreshHeaderIndicatorProvider mRefreshHeaderIndicatorProvider;
@@ -88,6 +82,12 @@ public class ChopinLayout extends ViewGroup {
 
     // The load more listener
     private OnLoadMoreListener mOnLoadMoreListener;
+
+    // The header indicator.
+    private IndicatorViewWrapper mHeaderIndicatorView;
+
+    // The footer indicator.
+    private IndicatorViewWrapper mFooterIndicatorView;
 
     // The content view of user set.
     private ContentViewWrapper mContentViewWrapper;
@@ -155,9 +155,15 @@ public class ChopinLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.d(TAG, "onMeasure: ");
         for (int idx = 0; idx < getChildCount(); idx++) {
             measureChild(getChildAt(idx), widthMeasureSpec, heightMeasureSpec);
         }
+    }
+
+    @Override
+    protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
     }
 
     /**
@@ -165,46 +171,34 @@ public class ChopinLayout extends ViewGroup {
      * Layout refresh header indicator on top of content view and layout loading footer indicator on
      * the bottom of content view in order to hide in the default status.
      */
+    @SuppressWarnings("ResourceType")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.d(TAG, "onLayout: ");
         // Layout content view.
         mContentViewWrapper.layout();
         mContentViewWrapper.getView().bringToFront();
 
         // Layout refresh header indicator view.
         if (null != mHeaderIndicatorView) {
-            int top = 0, bottom = 0;
-            switch (mHeaderIndicatorLocation) {
-                case INDICATOR_LOCATION_FRONT:
-                    mHeaderIndicatorView.getView().bringToFront();
-                case INDICATOR_LOCATION_OUTSIDE:
-                    top = -mHeaderIndicatorView.getHeight();
-                    bottom = 0;
-                    break;
-                case INDICATOR_LOCATION_BACK:
-                    top = 0;
-                    bottom = mHeaderIndicatorView.getHeight();
-                    break;
+            int top = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
+                    ? 0 : -mHeaderIndicatorView.getHeight();
+            int bottom = top + mHeaderIndicatorView.getHeight();
+            if (mHeaderIndicatorLocation == INDICATOR_LOCATION_FRONT) {
+                mHeaderIndicatorView.getView().bringToFront();
             }
             mHeaderIndicatorView.layout(0, top, mHeaderIndicatorView.getWidth(), bottom);
         }
 
         // Layout loading footer indicator view.
         if (null != mFooterIndicatorView) {
-            int top = 0, bottom = 0;
-            switch (mFooterIndicatorLocation) {
-                case INDICATOR_LOCATION_FRONT:
-                    mFooterIndicatorView.getView().bringToFront();
-                case INDICATOR_LOCATION_OUTSIDE:
-                    top = mContentViewWrapper.getView().getMeasuredHeight();
-                    bottom = mContentViewWrapper.getView().getMeasuredHeight() +
-                            mFooterIndicatorView.getHeight();
-                    break;
-                case INDICATOR_LOCATION_BACK:
-                    top = mContentViewWrapper.getView().getMeasuredHeight() -
-                            mFooterIndicatorView.getHeight();
-                    bottom = mContentViewWrapper.getView().getMeasuredHeight();
-                    break;
+            int top = mFooterIndicatorLocation == INDICATOR_LOCATION_BACK
+                    ? mContentViewWrapper.getView().getMeasuredHeight()
+                    - mFooterIndicatorView.getHeight()
+                    : mContentViewWrapper.getView().getMeasuredHeight();
+            int bottom = top + mFooterIndicatorView.getHeight();
+            if (mFooterIndicatorLocation == INDICATOR_LOCATION_FRONT) {
+                mFooterIndicatorView.getView().bringToFront();
             }
             mFooterIndicatorView.layout(0, top, mFooterIndicatorView.getWidth(), bottom);
         }
@@ -428,6 +422,7 @@ public class ChopinLayout extends ViewGroup {
         if (DEBUG) {
             Log.d(TAG, "translateViewWithTargetOffsetY: " + translationOffsetY);
         }
+        // Reset to default.
         if (translationOffsetY == 0) {
             mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
             if (null != mHeaderIndicatorView) {
@@ -437,6 +432,8 @@ public class ChopinLayout extends ViewGroup {
                 mFooterIndicatorView.translateVerticalWithOffset(translationOffsetY);
             }
         }
+
+        // Pull down.
         if (translationOffsetY > 0) {
             if (null == mHeaderIndicatorView) {
                 mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
@@ -880,6 +877,33 @@ public class ChopinLayout extends ViewGroup {
         mLoadingFooterIndicatorProvider = null;
         mFooterIndicatorView = null;
     }
+
+//    /**
+//     * Configure header indicator background.
+//     * NOTE: it is ONLY shown in indicator location {@link #INDICATOR_LOCATION_BACK}
+//     * and {@link #INDICATOR_LOCATION_OUTSIDE}
+//     *
+//     * @param headerIndicatorBackground The view of background.
+//     */
+//    public void setHeaderIndicatorBackground(@Nullable View headerIndicatorBackground) {
+//        if (null != mHeaderIndicatorBackground) {
+//            removeView(mHeaderIndicatorBackground.getView());
+//        }
+//        if (null != headerIndicatorBackground) {
+//            mHeaderIndicatorBackground = new IndicatorViewWrapper(headerIndicatorBackground);
+//            addView(headerIndicatorBackground);
+//        }
+//    }
+//
+//    public void setFooterIndicatorBackground(@Nullable View footerIndicatorBackground) {
+//        if (null != mFooterIndicatorBackground) {
+//            removeView(mFooterIndicatorBackground.getView());
+//        }
+//        if (null != footerIndicatorBackground) {
+//            mFooterIndicatorBackground = new IndicatorViewWrapper(footerIndicatorBackground);
+//            addView(footerIndicatorBackground);
+//        }
+//    }
 
     /**
      * Setup auto trigger load more.

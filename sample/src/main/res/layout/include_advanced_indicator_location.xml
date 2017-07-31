@@ -4,11 +4,8 @@
        tools:showIn="@layout/activity_advanced_setting">
 
     <com.yat3s.chopin.sample.widget.TitleTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Header indicator location:  "
-        android:textSize="@dimen/text_size_medium"/>
+        style="@style/TextComponent.AdvancedSettingTitle"
+        android:text="Header indicator location:  "/>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -37,12 +34,12 @@
             android:text="Front"/>
     </LinearLayout>
 
+    <View style="@style/DividerLineVertically" />
+
+
     <com.yat3s.chopin.sample.widget.TitleTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Footer indicator location:  "
-        android:textSize="@dimen/text_size_medium"/>
+        style="@style/TextComponent.AdvancedSettingTitle"
+        android:text="Footer indicator location:  "/>
 
     <LinearLayout
         android:layout_width="match_parent"
