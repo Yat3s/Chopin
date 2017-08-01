@@ -59,7 +59,7 @@
         android:id="@+id/state_tv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_gravity="right"
+        android:gravity="right"
         android:background="@color/md_grey_200"
         android:padding="12dp" />
 </LinearLayout>

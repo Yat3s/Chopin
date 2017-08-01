@@ -27,6 +27,9 @@ import com.yat3s.chopin.wrapper.IndicatorViewWrapper;
 public class ChopinLayout extends ViewGroup {
     static final boolean DEBUG = true;
 
+    private static final long DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY = 300;
+    private static final long DEFAULT_LOAD_MORE_COMPLETE_COLLAPSE_DELAY = 300;
+
     public static final int STATE_DEFAULT = 0;
 
     public static final int STATE_DRAGGING_DOWN = 1;
@@ -791,17 +794,35 @@ public class ChopinLayout extends ViewGroup {
     }
 
     public void refreshComplete() {
-        releaseViewToDefaultStatus();
+        refreshComplete(DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY);
+    }
+
+    public void refreshComplete(long collapseDelay) {
         if (null != mRefreshHeaderIndicatorProvider) {
             mRefreshHeaderIndicatorProvider.onRefreshComplete();
         }
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                releaseViewToDefaultStatus();
+            }
+        }, collapseDelay);
     }
 
     public void loadMoreComplete() {
-        releaseViewToDefaultStatus();
+        loadMoreComplete(DEFAULT_LOAD_MORE_COMPLETE_COLLAPSE_DELAY);
+    }
+
+    public void loadMoreComplete(long collapseDelay) {
         if (null != mLoadingFooterIndicatorProvider) {
             mLoadingFooterIndicatorProvider.onLoadingComplete();
         }
+        postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                releaseViewToDefaultStatus();
+            }
+        }, collapseDelay);
     }
 
     private void initialize() {
