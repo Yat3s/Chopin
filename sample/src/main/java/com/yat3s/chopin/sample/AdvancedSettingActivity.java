@@ -23,7 +23,8 @@ import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
  */
 public class AdvancedSettingActivity extends AppCompatActivity {
     private static final String TAG = "AdvancedSettingActivity";
-    private static final int COMPLETE_DELAY = 50000;
+
+    private static final int COMPLETE_DELAY = 10000;
 
     private ChopinLayout mChopinLayout;
 
@@ -145,7 +146,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                 mChopinLayout.setLoadingFooterIndicator(new LoadingFooterIndicatorProvider() {
                     @Override
                     public void onLoading() {
-                        footerProgressTv.setText("Loadinging~");
+                        footerProgressTv.setText("Loading~");
 
                     }
 
