@@ -502,7 +502,9 @@ public class ChopinLayout extends ViewGroup {
         if (start == end) {
             return;
         }
-        setState(STATE_BOUNCING);
+        if (mState != STATE_REFRESHING) {
+            setState(STATE_BOUNCING);
+        }
         if (mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK) {
             mContentViewWrapper.animateTranslationY(start, end, new BaseViewWrapper.AnimateListener() {
                 @Override
@@ -562,7 +564,9 @@ public class ChopinLayout extends ViewGroup {
         if (start == end) {
             return;
         }
-        setState(STATE_BOUNCING);
+        if (mState != STATE_LOADING) {
+            setState(STATE_BOUNCING);
+        }
         if (mFooterIndicatorLocation == INDICATOR_LOCATION_BACK) {
             mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
                     -mFooterIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
@@ -766,6 +770,7 @@ public class ChopinLayout extends ViewGroup {
 
 
     private void startRefresh() {
+        Log.d(TAG, "startRefresh: ");
         setState(STATE_REFRESHING);
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();

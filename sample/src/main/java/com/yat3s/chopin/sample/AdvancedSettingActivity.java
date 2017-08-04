@@ -5,6 +5,7 @@ import android.support.annotation.IntRange;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.SeekBar;
@@ -278,6 +279,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                 mChopinLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {
+                        Log.d(TAG, "onRefreshRun: ");
                         mChopinLayout.refreshComplete();
                     }
                 }, COMPLETE_DELAY);
