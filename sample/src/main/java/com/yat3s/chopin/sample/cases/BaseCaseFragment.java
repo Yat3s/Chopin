@@ -8,8 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.ChopinLoadingFooterIndicator;
-import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
+import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.R;
 
 /**
@@ -39,9 +38,8 @@ public abstract class BaseCaseFragment extends Fragment {
     }
 
     protected void setupRefreshHeader(String fileName, float scale, final long refreshCompleteDelay) {
-        ChopinRefreshHeaderIndicator kittenRefreshHeaderView = new ChopinRefreshHeaderIndicator(getActivity(), fileName);
-        kittenRefreshHeaderView.setScale(scale);
-        mChopinLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+        LottieIndicator indicator = new LottieIndicator(getActivity(), fileName, scale);
+        mChopinLayout.setRefreshHeaderIndicator(indicator);
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -56,9 +54,8 @@ public abstract class BaseCaseFragment extends Fragment {
     }
 
     protected void setupLoadingFooter(String fileName, float scale, final long refreshCompleteDelay) {
-        ChopinLoadingFooterIndicator kittenLoadingFooterView = new ChopinLoadingFooterIndicator(getActivity(), fileName);
-        kittenLoadingFooterView.setScale(scale);
-        mChopinLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
+        LottieIndicator indicator = new LottieIndicator(getActivity(), fileName, scale);
+        mChopinLayout.setLoadingFooterIndicator(indicator);
         mChopinLayout.setOnLoadMoreListener(new ChopinLayout.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {

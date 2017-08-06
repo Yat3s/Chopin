@@ -12,6 +12,7 @@ import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
+import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.cases.CaseCoordinatorLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseFragmentActivity;
 import com.yat3s.chopin.sample.cases.CaseLinearLayoutActivity;
@@ -81,9 +82,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void setupRefreshHeader(String fileName, float scale, final long refreshCompleteDelay) {
-        ChopinRefreshHeaderIndicator kittenRefreshHeaderView = new ChopinRefreshHeaderIndicator(this, fileName);
-        kittenRefreshHeaderView.setScale(scale);
-        mChopinLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+        LottieIndicator indicator = new LottieIndicator(this, fileName, scale);
+        mChopinLayout.setRefreshHeaderIndicator(indicator);
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
