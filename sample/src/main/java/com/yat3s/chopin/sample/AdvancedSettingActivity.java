@@ -1,7 +1,6 @@
 package com.yat3s.chopin.sample;
 
 import android.os.Bundle;
-import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
@@ -55,8 +54,11 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     case ChopinLayout.STATE_DEFAULT:
                         stateTv.setText("STATE_DEFAULT");
                         break;
-                    case ChopinLayout.STATE_BOUNCING:
-                        stateTv.setText("STATE_BOUNCING");
+                    case ChopinLayout.STATE_BOUNCING_DOWN:
+                        stateTv.setText("STATE_BOUNCING_DOWN");
+                        break;
+                    case ChopinLayout.STATE_BOUNCING_UP:
+                        stateTv.setText("STATE_BOUNCING_UP");
                         break;
                     case ChopinLayout.STATE_DRAGGING_DOWN:
                         stateTv.setText("STATE_DRAGGING_DOWN");
@@ -118,7 +120,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onViewCreated(View indicatorView, ChopinLayout chopinLayout) {
+                    public void onViewMeasured(View indicatorView, ChopinLayout chopinLayout) {
 
                     }
 
@@ -138,11 +140,12 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPositionChange(@FloatRange(from = 0.0f, to = 1.0f) float progress) {
+                    public void onPositionChange(float progress, STATE state) {
                         if (progress == 1.0f) {
                             headerProgressTv.setText("Release to refresh~");
                         } else {
-                            headerProgressTv.setText("You can release to refresh when reach to 1.0f --> " + progress);
+                            headerProgressTv.setText("You can release to refresh when reach to 1.0f --> " + progress + "," +
+                                    state.name());
                         }
                     }
 
@@ -158,7 +161,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onViewCreated(View indicatorView, ChopinLayout chopinLayout) {
+                    public void onViewMeasured(View indicatorView, ChopinLayout chopinLayout) {
 
                     }
 
@@ -178,11 +181,12 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPositionChange(float progress) {
+                    public void onPositionChange(float progress, STATE state) {
                         if (progress == 1.0f) {
                             footerProgressTv.setText("Release to load~");
                         } else {
-                            footerProgressTv.setText("You can release to load when reach to 1.0f --> " + progress);
+                            footerProgressTv.setText("You can release to load when reach to 1.0f --> " + progress
+                                    + "," + state.name());
                         }
                     }
                 });
