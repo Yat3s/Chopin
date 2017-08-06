@@ -5,8 +5,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.ChopinLoadingFooterIndicator;
-import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
+import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.R;
 
 /**
@@ -28,7 +27,7 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
         setContentView(getContentLayoutId());
 
         if (null == findViewById(R.id.chopin_layout)) {
-            throw new IllegalArgumentException("You should inflate a KittenLayout with id kitten_layout!");
+            throw new IllegalArgumentException("You should define a KittenLayout with id chopin_layout in content layout!");
         } else {
             mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
         }
@@ -36,9 +35,8 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
     }
 
     protected void setupRefreshHeader(String fileName, float scale, final long refreshCompleteDelay) {
-        ChopinRefreshHeaderIndicator kittenRefreshHeaderView = new ChopinRefreshHeaderIndicator(this, fileName);
-        kittenRefreshHeaderView.setScale(scale);
-        mChopinLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+        LottieIndicator indicator = new LottieIndicator(this, fileName, scale);
+        mChopinLayout.setRefreshHeaderIndicator(indicator);
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -53,9 +51,8 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
     }
 
     protected void setupLoadingFooter(String fileName, float scale, final long refreshCompleteDelay) {
-        ChopinLoadingFooterIndicator kittenLoadingFooterView = new ChopinLoadingFooterIndicator(this, fileName);
-        kittenLoadingFooterView.setScale(scale);
-        mChopinLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
+        LottieIndicator indicator = new LottieIndicator(this, fileName, scale);
+        mChopinLayout.setLoadingFooterIndicator(indicator);
         mChopinLayout.setOnLoadMoreListener(new ChopinLayout.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {

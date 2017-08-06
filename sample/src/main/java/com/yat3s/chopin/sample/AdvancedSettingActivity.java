@@ -1,7 +1,8 @@
 package com.yat3s.chopin.sample;
 
 import android.os.Bundle;
-import android.support.annotation.IntRange;
+import android.support.annotation.FloatRange;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -12,10 +13,8 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.ChopinLoadingFooterIndicator;
-import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
-import com.yat3s.chopin.indicator.LoadingFooterIndicatorProvider;
-import com.yat3s.chopin.indicator.RefreshHeaderIndicatorProvider;
+import com.yat3s.chopin.indicator.Indicator;
+import com.yat3s.chopin.indicator.LottieIndicator;
 
 /**
  * Created by Yat3s on 07/07/2017.
@@ -111,69 +110,80 @@ public class AdvancedSettingActivity extends AppCompatActivity {
             public void onClick(View v) {
                 final View headerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
                 final TextView headerProgressTv = (TextView) headerIndicatorView.findViewById(R.id.progress_tv);
-                mChopinLayout.setRefreshHeaderIndicator(new RefreshHeaderIndicatorProvider() {
+                mChopinLayout.setRefreshHeaderIndicator(new Indicator() {
+                    @NonNull
                     @Override
-                    public View getContentView() {
+                    public View getView() {
                         return headerIndicatorView;
                     }
 
                     @Override
-                    public void onCancel() {
+                    public void onViewCreated(View indicatorView, ChopinLayout chopinLayout) {
 
                     }
 
                     @Override
-                    public void onRefreshing() {
+                    public void onCancel(ChopinLayout chopinLayout) {
+
+                    }
+
+                    @Override
+                    public void onStart(ChopinLayout chopinLayout) {
                         headerProgressTv.setText("Refreshing~");
                     }
 
                     @Override
-                    public void onRefreshComplete() {
+                    public void onComplete(ChopinLayout chopinLayout) {
                         headerProgressTv.setText("Refresh completed!");
                     }
 
                     @Override
-                    public void onHeaderIndicatorViewScrollChange(@IntRange(from = 0, to = 100) int progress) {
-                        if (progress == 100) {
+                    public void onPositionChange(@FloatRange(from = 0.0f, to = 1.0f) float progress) {
+                        if (progress == 1.0f) {
                             headerProgressTv.setText("Release to refresh~");
                         } else {
-                            headerProgressTv.setText("You can release to refresh when reach to 100 --> " + progress);
+                            headerProgressTv.setText("You can release to refresh when reach to 1.0f --> " + progress);
                         }
                     }
+
                 });
 
                 final View footerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
                 final TextView footerProgressTv = (TextView) footerIndicatorView.findViewById(R.id.progress_tv);
-                mChopinLayout.setLoadingFooterIndicator(new LoadingFooterIndicatorProvider() {
+                mChopinLayout.setLoadingFooterIndicator(new Indicator() {
+                    @NonNull
                     @Override
-                    public void onLoading() {
-                        footerProgressTv.setText("Loading~");
-
-                    }
-
-                    @Override
-                    public void onLoadingComplete() {
-                        footerProgressTv.setText("Load more completed!");
-
-                    }
-
-                    @Override
-                    public void onFooterIndicatorViewScrollChange(int progress) {
-                        if (progress == 100) {
-                            footerProgressTv.setText("Release to load~");
-                        } else {
-                            footerProgressTv.setText("You can release to load when reach to 100 --> " + progress);
-                        }
-                    }
-
-                    @Override
-                    public View getContentView() {
+                    public View getView() {
                         return footerIndicatorView;
                     }
 
                     @Override
-                    public void onCancel() {
+                    public void onViewCreated(View indicatorView, ChopinLayout chopinLayout) {
 
+                    }
+
+                    @Override
+                    public void onCancel(ChopinLayout chopinLayout) {
+
+                    }
+
+                    @Override
+                    public void onStart(ChopinLayout chopinLayout) {
+                        footerProgressTv.setText("Loading~");
+                    }
+
+                    @Override
+                    public void onComplete(ChopinLayout chopinLayout) {
+                        footerProgressTv.setText("Load more completed!");
+                    }
+
+                    @Override
+                    public void onPositionChange(float progress) {
+                        if (progress == 1.0f) {
+                            footerProgressTv.setText("Release to load~");
+                        } else {
+                            footerProgressTv.setText("You can release to load when reach to 1.0f --> " + progress);
+                        }
                     }
                 });
                 mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
@@ -269,10 +279,8 @@ public class AdvancedSettingActivity extends AppCompatActivity {
     }
 
     private void setupLottieIndicator() {
-        ChopinRefreshHeaderIndicator kittenRefreshHeaderView = new ChopinRefreshHeaderIndicator
-                (AdvancedSettingActivity.this, "Plane.json");
-        kittenRefreshHeaderView.setScale(0.2f);
-        mChopinLayout.setRefreshHeaderIndicator(kittenRefreshHeaderView);
+        LottieIndicator headerLottieIndicator = new LottieIndicator(AdvancedSettingActivity.this, "Plane.json", 0.2f);
+        mChopinLayout.setRefreshHeaderIndicator(headerLottieIndicator);
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
@@ -286,10 +294,8 @@ public class AdvancedSettingActivity extends AppCompatActivity {
             }
         });
 
-        ChopinLoadingFooterIndicator kittenLoadingFooterView = new ChopinLoadingFooterIndicator
-                (AdvancedSettingActivity.this, "Plane.json");
-        kittenLoadingFooterView.setScale(0.2f);
-        mChopinLayout.setLoadingFooterIndicator(kittenLoadingFooterView);
+        LottieIndicator footerLottieIndicator = new LottieIndicator(AdvancedSettingActivity.this, "Plane.json", 0.2f);
+        mChopinLayout.setLoadingFooterIndicator(footerLottieIndicator);
         mChopinLayout.setOnLoadMoreListener(new ChopinLayout.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
