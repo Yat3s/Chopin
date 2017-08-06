@@ -120,7 +120,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onViewMeasured(View indicatorView, ChopinLayout chopinLayout) {
+                    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView) {
 
                     }
 
@@ -140,7 +140,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPositionChange(float progress, STATE state) {
+                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state) {
                         if (progress == 1.0f) {
                             headerProgressTv.setText("Release to refresh~");
                         } else {
@@ -148,7 +148,6 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                                     state.name());
                         }
                     }
-
                 });
 
                 final View footerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
@@ -161,7 +160,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onViewMeasured(View indicatorView, ChopinLayout chopinLayout) {
+                    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView) {
 
                     }
 
@@ -181,7 +180,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPositionChange(float progress, STATE state) {
+                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state) {
                         if (progress == 1.0f) {
                             footerProgressTv.setText("Release to load~");
                         } else {

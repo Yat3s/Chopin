@@ -12,13 +12,13 @@ import com.yat3s.chopin.ChopinLayout;
  */
 public interface Indicator {
     public enum STATE {
-        DRAGGING_DOWN, DRAGGING_UP, BOUNCING_DWON, BOUNCING_UP
+        DRAGGING_DOWN, DRAGGING_UP, BOUNCING_DOWN, BOUNCING_UP
     }
 
     @NonNull
     public View getView();
 
-    public void onViewMeasured(View indicatorView, ChopinLayout chopinLayout);
+    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView);
 
     public void onCancel(ChopinLayout chopinLayout);
 
@@ -26,5 +26,5 @@ public interface Indicator {
 
     public void onComplete(ChopinLayout chopinLayout);
 
-    public void onPositionChange(float progress, STATE state);
+    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state);
 }

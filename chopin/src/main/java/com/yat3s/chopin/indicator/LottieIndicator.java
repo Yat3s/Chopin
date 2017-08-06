@@ -43,7 +43,7 @@ public class LottieIndicator extends LottieAnimationView implements Indicator {
     }
 
     @Override
-    public void onViewMeasured(View indicatorView, ChopinLayout chopinLayout) {
+    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView) {
         loop(true);
     }
 
@@ -63,7 +63,7 @@ public class LottieIndicator extends LottieAnimationView implements Indicator {
     }
 
     @Override
-    public void onPositionChange(float progress, STATE state) {
+    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state) {
         if (state == STATE.DRAGGING_DOWN || state == STATE.DRAGGING_UP) {
             setProgress(progress);
         }
