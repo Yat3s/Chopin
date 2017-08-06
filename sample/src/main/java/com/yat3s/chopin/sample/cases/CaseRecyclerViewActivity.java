@@ -49,8 +49,8 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
                     case ChopinLayout.STATE_DEFAULT:
                         stateTv.setText("STATE_DEFAULT");
                         break;
-                    case ChopinLayout.STATE_BOUNCING:
-                        stateTv.setText("STATE_BOUNCING");
+                    case ChopinLayout.STATE_BOUNCING_DOWN:
+                        stateTv.setText("STATE_BOUNCING_DOWN");
                         break;
                     case ChopinLayout.STATE_DRAGGING_DOWN:
                         stateTv.setText("STATE_DRAGGING_DOWN");

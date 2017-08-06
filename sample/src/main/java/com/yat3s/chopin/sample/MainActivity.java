@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.ChopinRefreshHeaderIndicator;
 import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.cases.CaseCoordinatorLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseFragmentActivity;
