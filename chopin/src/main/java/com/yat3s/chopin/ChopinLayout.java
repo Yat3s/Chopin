@@ -135,7 +135,7 @@ public class ChopinLayout extends ViewGroup {
 
     /**
      * Obtain content view after inflated, and it can be only support nested {@link #SUPPORT_CHILD_COUNT}
-     * Setup auto load more if content view is RecyclerView, {@see} {@link #setupRecyclerViewAutoLoadMore(RecyclerView)}
+     * Setup auto load more if content view is RecyclerView, {@link #setupRecyclerViewAutoLoadMore(RecyclerView)}
      */
     @Override
     protected void onFinishInflate() {
@@ -944,14 +944,14 @@ public class ChopinLayout extends ViewGroup {
 
     /**
      * NOTE: It can ONLY be used for {@link android.support.v7.widget.RecyclerView} and {@link android.widget.AbsListView}
-     * {@ref} {@link #setupRecyclerViewAutoLoadMore(RecyclerView)}
+     * {@link #setupRecyclerViewAutoLoadMore(RecyclerView)}
      * <p>
      * NOTE: You can ONLY choose one load more style from {@link #setLoadingFooterIndicator(Indicator)}
      * and this.
      * Please remove Load Footer View while you set autoTriggerLoadMore is true.
      *
      * @param autoTriggerLoadMore If true will auto trigger load more while
-     *                            remain to show item < {@link #mLoadMoreRemainShowItemCount}
+     *                            remain to show item less than {@link #mLoadMoreRemainShowItemCount}
      */
     public void setAutoTriggerLoadMore(boolean autoTriggerLoadMore) {
         this.autoTriggerLoadMore = autoTriggerLoadMore;
