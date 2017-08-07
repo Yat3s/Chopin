@@ -1,4 +1,5 @@
 apply plugin: 'com.android.library'
+apply plugin: 'com.novoda.bintray-release'
 
 android {
     compileSdkVersion 25
@@ -16,6 +17,18 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
     }
+    lintOptions {
+        abortOnError false
+    }
+}
+
+publish {
+    userOrg = 'yat3s'
+    groupId = 'com.yat3s.android'
+    artifactId = 'Chopin'
+    publishVersion = '0.6.1'
+    desc = 'This is a great musician lol~'
+    website = 'https://github.com/yat3s/chopin'
 }
 
 dependencies {
