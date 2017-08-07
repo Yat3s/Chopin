@@ -27,7 +27,7 @@ public class ChopinViewHolder extends RecyclerView.ViewHolder {
      *
      * @param id      View resource id.
      * @param <TView> View type for return.
-     * @return
+     * @return View
      */
     @SuppressWarnings("unchecked")
     public <TView extends View> TView getView(@IdRes int id) {
