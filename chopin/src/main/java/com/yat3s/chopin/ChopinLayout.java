@@ -298,7 +298,7 @@ public class ChopinLayout extends ViewGroup {
 
                     if (null != mLoadingFooterIndicatorProvider && actualTranslationOffsetY < 0) {
                         float progress = -actualTranslationOffsetY / (float) mFooterIndicatorView.getHeight();
-                        mLoadingFooterIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_DOWN);
+                        mLoadingFooterIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_UP);
                     }
 
                     return true;
