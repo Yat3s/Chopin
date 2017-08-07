@@ -252,10 +252,10 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                 mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_FRONT);
             }
         });
-        findViewById(R.id.header_indicator_location_back_btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.header_indicator_location_behind_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BACK);
+                mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
             }
         });
     }
@@ -273,10 +273,10 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                 mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_FRONT);
             }
         });
-        findViewById(R.id.footer_indicator_location_back_btn).setOnClickListener(new View.OnClickListener() {
+        findViewById(R.id.footer_indicator_location_behind_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BACK);
+                mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
             }
         });
     }

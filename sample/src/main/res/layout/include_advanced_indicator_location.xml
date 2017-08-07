@@ -20,11 +20,11 @@
             android:text="Outside"/>
 
         <Button
-            android:id="@+id/header_indicator_location_back_btn"
+            android:id="@+id/header_indicator_location_behind_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Back"/>
+            android:text="Behind"/>
 
         <Button
             android:id="@+id/header_indicator_location_front_btn"
@@ -54,11 +54,11 @@
             android:text="Outside"/>
 
         <Button
-            android:id="@+id/footer_indicator_location_back_btn"
+            android:id="@+id/footer_indicator_location_behind_btn"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Back"/>
+            android:text="Behind"/>
 
         <Button
             android:id="@+id/footer_indicator_location_front_btn"

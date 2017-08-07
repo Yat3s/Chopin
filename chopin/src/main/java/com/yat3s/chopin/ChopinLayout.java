@@ -11,7 +11,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.widget.Scroller;
 
 import com.yat3s.chopin.indicator.Indicator;
 import com.yat3s.chopin.wrapper.BaseViewWrapper;
@@ -45,7 +44,7 @@ public class ChopinLayout extends ViewGroup {
 
     // Indicator location setting, default is INDICATOR_LOCATION_OUTSIDE
     public static final int INDICATOR_LOCATION_OUTSIDE = 0x100;
-    public static final int INDICATOR_LOCATION_BACK = 0x101;
+    public static final int INDICATOR_LOCATION_BEHIND = 0x101;
     public static final int INDICATOR_LOCATION_FRONT = 0x102;
 
     private static final String TAG = "ChopinLayout";
@@ -60,8 +59,6 @@ public class ChopinLayout extends ViewGroup {
     // The last action down position while intercepted touch event.
     private int mLastActionDownX, mLastActionDownY;
 
-    // The Scroller for scroll whole view natural.
-    private Scroller mScroller;
 
     /**
      * It is used for check content view whether can be refresh/loading or other action.
@@ -191,7 +188,7 @@ public class ChopinLayout extends ViewGroup {
 
         // Layout refresh header indicator view.
         if (null != mHeaderIndicatorView) {
-            int top = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
+            int top = mHeaderIndicatorLocation == INDICATOR_LOCATION_BEHIND
                     ? 0 : -mHeaderIndicatorView.getHeight();
             int bottom = top + mHeaderIndicatorView.getHeight();
             if (mHeaderIndicatorLocation == INDICATOR_LOCATION_FRONT) {
@@ -202,7 +199,7 @@ public class ChopinLayout extends ViewGroup {
 
         // Layout loading footer indicator view.
         if (null != mFooterIndicatorView) {
-            int top = mFooterIndicatorLocation == INDICATOR_LOCATION_BACK
+            int top = mFooterIndicatorLocation == INDICATOR_LOCATION_BEHIND
                     ? mContentViewWrapper.getView().getMeasuredHeight()
                     - mFooterIndicatorView.getHeight()
                     : mContentViewWrapper.getView().getMeasuredHeight();
@@ -357,7 +354,6 @@ public class ChopinLayout extends ViewGroup {
         return dispatch;
     }
 
-
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
         if (mState == STATE_REFRESHING || mState == STATE_LOADING) {
@@ -442,7 +438,7 @@ public class ChopinLayout extends ViewGroup {
                     case INDICATOR_LOCATION_FRONT:
                         mHeaderIndicatorView.translateVerticalWithOffset(translationOffsetY);
                         break;
-                    case INDICATOR_LOCATION_BACK:
+                    case INDICATOR_LOCATION_BEHIND:
                         mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
                         break;
                     case INDICATOR_LOCATION_OUTSIDE:
@@ -461,7 +457,7 @@ public class ChopinLayout extends ViewGroup {
                     case INDICATOR_LOCATION_FRONT:
                         mFooterIndicatorView.translateVerticalWithOffset(translationOffsetY);
                         break;
-                    case INDICATOR_LOCATION_BACK:
+                    case INDICATOR_LOCATION_BEHIND:
                         mContentViewWrapper.translateVerticalWithOffset(translationOffsetY);
                         break;
                     case INDICATOR_LOCATION_OUTSIDE:
@@ -472,7 +468,6 @@ public class ChopinLayout extends ViewGroup {
             }
         }
     }
-
 
     private int getCurrentTranslatedOffsetY() {
         int currentTranslatedOffsetY = 0;
@@ -499,7 +494,7 @@ public class ChopinLayout extends ViewGroup {
         if (null == mRefreshHeaderIndicatorProvider) {
             return;
         }
-        int start = mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK
+        int start = mHeaderIndicatorLocation == INDICATOR_LOCATION_BEHIND
                 ? mContentViewWrapper.getTranslationY()
                 : mHeaderIndicatorView.getTranslationY();
 
@@ -510,7 +505,7 @@ public class ChopinLayout extends ViewGroup {
         if (mState != STATE_REFRESHING) {
             setState(STATE_BOUNCING_UP);
         }
-        if (mHeaderIndicatorLocation == INDICATOR_LOCATION_BACK) {
+        if (mHeaderIndicatorLocation == INDICATOR_LOCATION_BEHIND) {
             mContentViewWrapper.animateTranslationY(start, end, new BaseViewWrapper.AnimateListener() {
                 @Override
                 public void onAnimate(int value) {
@@ -562,7 +557,7 @@ public class ChopinLayout extends ViewGroup {
             return;
         }
 
-        int start = mFooterIndicatorLocation == INDICATOR_LOCATION_BACK
+        int start = mFooterIndicatorLocation == INDICATOR_LOCATION_BEHIND
                 ? mContentViewWrapper.getTranslationY()
                 : mFooterIndicatorView.getTranslationY();
 
@@ -573,7 +568,7 @@ public class ChopinLayout extends ViewGroup {
         if (mState != STATE_LOADING) {
             setState(STATE_BOUNCING_DOWN);
         }
-        if (mFooterIndicatorLocation == INDICATOR_LOCATION_BACK) {
+        if (mFooterIndicatorLocation == INDICATOR_LOCATION_BEHIND) {
             mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(),
                     -mFooterIndicatorView.getHeight(), new BaseViewWrapper.AnimateListener() {
                         @Override
@@ -619,7 +614,6 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
-
     /**
      * Default
      */
@@ -636,7 +630,7 @@ public class ChopinLayout extends ViewGroup {
                             @Override
                             public void onAnimate(int value) {
                                 if (null != mHeaderIndicatorView) {
-                                    if (mHeaderIndicatorLocation != INDICATOR_LOCATION_BACK) {
+                                    if (mHeaderIndicatorLocation != INDICATOR_LOCATION_BEHIND) {
                                         mHeaderIndicatorView.translateVerticalWithOffset(value);
                                     }
                                     if (null != mRefreshHeaderIndicatorProvider) {
@@ -658,7 +652,7 @@ public class ChopinLayout extends ViewGroup {
                         new BaseViewWrapper.AnimateListener() {
                             @Override
                             public void onAnimate(int value) {
-                                if (mHeaderIndicatorLocation != INDICATOR_LOCATION_BACK) {
+                                if (mHeaderIndicatorLocation != INDICATOR_LOCATION_BEHIND) {
                                     mHeaderIndicatorView.translateVerticalWithOffset(value);
                                 }
                                 if (null != mRefreshHeaderIndicatorProvider) {
@@ -690,7 +684,7 @@ public class ChopinLayout extends ViewGroup {
                             @Override
                             public void onAnimate(int value) {
                                 if (null != mFooterIndicatorView) {
-                                    if (mFooterIndicatorLocation != INDICATOR_LOCATION_BACK) {
+                                    if (mFooterIndicatorLocation != INDICATOR_LOCATION_BEHIND) {
                                         mFooterIndicatorView.translateVerticalWithOffset(value);
                                     }
                                     if (null != mLoadingFooterIndicatorProvider) {
@@ -712,7 +706,7 @@ public class ChopinLayout extends ViewGroup {
                         new BaseViewWrapper.AnimateListener() {
                             @Override
                             public void onAnimate(int value) {
-                                if (mFooterIndicatorLocation != INDICATOR_LOCATION_BACK) {
+                                if (mFooterIndicatorLocation != INDICATOR_LOCATION_BEHIND) {
                                     mFooterIndicatorView.translateVerticalWithOffset(value);
                                 }
                                 if (null != mLoadingFooterIndicatorProvider) {
@@ -780,7 +774,6 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
-
     private void startRefresh() {
         Log.d(TAG, "startRefresh: ");
         setState(STATE_REFRESHING);
@@ -835,16 +828,6 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void initialize() {
-        mScroller = new Scroller(getContext());
-    }
-
-    @Override
-    public void computeScroll() {
-        super.computeScroll();
-        if (mScroller.computeScrollOffset()) {
-            scrollTo(0, mScroller.getCurrY());
-            postInvalidate();
-        }
     }
 
     /**
@@ -901,7 +884,7 @@ public class ChopinLayout extends ViewGroup {
 
 //    /**
 //     * Configure header indicator background.
-//     * NOTE: it is ONLY shown in indicator location {@link #INDICATOR_LOCATION_BACK}
+//     * NOTE: it is ONLY shown in indicator location {@link #INDICATOR_LOCATION_BEHIND}
 //     * and {@link #INDICATOR_LOCATION_OUTSIDE}
 //     *
 //     * @param headerIndicatorBackground The view of background.

@@ -29,7 +29,7 @@ public class CaseScrollViewActivity extends BaseCaseActivity {
     protected void initialize() {
         setupRefreshHeader("refresh.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
-        mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BACK);
+        mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
         mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_FRONT);
 
         findViewById(R.id.test_dispatch_btn).setOnClickListener(new View.OnClickListener() {

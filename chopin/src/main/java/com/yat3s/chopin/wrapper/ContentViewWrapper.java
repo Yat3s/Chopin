@@ -17,8 +17,4 @@ public class ContentViewWrapper extends BaseViewWrapper {
     public ContentViewWrapper(View contentView) {
         super(contentView);
     }
-
-    public void releaseToDefaultStatus() {
-        animateTranslationY(getTranslationY(), 0, null);
-    }
 }
