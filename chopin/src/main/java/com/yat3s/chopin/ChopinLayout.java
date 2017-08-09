@@ -1,8 +1,10 @@
 package com.yat3s.chopin;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.support.v7.appcompat.BuildConfig;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -11,6 +13,8 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewParent;
+import android.widget.FrameLayout;
 
 import com.yat3s.chopin.indicator.Indicator;
 import com.yat3s.chopin.wrapper.BaseViewWrapper;
@@ -23,10 +27,10 @@ import com.yat3s.chopin.wrapper.IndicatorViewWrapper;
  * GitHub: https://github.com/yat3s
  */
 public class ChopinLayout extends ViewGroup {
-    static final boolean DEBUG = true;
+    static final boolean DEBUG = BuildConfig.DEBUG;
 
-    private static final long DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY = 300;
-    private static final long DEFAULT_LOAD_MORE_COMPLETE_COLLAPSE_DELAY = 300;
+    private static final long DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY = 100;
+    private static final long DEFAULT_LOAD_MORE_COMPLETE_COLLAPSE_DELAY = 100;
 
     public static final int STATE_DEFAULT = 0;
 
@@ -142,7 +146,16 @@ public class ChopinLayout extends ViewGroup {
         if (getChildCount() > SUPPORT_CHILD_COUNT) {
             throw new IllegalArgumentException("It can ONLY set ONE child view!");
         } else if (getChildCount() == SUPPORT_CHILD_COUNT) {
-            mContentViewWrapper = new ContentViewWrapper(getChildAt(0));
+            // Setup default background color of content view.
+            // It fixed a bug when setting 'behind' indicator location can see behind indicator.
+            View contentView = super.getChildAt(0);
+            ViewParent viewParent = contentView.getParent();
+            ((ViewGroup) viewParent).removeView(contentView);
+            FrameLayout frameLayout = new FrameLayout(contentView.getContext());
+            frameLayout.setBackgroundColor(Color.WHITE);
+            frameLayout.addView(contentView);
+            ((ViewGroup) viewParent).addView(frameLayout);
+            mContentViewWrapper = new ContentViewWrapper(frameLayout);
 
             // Set up auto load more if content view is RecyclerView.
             if (mContentViewWrapper.getView() instanceof RecyclerView) {
