@@ -13,8 +13,6 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
-import android.view.ViewParent;
-import android.widget.FrameLayout;
 
 import com.yat3s.chopin.indicator.Indicator;
 import com.yat3s.chopin.wrapper.BaseViewWrapper;
@@ -27,6 +25,9 @@ import com.yat3s.chopin.wrapper.IndicatorViewWrapper;
  * GitHub: https://github.com/yat3s
  */
 public class ChopinLayout extends ViewGroup {
+
+    private static final String TAG = "ChopinLayout";
+
     static final boolean DEBUG = BuildConfig.DEBUG;
 
     private static final long DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY = 100;
@@ -50,8 +51,6 @@ public class ChopinLayout extends ViewGroup {
     public static final int INDICATOR_LOCATION_OUTSIDE = 0x100;
     public static final int INDICATOR_LOCATION_BEHIND = 0x101;
     public static final int INDICATOR_LOCATION_FRONT = 0x102;
-
-    private static final String TAG = "ChopinLayout";
 
     // Support child view count nested in this, NOW only support one child.
     private static final int SUPPORT_CHILD_COUNT = 1;
@@ -149,17 +148,12 @@ public class ChopinLayout extends ViewGroup {
             // Setup default background color of content view.
             // It fixed a bug when setting 'behind' indicator location can see behind indicator.
             View contentView = super.getChildAt(0);
-            ViewParent viewParent = contentView.getParent();
-            ((ViewGroup) viewParent).removeView(contentView);
-            FrameLayout frameLayout = new FrameLayout(contentView.getContext());
-            frameLayout.setBackgroundColor(Color.WHITE);
-            frameLayout.addView(contentView);
-            ((ViewGroup) viewParent).addView(frameLayout);
-            mContentViewWrapper = new ContentViewWrapper(frameLayout);
+            contentView.setBackgroundColor(Color.WHITE);
+            mContentViewWrapper = new ContentViewWrapper(contentView);
 
             // Set up auto load more if content view is RecyclerView.
-            if (mContentViewWrapper.getView() instanceof RecyclerView) {
-                setupRecyclerViewAutoLoadMore((RecyclerView) mContentViewWrapper.getView());
+            if (contentView instanceof RecyclerView) {
+                setupRecyclerViewAutoLoadMore((RecyclerView) contentView);
             }
         }
         super.onFinishInflate();
