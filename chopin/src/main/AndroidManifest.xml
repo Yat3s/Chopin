@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.yat3s.android.chopin">
+          package="com.yat3s.chopin">
 
     <application
         android:allowBackup="true"
