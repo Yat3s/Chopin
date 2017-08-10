@@ -140,12 +140,13 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state) {
+                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int
+                            touchY) {
                         if (progress == 1.0f) {
                             headerProgressTv.setText("Release to refresh~");
                         } else {
-                            headerProgressTv.setText("You can release to refresh when reach to 1.0f --> " + progress + "," +
-                                    state.name());
+                            headerProgressTv.setText("Progress--> " + progress + ", " + state.name()
+                                    + " (" + touchX + ", " + touchY + ")");
                         }
                     }
                 });
@@ -180,12 +181,13 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     }
 
                     @Override
-                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state) {
+                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int
+                            touchY) {
                         if (progress == 1.0f) {
                             footerProgressTv.setText("Release to load~");
                         } else {
-                            footerProgressTv.setText("You can release to load when reach to 1.0f --> " + progress
-                                    + "," + state.name());
+                            footerProgressTv.setText("Progress--> " + progress + ", " + state.name()
+                                    + " (" + touchX + ", " + touchY + ")");
                         }
                     }
                 });

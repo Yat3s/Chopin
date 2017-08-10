@@ -56,7 +56,7 @@ public class ChopinLayout extends ViewGroup {
 
     // Scroll resistance, if it equal 0f will scroll no any friction,
     // if it equal 1f will can not scroll.
-    private float mIndicatorScrollResistance = 0.32f;
+    private float mIndicatorScrollResistance = 0.4f;
 
     // The last action down position while intercepted touch event.
     private int mLastActionDownX, mLastActionDownY;
@@ -295,12 +295,12 @@ public class ChopinLayout extends ViewGroup {
                     if (null != mRefreshHeaderIndicatorProvider && actualTranslationOffsetY > 0) {
                         // Scroll distance has over refresh header indicator height.
                         float progress = actualTranslationOffsetY / (float) mHeaderIndicatorView.getHeight();
-                        mRefreshHeaderIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_DOWN);
+                        mRefreshHeaderIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_DOWN, x, y);
                     }
 
                     if (null != mLoadingFooterIndicatorProvider && actualTranslationOffsetY < 0) {
                         float progress = -actualTranslationOffsetY / (float) mFooterIndicatorView.getHeight();
-                        mLoadingFooterIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_UP);
+                        mLoadingFooterIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_UP, x, y);
                     }
 
                     return true;
@@ -515,7 +515,8 @@ public class ChopinLayout extends ViewGroup {
                 @Override
                 public void onAnimate(int value) {
                     float progress = value / (float) mHeaderIndicatorView.getHeight();
-                    mRefreshHeaderIndicatorProvider.onPositionChange(ChopinLayout.this, progress, Indicator.STATE.BOUNCING_UP);
+                    mRefreshHeaderIndicatorProvider.onPositionChange(ChopinLayout.this, progress, Indicator.STATE
+                            .BOUNCING_UP, -1, -1);
                 }
 
                 @Override
@@ -535,7 +536,7 @@ public class ChopinLayout extends ViewGroup {
                         public void onAnimate(int value) {
                             float progress = value / (float) mHeaderIndicatorView.getHeight();
                             mRefreshHeaderIndicatorProvider.onPositionChange(ChopinLayout.this, progress, Indicator.STATE
-                                    .BOUNCING_UP);
+                                    .BOUNCING_UP, -1, -1);
                             if (mHeaderIndicatorLocation != INDICATOR_LOCATION_FRONT) {
                                 mContentViewWrapper.translateVerticalWithOffset(value);
                             }
@@ -580,7 +581,7 @@ public class ChopinLayout extends ViewGroup {
                         public void onAnimate(int value) {
                             float progress = value / (float) mFooterIndicatorView.getHeight();
                             mLoadingFooterIndicatorProvider.onPositionChange(ChopinLayout.this, progress,
-                                    Indicator.STATE.BOUNCING_DOWN);
+                                    Indicator.STATE.BOUNCING_DOWN, -1, -1);
                         }
 
                         @Override
@@ -600,7 +601,7 @@ public class ChopinLayout extends ViewGroup {
                         public void onAnimate(int value) {
                             float progress = value / (float) mFooterIndicatorView.getHeight();
                             mLoadingFooterIndicatorProvider.onPositionChange(ChopinLayout.this, progress,
-                                    Indicator.STATE.BOUNCING_DOWN);
+                                    Indicator.STATE.BOUNCING_DOWN, -1, -1);
                             if (mFooterIndicatorLocation != INDICATOR_LOCATION_FRONT) {
                                 mContentViewWrapper.translateVerticalWithOffset(value);
                             }
@@ -641,7 +642,7 @@ public class ChopinLayout extends ViewGroup {
                                     if (null != mRefreshHeaderIndicatorProvider) {
                                         float progress = Math.abs(value) / (float) mHeaderIndicatorView.getHeight();
                                         mRefreshHeaderIndicatorProvider.onPositionChange(ChopinLayout.this, progress,
-                                                Indicator.STATE.BOUNCING_UP);
+                                                Indicator.STATE.BOUNCING_UP, -1, -1);
                                     }
                                 }
                             }
@@ -663,7 +664,7 @@ public class ChopinLayout extends ViewGroup {
                                 if (null != mRefreshHeaderIndicatorProvider) {
                                     float progress = Math.abs(value) / (float) mHeaderIndicatorView.getHeight();
                                     mRefreshHeaderIndicatorProvider.onPositionChange(ChopinLayout.this, progress,
-                                            Indicator.STATE.BOUNCING_UP);
+                                            Indicator.STATE.BOUNCING_UP, -1, -1);
                                 }
                             }
 
@@ -695,7 +696,7 @@ public class ChopinLayout extends ViewGroup {
                                     if (null != mLoadingFooterIndicatorProvider) {
                                         float progress = Math.abs(value) / (float) mFooterIndicatorView.getHeight();
                                         mLoadingFooterIndicatorProvider.onPositionChange(ChopinLayout.this, progress,
-                                                Indicator.STATE.BOUNCING_DOWN);
+                                                Indicator.STATE.BOUNCING_DOWN, -1, -1);
                                     }
                                 }
                             }
@@ -717,7 +718,7 @@ public class ChopinLayout extends ViewGroup {
                                 if (null != mLoadingFooterIndicatorProvider) {
                                     float progress = Math.abs(value) / (float) mFooterIndicatorView.getHeight();
                                     mLoadingFooterIndicatorProvider.onPositionChange(ChopinLayout.this, progress, Indicator
-                                            .STATE.BOUNCING_DOWN);
+                                            .STATE.BOUNCING_DOWN, -1, -1);
                                 }
                             }
 
@@ -845,6 +846,7 @@ public class ChopinLayout extends ViewGroup {
      */
     public void setHeaderIndicatorView(@NonNull View headerIndicatorView) {
         if (null != mHeaderIndicatorView) {
+            // Remove last view.
             removeView(mHeaderIndicatorView.getView());
         }
         headerIndicatorView.setLayoutParams(new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));

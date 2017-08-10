@@ -26,5 +26,5 @@ public interface Indicator {
 
     public void onComplete(ChopinLayout chopinLayout);
 
-    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state);
+    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int touchY);
 }
