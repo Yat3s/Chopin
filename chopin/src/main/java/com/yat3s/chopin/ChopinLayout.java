@@ -27,10 +27,13 @@ public class ChopinLayout extends ViewGroup {
 
     private static final String TAG = "ChopinLayout";
 
-    static final boolean DEBUG = BuildConfig.DEBUG;
+    static final boolean DEBUG = true;
 
     private static final long DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY = 100;
     private static final long DEFAULT_LOAD_MORE_COMPLETE_COLLAPSE_DELAY = 100;
+
+    private static final long DEFAULT_HEADER_NOTIFICATION_VIEW_STAY_DURATION = 1000;
+    private static final long DEFAULT_FOOTER_NOTIFICATION_VIEW_STAY_DURATION = 1000;
 
     public static final int STATE_DEFAULT = 0;
 
@@ -45,6 +48,10 @@ public class ChopinLayout extends ViewGroup {
     public static final int STATE_BOUNCING_DOWN = 5;
 
     public static final int STATE_BOUNCING_UP = 6;
+
+    public static final int STATE_SHOWING_HEADER_NOTIFICATION = 7;
+
+    public static final int STATE_SHOWING_FOOTER_NOTIFICATION = 8;
 
     // Indicator location setting, default is INDICATOR_LOCATION_OUTSIDE
     public static final int INDICATOR_LOCATION_OUTSIDE = 0x100;
@@ -93,6 +100,14 @@ public class ChopinLayout extends ViewGroup {
 
     // The content view of user set.
     private ContentViewWrapper mContentViewWrapper;
+
+    private View mHeaderNotificationView;
+
+    private View mFooterNotificationView;
+
+    private long mHeaderNotificationViewStayMills = DEFAULT_HEADER_NOTIFICATION_VIEW_STAY_DURATION;
+
+    private long mFooterNotificationViewStayMills = DEFAULT_FOOTER_NOTIFICATION_VIEW_STAY_DURATION;
 
     /**
      * Set visible threshold count while {@link #autoTriggerLoadMore} is true,
@@ -213,6 +228,18 @@ public class ChopinLayout extends ViewGroup {
                 mFooterIndicatorView.getView().bringToFront();
             }
             mFooterIndicatorView.layout(0, top, mFooterIndicatorView.getWidth(), bottom);
+        }
+
+        // Layout notification view.
+        if (null != mHeaderNotificationView) {
+            mHeaderNotificationView.layout(0, 0, mHeaderNotificationView.getMeasuredWidth(),
+                    mHeaderNotificationView.getMeasuredHeight());
+        }
+        if (null != mFooterNotificationView) {
+            mFooterNotificationView.layout(0,
+                    mContentViewWrapper.getView().getMeasuredHeight() - mFooterNotificationView.getMeasuredHeight(),
+                    mFooterNotificationView.getMeasuredWidth(),
+                    mContentViewWrapper.getView().getMeasuredHeight());
         }
     }
 
@@ -620,41 +647,64 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
+    private void releaseViewToDefaultStatus() {
+        releaseViewToDefaultStatus(false);
+    }
+
     /**
      * Default
      */
-    private void releaseViewToDefaultStatus() {
+    private void releaseViewToDefaultStatus(final boolean showNotificationView) {
         int currentTranslatedOffsetY = getCurrentTranslatedOffsetY();
+        // Process header indicator.
         if (currentTranslatedOffsetY > 0) {
-            // Bouncing start.
-            setState(STATE_BOUNCING_UP);
             // ContentView will rebound when it have no HeaderIndicatorView
             // or mHeaderIndicatorLocation != INDICATOR_LOCATION_FRONT
             if (null == mHeaderIndicatorView || mHeaderIndicatorLocation != INDICATOR_LOCATION_FRONT) {
-                mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(), 0,
-                        new BaseViewWrapper.AnimateListener() {
-                            @Override
-                            public void onAnimate(int value) {
-                                if (null != mHeaderIndicatorView) {
-                                    if (mHeaderIndicatorLocation != INDICATOR_LOCATION_BEHIND) {
-                                        mHeaderIndicatorView.translateVerticalWithOffset(value);
-                                    }
-                                    if (null != mRefreshHeaderIndicatorProvider) {
-                                        float progress = Math.abs(value) / (float) mHeaderIndicatorView.getHeight();
-                                        mRefreshHeaderIndicatorProvider.onPositionChange(ChopinLayout.this, progress,
-                                                Indicator.STATE.BOUNCING_UP, -1, -1);
-                                    }
-                                }
+                int start = mContentViewWrapper.getTranslationY();
+                int end = showNotificationView ? mHeaderNotificationView.getHeight() : 0;
+                setState(start > end ? STATE_BOUNCING_UP : STATE_BOUNCING_DOWN);
+                mContentViewWrapper.animateTranslationY(start, end, new BaseViewWrapper.AnimateListener() {
+                    @Override
+                    public void onAnimate(int value) {
+                        if (null != mHeaderIndicatorView) {
+                            if (mHeaderIndicatorLocation != INDICATOR_LOCATION_BEHIND) {
+                                mHeaderIndicatorView.translateVerticalWithOffset(value);
                             }
+                            if (null != mRefreshHeaderIndicatorProvider) {
+                                float progress = Math.abs(value) / (float) mHeaderIndicatorView.getHeight();
+                                mRefreshHeaderIndicatorProvider.onPositionChange(ChopinLayout.this, progress,
+                                        Indicator.STATE.BOUNCING_UP, -1, -1);
+                            }
+                        }
+                    }
 
-                            @Override
-                            public void onFinish() {
-                                // Bouncing end.
-                                setState(STATE_DEFAULT);
+                    @Override
+                    public void onFinish() {
+                        if (showNotificationView) {
+                            setState(STATE_SHOWING_HEADER_NOTIFICATION);
+                            mHeaderNotificationView.setVisibility(VISIBLE);
+                            postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
+                                    releaseViewToDefaultStatus(false);
+                                }
+                            }, mHeaderNotificationViewStayMills);
+
+                        } else {
+                            // Bouncing end.
+                            setState(STATE_DEFAULT);
+                            if (null != mHeaderNotificationView) {
+                                mHeaderNotificationView.setVisibility(GONE);
                             }
-                        });
+                        }
+                    }
+                });
             } else {
-                mHeaderIndicatorView.animateTranslationY(mHeaderIndicatorView.getTranslationY(), 0,
+                int start = mHeaderIndicatorView.getTranslationY();
+                int end = showNotificationView ? mHeaderNotificationView.getHeight() : 0;
+                setState(start > end ? STATE_BOUNCING_UP : STATE_BOUNCING_DOWN);
+                mHeaderIndicatorView.animateTranslationY(start, end,
                         new BaseViewWrapper.AnimateListener() {
                             @Override
                             public void onAnimate(int value) {
@@ -670,22 +720,38 @@ public class ChopinLayout extends ViewGroup {
 
                             @Override
                             public void onFinish() {
-                                // Bouncing end.
-                                setState(STATE_DEFAULT);
+                                if (showNotificationView) {
+                                    setState(STATE_SHOWING_HEADER_NOTIFICATION);
+                                    mHeaderNotificationView.setVisibility(VISIBLE);
+                                    postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            releaseViewToDefaultStatus(false);
+                                        }
+                                    }, mHeaderNotificationViewStayMills);
+
+                                } else {
+                                    // Bouncing end.
+                                    setState(STATE_DEFAULT);
+                                    if (null != mHeaderNotificationView) {
+                                        mHeaderNotificationView.setVisibility(GONE);
+                                    }
+                                }
                             }
                         });
             }
 
         }
 
+        // Process footer indicator.
         if (currentTranslatedOffsetY < 0) {
-            // Bouncing start.
-            setState(STATE_BOUNCING_DOWN);
-
             // ContentView will rebound when it have no FooterIndicatorView
             // or mHeaderIndicatorLocation != INDICATOR_LOCATION_FRONT
             if (null == mFooterIndicatorView || mFooterIndicatorLocation != INDICATOR_LOCATION_FRONT) {
-                mContentViewWrapper.animateTranslationY(mContentViewWrapper.getTranslationY(), 0,
+                int start = mContentViewWrapper.getTranslationY();
+                int end = showNotificationView ? -mFooterNotificationView.getHeight() : 0;
+                setState(start > end ? STATE_BOUNCING_UP : STATE_BOUNCING_DOWN);
+                mContentViewWrapper.animateTranslationY(start, end,
                         new BaseViewWrapper.AnimateListener() {
                             @Override
                             public void onAnimate(int value) {
@@ -703,12 +769,30 @@ public class ChopinLayout extends ViewGroup {
 
                             @Override
                             public void onFinish() {
-                                // Bouncing end.
-                                setState(STATE_DEFAULT);
+                                if (showNotificationView) {
+                                    setState(STATE_SHOWING_FOOTER_NOTIFICATION);
+                                    mFooterNotificationView.setVisibility(VISIBLE);
+                                    postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            releaseViewToDefaultStatus(false);
+                                        }
+                                    }, mFooterNotificationViewStayMills);
+
+                                } else {
+                                    // Bouncing end.
+                                    setState(STATE_DEFAULT);
+                                    if (null != mFooterNotificationView) {
+                                        mFooterNotificationView.setVisibility(GONE);
+                                    }
+                                }
                             }
                         });
             } else {
-                mFooterIndicatorView.animateTranslationY(mFooterIndicatorView.getTranslationY(), 0,
+                int start = mFooterIndicatorView.getTranslationY();
+                int end = showNotificationView ? -mFooterNotificationView.getHeight() : 0;
+                setState(start > end ? STATE_BOUNCING_UP : STATE_BOUNCING_DOWN);
+                mFooterIndicatorView.animateTranslationY(start, end,
                         new BaseViewWrapper.AnimateListener() {
                             @Override
                             public void onAnimate(int value) {
@@ -724,8 +808,23 @@ public class ChopinLayout extends ViewGroup {
 
                             @Override
                             public void onFinish() {
-                                // Bouncing end.
-                                setState(STATE_DEFAULT);
+                                if (showNotificationView) {
+                                    setState(STATE_SHOWING_FOOTER_NOTIFICATION);
+                                    mFooterNotificationView.setVisibility(VISIBLE);
+                                    postDelayed(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            releaseViewToDefaultStatus(false);
+                                        }
+                                    }, mFooterNotificationViewStayMills);
+
+                                } else {
+                                    // Bouncing end.
+                                    setState(STATE_DEFAULT);
+                                    if (null != mFooterNotificationView) {
+                                        mFooterNotificationView.setVisibility(GONE);
+                                    }
+                                }
                             }
                         });
             }
@@ -812,7 +911,7 @@ public class ChopinLayout extends ViewGroup {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                releaseViewToDefaultStatus();
+                releaseViewToDefaultStatus(mHeaderNotificationView != null);
             }
         }, collapseDelay);
     }
@@ -828,7 +927,7 @@ public class ChopinLayout extends ViewGroup {
         postDelayed(new Runnable() {
             @Override
             public void run() {
-                releaseViewToDefaultStatus();
+                releaseViewToDefaultStatus(mFooterNotificationView != null);
             }
         }, collapseDelay);
     }
@@ -889,7 +988,27 @@ public class ChopinLayout extends ViewGroup {
         mFooterIndicatorView = null;
     }
 
-//    /**
+    public void setHeaderNotificationView(@NonNull View notificationView) {
+        mHeaderNotificationView = notificationView;
+        addView(notificationView);
+        mHeaderNotificationView.setVisibility(GONE);
+    }
+
+    public void setFooterNotificationView(@NonNull View notificationView) {
+        mFooterNotificationView = notificationView;
+        addView(notificationView);
+        mFooterNotificationView.setVisibility(GONE);
+    }
+
+    public void setHeaderNotificationViewStayMills(long headerNotificationViewStayMills) {
+        this.mHeaderNotificationViewStayMills = headerNotificationViewStayMills;
+    }
+
+    public void setFooterNotificationViewStayMills(long footerNotificationViewStayMills) {
+        this.mFooterNotificationViewStayMills = footerNotificationViewStayMills;
+    }
+
+    //    /**
 //     * Configure header indicator background.
 //     * NOTE: it is ONLY shown in indicator location {@link #INDICATOR_LOCATION_BEHIND}
 //     * and {@link #INDICATOR_LOCATION_OUTSIDE}
