@@ -23,7 +23,7 @@ import com.yat3s.chopin.indicator.LottieIndicator;
 public class AdvancedSettingActivity extends AppCompatActivity {
     private static final String TAG = "AdvancedSettingActivity";
 
-    private static final int COMPLETE_DELAY = 10000;
+    private static final int COMPLETE_DELAY = 2000;
 
     private ChopinLayout mChopinLayout;
 
@@ -42,6 +42,14 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureHeaderIndicatorLocation();
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
+
+        ImageView notificationView = new ImageView(this);
+        notificationView.setImageResource(R.mipmap.stamp_4);
+        mChopinLayout.setHeaderNotificationView(notificationView);
+
+        TextView notificationView2 = new TextView(this);
+        notificationView2.setText("Footer");
+        mChopinLayout.setFooterNotificationView(notificationView2);
     }
 
     private void configureScrollState() {
@@ -71,6 +79,12 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                         break;
                     case ChopinLayout.STATE_LOADING:
                         stateTv.setText("STATE_LOADING");
+                        break;
+                    case ChopinLayout.STATE_SHOWING_HEADER_NOTIFICATION:
+                        stateTv.setText("STATE_SHOWING_HEADER_NOTIFICATION");
+                        break;
+                    case ChopinLayout.STATE_SHOWING_FOOTER_NOTIFICATION:
+                        stateTv.setText("STATE_SHOWING_FOOTER_NOTIFICATION");
                         break;
                 }
             }
