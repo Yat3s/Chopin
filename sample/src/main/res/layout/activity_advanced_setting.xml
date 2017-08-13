@@ -34,26 +34,15 @@
 
                 <View style="@style/DividerLineVertically" />
 
+                <include layout="@layout/include_advanced_notification_view" />
+
+                <View style="@style/DividerLineVertically" />
+
                 <include layout="@layout/include_advanced_indicator_style" />
 
                 <View style="@style/DividerLineVertically" />
 
                 <include layout="@layout/include_advanced_indicator_location" />
-
-                <View style="@style/DividerLineVertically" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
-                    <com.yat3s.chopin.sample.widget.TitleTextView
-                        style="@style/TextComponent.AdvancedSettingTitle"
-                        android:text="Show Notification View:  "/>
-
-                    <android.support.v7.widget.SwitchCompat
-                        android:id="@+id/notification_view_switch"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content" />
-                </LinearLayout>
 
                 <View style="@style/DividerLineVertically" />
 

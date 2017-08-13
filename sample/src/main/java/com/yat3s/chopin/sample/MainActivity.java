@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.RadioGroup;
 
 import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.indicator.LottieIndicator;
@@ -33,7 +34,7 @@ import java.util.List;
  */
 public class MainActivity extends AppCompatActivity {
 
-    private static final int GRID_SPAN_COUNT = 2;
+    private static final int GRID_SPAN_COUNT = 3;
     private ChopinLayout mChopinLayout;
 
     @Override

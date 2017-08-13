@@ -29,7 +29,7 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
 
     @Override
     protected void initialize() {
-        setupRefreshHeader("refresh.json", 0.2f, 3000);
+        setupRefreshHeader("Plane.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
 
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
