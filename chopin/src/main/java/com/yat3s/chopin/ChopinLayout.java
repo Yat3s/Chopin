@@ -213,6 +213,9 @@ public class ChopinLayout extends ViewGroup {
             int bottom = top + mHeaderIndicatorView.getHeight();
             if (mHeaderIndicatorLocation == INDICATOR_LOCATION_FRONT) {
                 mHeaderIndicatorView.getView().bringToFront();
+                if (null != mHeaderNotificationView) {
+                    mHeaderNotificationView.bringToFront();
+                }
             }
             mHeaderIndicatorView.layout(0, top, mHeaderIndicatorView.getWidth(), bottom);
         }
@@ -226,6 +229,9 @@ public class ChopinLayout extends ViewGroup {
             int bottom = top + mFooterIndicatorView.getHeight();
             if (mFooterIndicatorLocation == INDICATOR_LOCATION_FRONT) {
                 mFooterIndicatorView.getView().bringToFront();
+                if (null != mFooterNotificationView) {
+                    mFooterNotificationView.bringToFront();
+                }
             }
             mFooterIndicatorView.layout(0, top, mFooterIndicatorView.getWidth(), bottom);
         }
