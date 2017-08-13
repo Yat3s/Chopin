@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Color;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -986,24 +987,40 @@ public class ChopinLayout extends ViewGroup {
     public void clearHeaderIndicator() {
         mRefreshHeaderIndicatorProvider = null;
         mHeaderIndicatorView = null;
+        requestLayout();
     }
-
 
     public void clearFooterIndicator() {
         mLoadingFooterIndicatorProvider = null;
         mFooterIndicatorView = null;
+        requestLayout();
     }
 
-    public void setHeaderNotificationView(@NonNull View notificationView) {
+    public void setHeaderNotificationView(@Nullable View notificationView) {
+        // Remove last view.
+        if (null != mHeaderNotificationView) {
+            removeView(mHeaderNotificationView);
+        }
         mHeaderNotificationView = notificationView;
-        addView(notificationView);
-        mHeaderNotificationView.setVisibility(GONE);
+        if (null != notificationView) {
+            addView(notificationView);
+            mHeaderNotificationView.setVisibility(GONE);
+        } else {
+            requestLayout();
+        }
     }
 
-    public void setFooterNotificationView(@NonNull View notificationView) {
+    public void setFooterNotificationView(@Nullable View notificationView) {
+        if (null != mFooterNotificationView) {
+            removeView(mFooterNotificationView);
+        }
         mFooterNotificationView = notificationView;
-        addView(notificationView);
-        mFooterNotificationView.setVisibility(GONE);
+        if (null != notificationView) {
+            addView(notificationView);
+            mFooterNotificationView.setVisibility(GONE);
+        } else {
+            requestLayout();
+        }
     }
 
     public void setHeaderNotificationViewStayMills(long headerNotificationViewStayMills) {

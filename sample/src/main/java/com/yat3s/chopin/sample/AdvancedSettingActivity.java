@@ -1,12 +1,17 @@
 package com.yat3s.chopin.sample;
 
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
@@ -42,14 +47,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureHeaderIndicatorLocation();
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
-
-        ImageView notificationView = new ImageView(this);
-        notificationView.setImageResource(R.mipmap.stamp_4);
-        mChopinLayout.setHeaderNotificationView(notificationView);
-
-        TextView notificationView2 = new TextView(this);
-        notificationView2.setText("Footer");
-        mChopinLayout.setFooterNotificationView(notificationView2);
+        configureNotificationView();
     }
 
     private void configureScrollState() {
@@ -293,6 +291,39 @@ public class AdvancedSettingActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
+            }
+        });
+    }
+
+    private void configureNotificationView() {
+        SwitchCompat notificationSwitch = (SwitchCompat) findViewById(R.id.notification_view_switch);
+        notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if (isChecked) {
+                    ViewGroup.LayoutParams lp = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.WRAP_CONTENT);
+                    TextView headerNotificationView = new TextView(AdvancedSettingActivity.this);
+                    headerNotificationView.setLayoutParams(lp);
+                    headerNotificationView.setText("10 new messages");
+                    headerNotificationView.setGravity(Gravity.CENTER);
+                    headerNotificationView.setPadding(0, 24,0, 24);
+                    headerNotificationView.setTextColor(Color.WHITE);
+                    headerNotificationView.setBackgroundResource(R.color.md_red_500);
+                    mChopinLayout.setHeaderNotificationView(headerNotificationView);
+
+                    TextView footerNotificationView = new TextView(AdvancedSettingActivity.this);
+                    footerNotificationView.setLayoutParams(lp);
+                    footerNotificationView.setText("Load 12 more messages");
+                    footerNotificationView.setTextColor(Color.BLACK);
+                    footerNotificationView.setGravity(Gravity.CENTER);
+                    footerNotificationView.setPadding(0, 24,0, 24);
+                    footerNotificationView.setBackgroundResource(R.color.md_yellow_500);
+                    mChopinLayout.setFooterNotificationView(footerNotificationView);
+                } else {
+                    mChopinLayout.setHeaderNotificationView(null);
+                    mChopinLayout.setFooterNotificationView(null);
+                }
             }
         });
     }
