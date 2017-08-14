@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
@@ -18,6 +19,8 @@ import com.yat3s.chopin.indicator.Indicator;
 import com.yat3s.chopin.wrapper.BaseViewWrapper;
 import com.yat3s.chopin.wrapper.ContentViewWrapper;
 import com.yat3s.chopin.wrapper.IndicatorViewWrapper;
+
+import static android.R.attr.action;
 
 /**
  * Created by Yat3s on 03/06/2017.
@@ -257,7 +260,8 @@ public class ChopinLayout extends ViewGroup {
         }
 
         int x = (int) ev.getX(), y = (int) ev.getY();
-        switch (ev.getAction()) {
+        int actionMasked = MotionEventCompat.getActionMasked(ev);
+        switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
                 mLastActionDownX = x;
                 mLastActionDownY = y;
@@ -279,6 +283,7 @@ public class ChopinLayout extends ViewGroup {
                 return true;
 
             case MotionEvent.ACTION_MOVE:
+                Log.d(TAG, "dispatchTouchEventLocation: " + x + ", " + y);
                 mLastMoveEvent = ev;
                 int dx = x - mLastActionDownX;
                 int dy = y - mLastActionDownY;
