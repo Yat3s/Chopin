@@ -20,8 +20,6 @@ import com.yat3s.chopin.wrapper.BaseViewWrapper;
 import com.yat3s.chopin.wrapper.ContentViewWrapper;
 import com.yat3s.chopin.wrapper.IndicatorViewWrapper;
 
-import static android.R.attr.action;
-
 /**
  * Created by Yat3s on 03/06/2017.
  * Email: hawkoyates@gmail.com
@@ -253,6 +251,8 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
+//    boolean needUpdateStartInterceptY = false;
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
         if (!enableOverScroll) {
@@ -261,6 +261,11 @@ public class ChopinLayout extends ViewGroup {
 
         int x = (int) ev.getX(), y = (int) ev.getY();
         int actionMasked = MotionEventCompat.getActionMasked(ev);
+        int action = ev.getAction();
+        Log.d(TAG, "dispatchTouchEvent: action-->" + action + ", actionMasked-->" + actionMasked);
+        if (ev.getPointerCount() > 1) {
+            Log.d(TAG, "dispatchTouchEvent: location-->0" + ev.getY(0) + ", 1-->" + ev.getY(1));
+        }
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
                 mLastActionDownX = x;
@@ -281,6 +286,14 @@ public class ChopinLayout extends ViewGroup {
                 // for disable dispatch this motion.
                 // REF: it is a Recursion method, so it will execute the last child dispatch method.
                 return true;
+
+            case MotionEvent.ACTION_POINTER_UP:
+//                // TODO: 8/14/2017 Trick to process multi touch .
+//                if (ev.getPointerCount() == 2 && (mState == STATE_DRAGGING_DOWN || mState == STATE_DRAGGING_UP)) {
+//                    Log.d(TAG, "mStartInterceptTouchY: " + ev.getPointerCount());
+//                    needUpdateStartInterceptY = true;
+//                }
+                break;
 
             case MotionEvent.ACTION_MOVE:
                 Log.d(TAG, "dispatchTouchEventLocation: " + x + ", " + y);
