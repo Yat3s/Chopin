@@ -878,6 +878,7 @@ public class ChopinLayout extends ViewGroup {
         super.dispatchTouchEvent(mockDownMotionEvent);
         mLastActionDownX = x;
         mLastActionDownY = y;
+        hasDispatchCancelEvent = false;
     }
 
     private void sendCancelEvent() {
