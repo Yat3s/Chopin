@@ -471,6 +471,41 @@ public class ChopinLayout extends ViewGroup {
         return super.onTouchEvent(ev);
     }
 
+
+    /**
+     * Abort this action while dragging content view and not reach the demands.
+     */
+    private void abortThisDrag() {
+        releaseViewToDefaultStatus();
+        if (getCurrentTranslatedOffsetY() > 0 && null != mRefreshHeaderIndicatorProvider) {
+            mRefreshHeaderIndicatorProvider.onCancel(this);
+        }
+        if (getCurrentTranslatedOffsetY() < 0 && null != mLoadingFooterIndicatorProvider) {
+            mLoadingFooterIndicatorProvider.onCancel(this);
+        }
+    }
+
+    private void resetInterceptEvent(MotionEvent event) {
+        setState(STATE_DEFAULT);
+        int x = (int) event.getX(), y = (int) event.getY();
+        long eventTime = System.currentTimeMillis();
+        MotionEvent mockDownMotionEvent = MotionEvent.obtain(eventTime,
+                eventTime, MotionEvent.ACTION_DOWN, x, y, 0);
+        super.dispatchTouchEvent(mockDownMotionEvent);
+        mLastActionDownX = x;
+        mLastActionDownY = y;
+    }
+
+    private void sendCancelEvent() {
+        if (mLastMoveEvent == null) {
+            return;
+        }
+        MotionEvent last = mLastMoveEvent;
+        MotionEvent event = MotionEvent.obtain(last.getDownTime(), last.getEventTime() + ViewConfiguration.getLongPressTimeout()
+                , MotionEvent.ACTION_CANCEL, mLastActionDownX, mLastActionDownY, last.getMetaState());
+        super.dispatchTouchEvent(event);
+    }
+
     private void translateViewWithTargetOffsetY(int translationOffsetY) {
         if (DEBUG) {
             Log.d(TAG, "translateViewWithTargetOffsetY: " + translationOffsetY);
@@ -856,40 +891,6 @@ public class ChopinLayout extends ViewGroup {
         }
     }
 
-    /**
-     * Abort this action while dragging content view and not reach the demands.
-     */
-    private void abortThisDrag() {
-        releaseViewToDefaultStatus();
-        if (getCurrentTranslatedOffsetY() > 0 && null != mRefreshHeaderIndicatorProvider) {
-            mRefreshHeaderIndicatorProvider.onCancel(this);
-        }
-        if (getCurrentTranslatedOffsetY() < 0 && null != mLoadingFooterIndicatorProvider) {
-            mLoadingFooterIndicatorProvider.onCancel(this);
-        }
-    }
-
-    private void resetInterceptEvent(MotionEvent event) {
-        setState(STATE_DEFAULT);
-        int x = (int) event.getX(), y = (int) event.getY();
-        long eventTime = System.currentTimeMillis();
-        MotionEvent mockDownMotionEvent = MotionEvent.obtain(eventTime,
-                eventTime, MotionEvent.ACTION_DOWN, x, y, 0);
-        super.dispatchTouchEvent(mockDownMotionEvent);
-        mLastActionDownX = x;
-        mLastActionDownY = y;
-        hasDispatchCancelEvent = false;
-    }
-
-    private void sendCancelEvent() {
-        if (mLastMoveEvent == null) {
-            return;
-        }
-        MotionEvent last = mLastMoveEvent;
-        MotionEvent event = MotionEvent.obtain(last.getDownTime(), last.getEventTime() + ViewConfiguration.getLongPressTimeout()
-                , MotionEvent.ACTION_CANCEL, mLastActionDownX, mLastActionDownY, last.getMetaState());
-        super.dispatchTouchEvent(event);
-    }
 
     private void setState(int state) {
         if (mState == state) {
