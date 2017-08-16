@@ -296,7 +296,6 @@ public class ChopinLayout extends ViewGroup {
                 break;
 
             case MotionEvent.ACTION_MOVE:
-                Log.d(TAG, "dispatchTouchEventLocation: " + x + ", " + y);
                 mLastMoveEvent = ev;
                 int dx = x - mLastActionDownX;
                 int dy = y - mLastActionDownY;
@@ -492,8 +491,13 @@ public class ChopinLayout extends ViewGroup {
         MotionEvent mockDownMotionEvent = MotionEvent.obtain(eventTime,
                 eventTime, MotionEvent.ACTION_DOWN, x, y, 0);
         super.dispatchTouchEvent(mockDownMotionEvent);
+//
+//        MotionEvent mockMoveMotionEvent = MotionEvent.obtain(eventTime,
+//                eventTime, MotionEvent.ACTION_MOVE, x, y, 0);
+//        super.dispatchTouchEvent(mockMoveMotionEvent);
         mLastActionDownX = x;
         mLastActionDownY = y;
+//        hasDispatchCancelEvent = false;
     }
 
     private void sendCancelEvent() {
