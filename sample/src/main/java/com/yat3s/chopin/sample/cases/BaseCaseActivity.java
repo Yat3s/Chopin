@@ -27,7 +27,7 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
         setContentView(getContentLayoutId());
 
         if (null == findViewById(R.id.chopin_layout)) {
-            throw new IllegalArgumentException("You should define a KittenLayout with id chopin_layout in content layout!");
+            throw new IllegalArgumentException("You should define a ChopinLayout with id chopin_layout in content layout!");
         } else {
             mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
         }
