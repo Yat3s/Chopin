@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity {
         });
         recyclerView.setLayoutManager(new GridLayoutManager(this, GRID_SPAN_COUNT));
 
+        // Title header decoration
+        View titleView = getLayoutInflater().inflate(R.layout.header_title, null);
+        TitleHeaderDecoration decoration = new TitleHeaderDecoration(titleView);
+        recyclerView.addItemDecoration(decoration);
+
         List<CaseDemo> caseDemos = new ArrayList<>();
         caseDemos.add(new CaseDemo("RecyclerView", R.mipmap.abstract_1, CaseRecyclerViewActivity.class));
         caseDemos.add(new CaseDemo("Nested\nRecyclerView", R.mipmap.abstract_2, CaseNestedRecyclerViewActivity.class));
