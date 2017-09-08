@@ -11,7 +11,7 @@ import android.view.View;
  * GitHub: https://github.com/yat3s
  */
 public class TitleHeaderDecoration extends RecyclerView.ItemDecoration {
-    private static final int DRAW_POSITION = 3;
+    private static final int HEADER_POSITION = 3;
 
     private Rect mBounds = new Rect();
 
@@ -23,20 +23,18 @@ public class TitleHeaderDecoration extends RecyclerView.ItemDecoration {
 
     @Override
     public void onDraw(Canvas canvas, RecyclerView parent, RecyclerView.State state) {
-
         if (0 == mDividerTitleHeaderView.getHeight()) {
             measureView(mDividerTitleHeaderView, parent.getWidth(), 0);
         }
 
         final int childCount = parent.getChildCount();
-
         for (int idx = 0; idx < childCount; idx++) {
             View itemView = parent.getChildAt(idx);
             parent.getDecoratedBoundsWithMargins(itemView, mBounds);
             final int top = mBounds.top;
             final int left = mBounds.left;
             final int position = parent.getChildAdapterPosition(itemView);
-            if (position == DRAW_POSITION) {
+            if (position == HEADER_POSITION) {
                 canvas.save();
                 canvas.translate(left, top);
                 mDividerTitleHeaderView.draw(canvas);
@@ -53,7 +51,7 @@ public class TitleHeaderDecoration extends RecyclerView.ItemDecoration {
     @Override
     public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state) {
         final int position = parent.getChildAdapterPosition(view);
-        if (position / DRAW_POSITION == 1) {
+        if (position / HEADER_POSITION == 1) {
             if (0 == mDividerTitleHeaderView.getHeight()) {
                 measureView(mDividerTitleHeaderView, parent.getWidth(), 0);
             }
