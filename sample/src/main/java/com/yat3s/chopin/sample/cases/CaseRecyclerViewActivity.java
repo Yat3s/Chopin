@@ -91,5 +91,7 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
                 recyclerView.setLayoutManager(new StaggeredGridLayoutManager(SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL));
             }
         });
+
+        mChopinLayout.performRefresh();
     }
 }

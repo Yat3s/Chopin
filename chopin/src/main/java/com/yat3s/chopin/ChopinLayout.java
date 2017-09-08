@@ -2,6 +2,7 @@ package com.yat3s.chopin;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.os.Build;
 import android.support.annotation.FloatRange;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -14,6 +15,7 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.ViewTreeObserver;
 
 import com.yat3s.chopin.indicator.Indicator;
 import com.yat3s.chopin.wrapper.BaseViewWrapper;
@@ -1114,6 +1116,29 @@ public class ChopinLayout extends ViewGroup {
                 super.onScrollStateChanged(recyclerView, newState);
             }
         });
+    }
+
+    public void performRefresh(final long delayMills) {
+        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+            @Override
+            public void onGlobalLayout() {
+                postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        releaseViewToRefreshingStatus();
+                    }
+                }, delayMills);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                } else {
+                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                }
+            }
+        });
+    }
+
+    public void performRefresh() {
+        performRefresh(0);
     }
 
     /**
