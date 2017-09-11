@@ -46,6 +46,12 @@
 
                 <View style="@style/DividerLineVertically" />
 
+                <Button
+                    android:id="@+id/perform_refresh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Perform refresh"/>
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

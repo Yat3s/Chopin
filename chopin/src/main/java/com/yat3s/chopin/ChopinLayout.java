@@ -1119,22 +1119,32 @@ public class ChopinLayout extends ViewGroup {
     }
 
     public void performRefresh(final long delayMills) {
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        releaseViewToRefreshingStatus();
-                    }
-                }, delayMills);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        if (0 != getHeight()) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    releaseViewToRefreshingStatus();
                 }
-            }
-        });
+            }, delayMills);
+        } else {
+            // Perform refresh after rendered view.
+            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            releaseViewToRefreshingStatus();
+                        }
+                    }, delayMills);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
     }
 
     public void performRefresh() {

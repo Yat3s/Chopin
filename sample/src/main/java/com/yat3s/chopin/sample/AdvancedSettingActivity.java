@@ -48,6 +48,12 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
         configureNotificationView();
+        findViewById(R.id.perform_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mChopinLayout.performRefresh();
+            }
+        });
     }
 
     private void configureScrollState() {
