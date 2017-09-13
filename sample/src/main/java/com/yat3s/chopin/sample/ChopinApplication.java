@@ -9,14 +9,14 @@ import android.graphics.Typeface;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class App extends Application {
+public class ChopinApplication extends Application {
     private static Typeface sTypeface;
-    private static App sApp;
+    private static ChopinApplication sChopinApplication;
     @Override
     public void onCreate() {
         super.onCreate();
         sTypeface = Typeface.createFromAsset(getAssets(), "fonts/chopin.otf");
-        sApp = this;
+        sChopinApplication = this;
     }
 
     public static Typeface getTitleTypeface() {
@@ -24,6 +24,6 @@ public class App extends Application {
     }
 
     public static Context getContext() {
-        return sApp;
+        return sChopinApplication;
     }
 }

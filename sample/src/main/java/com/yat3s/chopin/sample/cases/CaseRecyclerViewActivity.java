@@ -9,7 +9,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.sample.DataRepo;
+import com.yat3s.chopin.sample.DataRepository;
 import com.yat3s.chopin.sample.MusicAdapter;
 import com.yat3s.chopin.sample.R;
 
@@ -69,7 +69,7 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
         });
 
         // Configure adapter.
-        MusicAdapter musicAdapter = new MusicAdapter(this, DataRepo.generateMusicData());
+        MusicAdapter musicAdapter = new MusicAdapter(this, DataRepository.generateMusicData());
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(musicAdapter);
 

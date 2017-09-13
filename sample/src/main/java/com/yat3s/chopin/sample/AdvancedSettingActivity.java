@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
@@ -48,9 +49,11 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
         configureNotificationView();
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
         findViewById(R.id.perform_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                scrollView.smoothScrollTo(0, 0);
                 mChopinLayout.performRefresh();
             }
         });
@@ -313,7 +316,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     headerNotificationView.setLayoutParams(lp);
                     headerNotificationView.setText("10 new messages");
                     headerNotificationView.setGravity(Gravity.CENTER);
-                    headerNotificationView.setPadding(0, 24,0, 24);
+                    headerNotificationView.setPadding(0, 24, 0, 24);
                     headerNotificationView.setTextColor(Color.WHITE);
                     headerNotificationView.setBackgroundResource(R.color.md_red_500);
                     mChopinLayout.setHeaderNotificationView(headerNotificationView);
@@ -323,7 +326,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     footerNotificationView.setText("Load 12 more messages");
                     footerNotificationView.setTextColor(Color.BLACK);
                     footerNotificationView.setGravity(Gravity.CENTER);
-                    footerNotificationView.setPadding(0, 24,0, 24);
+                    footerNotificationView.setPadding(0, 24, 0, 24);
                     footerNotificationView.setBackgroundResource(R.color.md_yellow_500);
                     mChopinLayout.setFooterNotificationView(footerNotificationView);
                 } else {

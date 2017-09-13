@@ -4,7 +4,7 @@ import android.content.Context;
 import android.util.AttributeSet;
 import android.widget.TextView;
 
-import com.yat3s.chopin.sample.App;
+import com.yat3s.chopin.sample.ChopinApplication;
 
 /**
  * Created by Yat3s on 07/07/2017.
@@ -28,7 +28,7 @@ public class TitleTextView extends TextView {
 
     private void initView() {
         if (!isInEditMode()) {
-            setTypeface(App.getTitleTypeface());
+            setTypeface(ChopinApplication.getTitleTypeface());
         }
     }
 }
