@@ -2,7 +2,6 @@ package com.yat3s.chopin.sample;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -18,7 +17,7 @@ import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.Indicator;
+import com.yat3s.chopin.indicator.ClassicRefreshIndicator;
 import com.yat3s.chopin.indicator.LottieIndicator;
 
 /**
@@ -131,87 +130,8 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         findViewById(R.id.indicator_style_custom_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final View headerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
-                final TextView headerProgressTv = (TextView) headerIndicatorView.findViewById(R.id.progress_tv);
-                mChopinLayout.setRefreshHeaderIndicator(new Indicator() {
-                    @NonNull
-                    @Override
-                    public View getView() {
-                        return headerIndicatorView;
-                    }
-
-                    @Override
-                    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView) {
-
-                    }
-
-                    @Override
-                    public void onCancel(ChopinLayout chopinLayout) {
-
-                    }
-
-                    @Override
-                    public void onStart(ChopinLayout chopinLayout) {
-                        headerProgressTv.setText("Refreshing~");
-                    }
-
-                    @Override
-                    public void onComplete(ChopinLayout chopinLayout) {
-                        headerProgressTv.setText("Refresh completed!");
-                    }
-
-                    @Override
-                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int
-                            touchY) {
-                        if (progress == 1.0f) {
-                            headerProgressTv.setText("Release to refresh~");
-                        } else {
-                            headerProgressTv.setText("Progress--> " + progress + ", " + state.name()
-                                    + " (" + touchX + ", " + touchY + ")");
-                        }
-                    }
-                });
-
-                final View footerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
-                final TextView footerProgressTv = (TextView) footerIndicatorView.findViewById(R.id.progress_tv);
-                mChopinLayout.setLoadingFooterIndicator(new Indicator() {
-                    @NonNull
-                    @Override
-                    public View getView() {
-                        return footerIndicatorView;
-                    }
-
-                    @Override
-                    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView) {
-
-                    }
-
-                    @Override
-                    public void onCancel(ChopinLayout chopinLayout) {
-
-                    }
-
-                    @Override
-                    public void onStart(ChopinLayout chopinLayout) {
-                        footerProgressTv.setText("Loading~");
-                    }
-
-                    @Override
-                    public void onComplete(ChopinLayout chopinLayout) {
-                        footerProgressTv.setText("Load more completed!");
-                    }
-
-                    @Override
-                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int
-                            touchY) {
-                        if (progress == 1.0f) {
-                            footerProgressTv.setText("Release to load~");
-                        } else {
-                            footerProgressTv.setText("Progress--> " + progress + ", " + state.name()
-                                    + " (" + touchX + ", " + touchY + ")");
-                        }
-                    }
-                });
+                mChopinLayout.setRefreshHeaderIndicator(new ClassicRefreshIndicator(AdvancedSettingActivity.this));
+                mChopinLayout.setLoadingFooterIndicator(new ClassicRefreshIndicator(AdvancedSettingActivity.this));
                 mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
