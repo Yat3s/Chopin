@@ -60,7 +60,7 @@ public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> {
         if (position == POSITION_RECYCLER_VIEW) {
             return R.layout.item_nested_recycler_view;
         }
-        return R.layout.item_postcard;
+        return R.layout.item_music;
     }
 
     public static class StampAdapter extends SimpleChopinAdapter<Integer> {
@@ -71,12 +71,12 @@ public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> {
 
         @Override
         protected void bindDataToItemView(ChopinViewHolder holder, Integer resId, int position) {
-            ((ImageView) holder.getView(R.id.stamp_iv)).setImageResource(resId);
+            ((ImageView) holder.getView(R.id.cd_iv)).setImageResource(resId);
         }
 
         @Override
         protected int getItemViewLayoutId(int position, Integer resId) {
-            return R.layout.item_nested_stamp;
+            return R.layout.item_nested_cd;
         }
     }
 

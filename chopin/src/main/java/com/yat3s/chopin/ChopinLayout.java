@@ -33,6 +33,8 @@ public class ChopinLayout extends ViewGroup {
 
     static final boolean DEBUG = true;
 
+    private static final long DEFAULT_PERFORM_REFRESH_DELAY = 100;
+
     private static final long DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY = 100;
     private static final long DEFAULT_LOAD_MORE_COMPLETE_COLLAPSE_DELAY = 100;
 
@@ -1139,7 +1141,7 @@ public class ChopinLayout extends ViewGroup {
                         public void run() {
                             releaseViewToRefreshingStatus();
                         }
-                    }, delayMills);
+                    }, delayMills == 0 ? DEFAULT_PERFORM_REFRESH_DELAY : delayMills);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
                         getViewTreeObserver().removeOnGlobalLayoutListener(this);
                     } else {

@@ -17,9 +17,11 @@ public class DataRepository {
 
     public static ArrayList<MusicAdapter.Music> generateMusicData() {
         final String[] musicNames = ChopinApplication.getContext().getResources().getStringArray(musics);
+        int[] coverImageIds = {R.mipmap.stamp_1, R.mipmap.stamp_2, R.mipmap.stamp_3, R.mipmap.stamp_4};
         ArrayList<MusicAdapter.Music> musics = new ArrayList<>();
-        for (String musicName : musicNames) {
-            musics.add(new MusicAdapter.Music(musicName, generateRandomImageResId()));
+
+        for (int idx = 0; idx < musicNames.length; idx++) {
+            musics.add(new MusicAdapter.Music(musicNames[idx], coverImageIds[idx % coverImageIds.length]));
         }
         return musics;
     }
@@ -28,14 +30,4 @@ public class DataRepository {
         int randomIndex = (int) (Math.random() * ABSTRACT_IMAGE_RESOURCE_ID.length);
         return ABSTRACT_IMAGE_RESOURCE_ID[randomIndex];
     }
-
-//    private static List<PostcardAdapter.Postcard> generatePostcardData(int size) {
-//        int[] postcardImageIds = {R.mipmap.card_1, R.mipmap.card_2, R.mipmap.card_3,
-//                R.mipmap.card_4, R.mipmap.card_5, R.mipmap.card_6, R.mipmap.card_7};
-//        List<PostcardAdapter.Postcard> postcards = new ArrayList<>();
-//        for (int idx = 0; idx < size; idx++) {
-//            postcards.add(new PostcardAdapter.Postcard(postcardImageIds[idx % postcardImageIds.length]));
-//        }
-//        return postcards;
-//    }
 }
