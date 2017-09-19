@@ -11,6 +11,11 @@
         android:scaleType="centerCrop"
         android:src="@mipmap/img_music_cover"/>
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="128dp"
+        android:background="@drawable/gradient_navigation"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -21,11 +26,11 @@
         android:paddingLeft="24dp"
         android:paddingTop="60dp">
 
-        <com.yat3s.chopin.sample.widget.TitleTextView
+        <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Moonlight shadow"
-            android:textColor="@color/white"
+            android:textColor="@color/md_grey_200"
             android:textSize="22sp"/>
 
         <TextView
@@ -33,7 +38,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:text="Mike Oldfield "
-            android:textColor="@color/white"/>
+            android:textColor="@color/md_grey_400"/>
     </LinearLayout>
 
 
@@ -42,6 +47,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:layout_marginRight="60dp"
+        android:alpha="0.7"
         android:src="@mipmap/music_wave"/>
 
 </FrameLayout>
