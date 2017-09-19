@@ -166,7 +166,9 @@ public class ChopinLayout extends ViewGroup {
             // Setup default background color of content view.
             // It fixed a bug when setting 'behind' indicator location can see behind indicator.
             View contentView = super.getChildAt(0);
-            contentView.setBackgroundColor(Color.WHITE);
+            if (null == contentView.getBackground()) {
+                contentView.setBackgroundColor(Color.WHITE);
+            }
             mContentViewWrapper = new ContentViewWrapper(contentView);
 
             // Set up auto load more if content view is RecyclerView.

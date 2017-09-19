@@ -7,6 +7,8 @@ import android.widget.ImageView;
 
 import com.yat3s.chopin.adapter.ChopinViewHolder;
 import com.yat3s.chopin.adapter.SimpleChopinAdapter;
+import com.yat3s.library.adapter.BaseAdapter;
+import com.yat3s.library.adapter.BaseViewHolder;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +18,8 @@ import java.util.List;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class PostcardAdapter extends SimpleChopinAdapter<PostcardAdapter.Postcard> {
-    private static final int POSITION_RECYCLER_VIEW = 1;
+public class PostcardAdapter extends BaseAdapter<PostcardAdapter.Postcard> {
+    private static final int POSITION_RECYCLER_VIEW = 0;
 
     private StampAdapter mNestedStampAdapter;
 
@@ -26,22 +28,23 @@ public class PostcardAdapter extends SimpleChopinAdapter<PostcardAdapter.Postcar
     }
 
     @Override
-    protected void bindDataToItemView(ChopinViewHolder holder, Postcard postcard, int position) {
+    protected void bindDataToItemView(BaseViewHolder holder, Postcard item, int position) {
         if (position == POSITION_RECYCLER_VIEW) {
             if (null == mNestedStampAdapter) {
                 RecyclerView recyclerView = holder.getView(R.id.recycler_view);
+                recyclerView.setFocusable(false);
                 List<Integer> stampResIds = new ArrayList<>();
                 stampResIds.add(R.mipmap.stamp_2);
                 stampResIds.add(R.mipmap.stamp_1);
                 stampResIds.add(R.mipmap.stamp_3);
                 stampResIds.add(R.mipmap.stamp_4);
-                mNestedStampAdapter = new StampAdapter(mContext, stampResIds);
-                recyclerView.setLayoutManager(new LinearLayoutManager(mContext, LinearLayoutManager.HORIZONTAL, false));
-                recyclerView.setAdapter(new StampAdapter(mContext, stampResIds));
+                mNestedStampAdapter = new StampAdapter(getContext(), stampResIds);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
+                recyclerView.setAdapter(new StampAdapter(getContext(), stampResIds));
             }
         } else {
             ImageView img = holder.getView(R.id.card_iv);
-            img.setImageResource(postcard.imageResId);
+            img.setImageResource(item.imageResId);
         }
     }
 

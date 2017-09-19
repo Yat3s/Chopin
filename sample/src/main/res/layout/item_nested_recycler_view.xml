@@ -5,6 +5,8 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
+    <include layout="@layout/layout_music_cover"/>
+
     <com.yat3s.chopin.sample.widget.TitleTextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
