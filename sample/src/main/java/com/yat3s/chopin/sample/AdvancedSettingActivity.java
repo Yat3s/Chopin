@@ -2,7 +2,6 @@ package com.yat3s.chopin.sample;
 
 import android.graphics.Color;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatSeekBar;
@@ -13,11 +12,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.SeekBar;
 import android.widget.TextView;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.Indicator;
+import com.yat3s.chopin.indicator.ClassicRefreshIndicator;
 import com.yat3s.chopin.indicator.LottieIndicator;
 
 /**
@@ -48,6 +48,14 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
         configureNotificationView();
+        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
+        findViewById(R.id.perform_refresh).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                scrollView.smoothScrollTo(0, 0);
+                mChopinLayout.performRefresh();
+            }
+        });
     }
 
     private void configureScrollState() {
@@ -121,87 +129,8 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         findViewById(R.id.indicator_style_custom_btn).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final View headerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
-                final TextView headerProgressTv = (TextView) headerIndicatorView.findViewById(R.id.progress_tv);
-                mChopinLayout.setRefreshHeaderIndicator(new Indicator() {
-                    @NonNull
-                    @Override
-                    public View getView() {
-                        return headerIndicatorView;
-                    }
-
-                    @Override
-                    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView) {
-
-                    }
-
-                    @Override
-                    public void onCancel(ChopinLayout chopinLayout) {
-
-                    }
-
-                    @Override
-                    public void onStart(ChopinLayout chopinLayout) {
-                        headerProgressTv.setText("Refreshing~");
-                    }
-
-                    @Override
-                    public void onComplete(ChopinLayout chopinLayout) {
-                        headerProgressTv.setText("Refresh completed!");
-                    }
-
-                    @Override
-                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int
-                            touchY) {
-                        if (progress == 1.0f) {
-                            headerProgressTv.setText("Release to refresh~");
-                        } else {
-                            headerProgressTv.setText("Progress--> " + progress + ", " + state.name()
-                                    + " (" + touchX + ", " + touchY + ")");
-                        }
-                    }
-                });
-
-                final View footerIndicatorView = getLayoutInflater().inflate(R.layout.layout_custom_indicator, null);
-                final TextView footerProgressTv = (TextView) footerIndicatorView.findViewById(R.id.progress_tv);
-                mChopinLayout.setLoadingFooterIndicator(new Indicator() {
-                    @NonNull
-                    @Override
-                    public View getView() {
-                        return footerIndicatorView;
-                    }
-
-                    @Override
-                    public void onViewMeasured(ChopinLayout chopinLayout, View indicatorView) {
-
-                    }
-
-                    @Override
-                    public void onCancel(ChopinLayout chopinLayout) {
-
-                    }
-
-                    @Override
-                    public void onStart(ChopinLayout chopinLayout) {
-                        footerProgressTv.setText("Loading~");
-                    }
-
-                    @Override
-                    public void onComplete(ChopinLayout chopinLayout) {
-                        footerProgressTv.setText("Load more completed!");
-                    }
-
-                    @Override
-                    public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int
-                            touchY) {
-                        if (progress == 1.0f) {
-                            footerProgressTv.setText("Release to load~");
-                        } else {
-                            footerProgressTv.setText("Progress--> " + progress + ", " + state.name()
-                                    + " (" + touchX + ", " + touchY + ")");
-                        }
-                    }
-                });
+                mChopinLayout.setRefreshHeaderIndicator(new ClassicRefreshIndicator(AdvancedSettingActivity.this));
+                mChopinLayout.setLoadingFooterIndicator(new ClassicRefreshIndicator(AdvancedSettingActivity.this));
                 mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
                     @Override
                     public void onRefresh() {
@@ -306,7 +235,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     headerNotificationView.setLayoutParams(lp);
                     headerNotificationView.setText("10 new messages");
                     headerNotificationView.setGravity(Gravity.CENTER);
-                    headerNotificationView.setPadding(0, 24,0, 24);
+                    headerNotificationView.setPadding(0, 24, 0, 24);
                     headerNotificationView.setTextColor(Color.WHITE);
                     headerNotificationView.setBackgroundResource(R.color.md_red_500);
                     mChopinLayout.setHeaderNotificationView(headerNotificationView);
@@ -316,7 +245,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                     footerNotificationView.setText("Load 12 more messages");
                     footerNotificationView.setTextColor(Color.BLACK);
                     footerNotificationView.setGravity(Gravity.CENTER);
-                    footerNotificationView.setPadding(0, 24,0, 24);
+                    footerNotificationView.setPadding(0, 24, 0, 24);
                     footerNotificationView.setBackgroundResource(R.color.md_yellow_500);
                     mChopinLayout.setFooterNotificationView(footerNotificationView);
                 } else {

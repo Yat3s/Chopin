@@ -5,7 +5,7 @@
     <uses-permission android:name="android.permission.INTERNET"/>
 
     <application
-        android:name=".App"
+        android:name=".ChopinApplication"
         android:allowBackup="true"
         android:icon="@mipmap/abstract_4"
         android:label="@string/app_name"
@@ -22,7 +22,6 @@
         </activity>
 
         <activity android:name=".cases.CaseRecyclerViewActivity"/>
-        <activity android:name=".cases.CaseNestedRecyclerViewActivity"/>
         <activity android:name=".cases.CaseScrollViewActivity"/>
         <activity android:name=".cases.CaseLinearLayoutActivity"/>
         <activity android:name=".cases.CaseViewPagerActivity"/>

@@ -12,6 +12,7 @@
         android:orientation="vertical">
 
         <ScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fillViewport="true"
@@ -45,6 +46,12 @@
                 <include layout="@layout/include_advanced_indicator_location" />
 
                 <View style="@style/DividerLineVertically" />
+
+                <Button
+                    android:id="@+id/perform_refresh"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Perform refresh"/>
 
                 <TextView
                     android:layout_width="wrap_content"

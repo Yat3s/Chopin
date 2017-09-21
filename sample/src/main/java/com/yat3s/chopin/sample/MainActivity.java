@@ -17,7 +17,6 @@ import com.yat3s.chopin.sample.cases.CaseAnyViewActivity;
 import com.yat3s.chopin.sample.cases.CaseCoordinatorLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseFragmentActivity;
 import com.yat3s.chopin.sample.cases.CaseLinearLayoutActivity;
-import com.yat3s.chopin.sample.cases.CaseNestedRecyclerViewActivity;
 import com.yat3s.chopin.sample.cases.CaseRecyclerViewActivity;
 import com.yat3s.chopin.sample.cases.CaseScrollViewActivity;
 import com.yat3s.chopin.sample.cases.CaseViewPagerActivity;
@@ -73,7 +72,6 @@ public class MainActivity extends AppCompatActivity {
 
         List<CaseDemo> caseDemos = new ArrayList<>();
         caseDemos.add(new CaseDemo("RecyclerView", R.mipmap.abstract_1, CaseRecyclerViewActivity.class));
-        caseDemos.add(new CaseDemo("Nested\nRecyclerView", R.mipmap.abstract_2, CaseNestedRecyclerViewActivity.class));
         caseDemos.add(new CaseDemo("ViewPager", R.mipmap.abstract_4, CaseViewPagerActivity.class));
         caseDemos.add(new CaseDemo("Coordinator\nLayout", R.mipmap.abstract_3, CaseCoordinatorLayoutActivity.class));
         caseDemos.add(new CaseDemo("ScrollView", R.mipmap.abstract_1, CaseScrollViewActivity.class));

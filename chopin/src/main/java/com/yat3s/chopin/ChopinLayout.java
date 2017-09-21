@@ -33,6 +33,8 @@ public class ChopinLayout extends ViewGroup {
 
     static final boolean DEBUG = true;
 
+    private static final long DEFAULT_PERFORM_REFRESH_DELAY = 100;
+
     private static final long DEFAULT_REFRESH_COMPLETE_COLLAPSE_DELAY = 100;
     private static final long DEFAULT_LOAD_MORE_COMPLETE_COLLAPSE_DELAY = 100;
 
@@ -166,7 +168,9 @@ public class ChopinLayout extends ViewGroup {
             // Setup default background color of content view.
             // It fixed a bug when setting 'behind' indicator location can see behind indicator.
             View contentView = super.getChildAt(0);
-            contentView.setBackgroundColor(Color.WHITE);
+            if (null == contentView.getBackground()) {
+                contentView.setBackgroundColor(Color.WHITE);
+            }
             mContentViewWrapper = new ContentViewWrapper(contentView);
 
             // Set up auto load more if content view is RecyclerView.
@@ -180,7 +184,6 @@ public class ChopinLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        Log.d(TAG, "onMeasure: ");
         for (int idx = 0; idx < getChildCount(); idx++) {
             measureChild(getChildAt(idx), widthMeasureSpec, heightMeasureSpec);
         }
@@ -205,7 +208,6 @@ public class ChopinLayout extends ViewGroup {
     @SuppressWarnings("ResourceType")
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        Log.d(TAG, "onLayout: ");
         // Layout content view.
         mContentViewWrapper.layout();
         mContentViewWrapper.getView().bringToFront();
@@ -264,10 +266,6 @@ public class ChopinLayout extends ViewGroup {
         int x = (int) ev.getX(), y = (int) ev.getY();
         int actionMasked = MotionEventCompat.getActionMasked(ev);
         int action = ev.getAction();
-        Log.d(TAG, "dispatchTouchEvent: action-->" + action + ", actionMasked-->" + actionMasked);
-        if (ev.getPointerCount() > 1) {
-            Log.d(TAG, "dispatchTouchEvent: location-->0" + ev.getY(0) + ", 1-->" + ev.getY(1));
-        }
         switch (actionMasked) {
             case MotionEvent.ACTION_DOWN:
                 mLastActionDownX = x;
@@ -310,14 +308,18 @@ public class ChopinLayout extends ViewGroup {
                             && dy > Math.abs(dx)) {
                         mStartInterceptTouchY = y;
                         setState(STATE_DRAGGING_DOWN);
-                        Log.d(TAG, "dispatchTouchEvent: canIntercept pull down");
+                        if (DEBUG) {
+                            Log.d(TAG, "dispatchTouchEvent: canIntercept pull down");
+                        }
                         return true;
                     }
                     if (pullUp && mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getView())
                             && -dy > Math.abs(dx)) {
                         mStartInterceptTouchY = y;
                         setState(STATE_DRAGGING_UP);
-                        Log.d(TAG, "dispatchTouchEvent: canIntercept pull up");
+                        if (DEBUG) {
+                            Log.d(TAG, "dispatchTouchEvent: canIntercept pull up");
+                        }
                         return true;
                     }
                 }
@@ -430,13 +432,17 @@ public class ChopinLayout extends ViewGroup {
                     boolean pullUp = dy < 0;
 
                     if (pullDown && dy > Math.abs(dx)) {
-                        Log.d(TAG, "onInterceptTouchEvent: canIntercept pull down");
+                        if (DEBUG) {
+                            Log.d(TAG, "onInterceptTouchEvent: canIntercept pull down");
+                        }
                         mStartInterceptTouchY = y;
                         mTranslatedOffsetWhileIntercept = getCurrentTranslatedOffsetY();
                         return true;
                     }
                     if (pullUp && -dy > Math.abs(dx)) {
-                        Log.d(TAG, "onInterceptTouchEvent: canIntercept pull up");
+                        if (DEBUG) {
+                            Log.d(TAG, "onInterceptTouchEvent: canIntercept pull up");
+                        }
                         mStartInterceptTouchY = y;
                         mTranslatedOffsetWhileIntercept = getCurrentTranslatedOffsetY();
                         return true;
@@ -913,7 +919,6 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void startRefresh() {
-        Log.d(TAG, "startRefresh: ");
         setState(STATE_REFRESHING);
         if (null != mOnRefreshListener) {
             mOnRefreshListener.onRefresh();
@@ -1119,22 +1124,32 @@ public class ChopinLayout extends ViewGroup {
     }
 
     public void performRefresh(final long delayMills) {
-        getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
-            @Override
-            public void onGlobalLayout() {
-                postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        releaseViewToRefreshingStatus();
-                    }
-                }, delayMills);
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                    getViewTreeObserver().removeOnGlobalLayoutListener(this);
-                } else {
-                    getViewTreeObserver().removeGlobalOnLayoutListener(this);
+        if (0 != getHeight()) {
+            postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    releaseViewToRefreshingStatus();
                 }
-            }
-        });
+            }, delayMills);
+        } else {
+            // Perform refresh after rendered view.
+            getViewTreeObserver().addOnGlobalLayoutListener(new ViewTreeObserver.OnGlobalLayoutListener() {
+                @Override
+                public void onGlobalLayout() {
+                    postDelayed(new Runnable() {
+                        @Override
+                        public void run() {
+                            releaseViewToRefreshingStatus();
+                        }
+                    }, delayMills == 0 ? DEFAULT_PERFORM_REFRESH_DELAY : delayMills);
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                        getViewTreeObserver().removeOnGlobalLayoutListener(this);
+                    } else {
+                        getViewTreeObserver().removeGlobalOnLayoutListener(this);
+                    }
+                }
+            });
+        }
     }
 
     public void performRefresh() {

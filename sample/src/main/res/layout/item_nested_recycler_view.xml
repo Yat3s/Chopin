@@ -5,13 +5,11 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <com.yat3s.chopin.sample.widget.TitleTextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center"
-        android:padding="8dp"
-        android:text="Nested with RecyclerView"
-        android:textColor="@color/md_grey_800"/>
+    <include layout="@layout/layout_music_cover"/>
+
+    <android.support.v4.widget.Space
+        android:layout_width="match_parent"
+        android:layout_height="24dp"/>
 
     <include layout="@layout/layout_recycler_view"/>
 

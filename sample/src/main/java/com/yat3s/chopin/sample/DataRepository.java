@@ -10,16 +10,18 @@ import static com.yat3s.chopin.sample.R.array.musics;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class DataRepo {
+public class DataRepository {
 
     private final static int[] ABSTRACT_IMAGE_RESOURCE_ID = {R.mipmap.abstract_1,
             R.mipmap.abstract_2, R.mipmap.abstract_3, R.mipmap.abstract_4};
 
     public static ArrayList<MusicAdapter.Music> generateMusicData() {
-        final String[] musicNames = App.getContext().getResources().getStringArray(musics);
+        final String[] musicNames = ChopinApplication.getContext().getResources().getStringArray(musics);
+        int[] coverImageIds = {R.mipmap.stamp_1, R.mipmap.stamp_2, R.mipmap.stamp_3, R.mipmap.stamp_4};
         ArrayList<MusicAdapter.Music> musics = new ArrayList<>();
-        for (String taskName : musicNames) {
-            musics.add(new MusicAdapter.Music(taskName, generateRandomImageResId()));
+
+        for (int idx = 0; idx < musicNames.length; idx++) {
+            musics.add(new MusicAdapter.Music(musicNames[idx], coverImageIds[idx % coverImageIds.length]));
         }
         return musics;
     }
