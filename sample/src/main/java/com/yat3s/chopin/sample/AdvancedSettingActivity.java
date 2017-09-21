@@ -107,7 +107,6 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                 mChopinLayout.setIndicatorScrollResistance(seekBar.getProgress() / (float) seekBar.getMax());
             }
         });
-
     }
 
     private void configureIndicatorStyle() {
