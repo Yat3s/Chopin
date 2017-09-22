@@ -15,13 +15,13 @@ public class DataRepository {
     private final static int[] ABSTRACT_IMAGE_RESOURCE_ID = {R.mipmap.abstract_1,
             R.mipmap.abstract_2, R.mipmap.abstract_3, R.mipmap.abstract_4};
 
-    public static ArrayList<MusicAdapter.Music> generateMusicData() {
+    public static ArrayList<MusicAdapter.Music> generateMusicData(int count) {
         final String[] musicNames = ChopinApplication.getContext().getResources().getStringArray(musics);
         int[] coverImageIds = {R.mipmap.stamp_1, R.mipmap.stamp_2, R.mipmap.stamp_3, R.mipmap.stamp_4};
         ArrayList<MusicAdapter.Music> musics = new ArrayList<>();
 
-        for (int idx = 0; idx < musicNames.length; idx++) {
-            musics.add(new MusicAdapter.Music(musicNames[idx], coverImageIds[idx % coverImageIds.length]));
+        for (int idx = 0; idx < count; idx++) {
+            musics.add(new MusicAdapter.Music(musicNames[idx % musicNames.length], coverImageIds[idx % coverImageIds.length]));
         }
         return musics;
     }

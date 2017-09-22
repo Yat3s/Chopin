@@ -3,6 +3,8 @@ package com.yat3s.chopin.sample.cases;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import com.yat3s.chopin.ChopinLayout;
+import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.DataRepository;
 import com.yat3s.chopin.sample.MusicAdapter;
 import com.yat3s.chopin.sample.R;
@@ -13,6 +15,8 @@ import com.yat3s.chopin.sample.R;
  * GitHub: https://github.com/yat3s
  */
 public class CaseRecyclerViewActivity extends BaseCaseActivity {
+    private static final int LOAD_DELAY = 3000;
+
     @Override
     protected int getContentLayoutId() {
         return R.layout.case_activity_nested_recycler_view;
@@ -20,16 +24,43 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
 
     @Override
     protected void initialize() {
-        setupRefreshHeader("xuanwheel_logo.json", 0.2f, 3000);
-        setupLoadingFooter("video_cam.json", 0.5f, 1500);
-        mChopinLayout.setBackgroundResource(R.color.black);
-
         // Configure adapter.
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        MusicAdapter musicAdapter = new MusicAdapter(this, DataRepository.generateMusicData());
+        final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        final MusicAdapter musicAdapter = new MusicAdapter(this, DataRepository.generateMusicData(20));
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(musicAdapter);
 
+        // Configure indicator.
+        LottieIndicator headerIndicator = new LottieIndicator(this, "xuanwheel_logo.json", 0.2f);
+        mChopinLayout.setRefreshHeaderIndicator(headerIndicator);
+        mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mChopinLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        mChopinLayout.refreshComplete();
+                    }
+                }, LOAD_DELAY);
+            }
+        });
+
+        LottieIndicator footerIndicator = new LottieIndicator(this, "loading.json", 0.15f);
+        mChopinLayout.setLoadingFooterIndicator(footerIndicator);
+        mChopinLayout.setOnLoadMoreListener(new ChopinLayout.OnLoadMoreListener() {
+            @Override
+            public void onLoadMore() {
+                mChopinLayout.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        musicAdapter.addMoreDataSet(DataRepository.generateMusicData(10));
+                        mChopinLayout.loadMoreComplete();
+                    }
+                }, LOAD_DELAY);
+            }
+        });
+
+        mChopinLayout.setBackgroundResource(R.color.black);
         mChopinLayout.performRefresh();
     }
 }
