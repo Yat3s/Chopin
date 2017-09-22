@@ -15,7 +15,7 @@ import com.yat3s.chopin.sample.R;
  * GitHub: https://github.com/yat3s
  */
 public class CaseRecyclerViewActivity extends BaseCaseActivity {
-    private static final int LOAD_DELAY = 3000;
+    private static final int LOAD_DELAY = 1000;
 
     @Override
     protected int getContentLayoutId() {
