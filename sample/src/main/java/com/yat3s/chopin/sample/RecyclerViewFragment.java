@@ -42,7 +42,7 @@ public class RecyclerViewFragment extends Fragment {
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
 
         // Configure adapter.
-        MusicAdapter musicAdapter = new MusicAdapter(getActivity(), DataRepository.generateMusicData(30));
+        MusicAdapter musicAdapter = new MusicAdapter(getActivity(), DataRepository.generateMusicData(30), false);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         mRecyclerView.setAdapter(musicAdapter);
 

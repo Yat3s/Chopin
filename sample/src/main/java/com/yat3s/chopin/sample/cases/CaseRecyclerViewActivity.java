@@ -26,7 +26,7 @@ public class CaseRecyclerViewActivity extends BaseCaseActivity {
     protected void initialize() {
         // Configure adapter.
         final RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        final MusicAdapter musicAdapter = new MusicAdapter(this, DataRepository.generateMusicData(20));
+        final MusicAdapter musicAdapter = new MusicAdapter(this, DataRepository.generateMusicData(20), true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         recyclerView.setAdapter(musicAdapter);
 

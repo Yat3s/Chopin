@@ -20,7 +20,7 @@ import java.util.List;
  * GitHub: https://github.com/yat3s
  */
 public class CaseViewPagerActivity extends BaseCaseActivity {
-    private static final String SLOGAN = "YAT3S";
+    private static final String SLOGAN = "CHOPIN";
 
     private RecyclerViewFragment mCurrentFragment;
 
@@ -33,6 +33,7 @@ public class CaseViewPagerActivity extends BaseCaseActivity {
     protected void initialize() {
         setupRefreshHeader("refresh.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
+        mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
 
         final List<RecyclerViewFragment> fragments = new ArrayList<>();
         fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_1));
