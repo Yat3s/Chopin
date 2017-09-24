@@ -23,17 +23,18 @@ public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> {
 
     private static final String TAG = "MusicAdapter";
 
-    private static final int POSITION_RECYCLER_VIEW = 0;
+    private int mPositionHeader = 0;
 
     private StampAdapter mNestedStampAdapter;
 
-    public MusicAdapter(Context context, List<Music> data) {
+    public MusicAdapter(Context context, List<Music> data, boolean showHeader) {
         super(context, data);
+        mPositionHeader = showHeader ? 0 : -1;
     }
 
     @Override
     protected void bindDataToItemView(BaseViewHolder holder, Music item, final int position) {
-        if (position == POSITION_RECYCLER_VIEW) {
+        if (position == mPositionHeader) {
             if (null == mNestedStampAdapter) {
                 RecyclerView recyclerView = holder.getView(R.id.recycler_view);
                 recyclerView.setFocusable(false);
@@ -57,7 +58,7 @@ public class MusicAdapter extends BaseAdapter<MusicAdapter.Music> {
 
     @Override
     protected int getItemViewLayoutId(int position, Music data) {
-        if (position == POSITION_RECYCLER_VIEW) {
+        if (position == mPositionHeader) {
             return R.layout.item_nested_recycler_view;
         }
         return R.layout.item_music;
