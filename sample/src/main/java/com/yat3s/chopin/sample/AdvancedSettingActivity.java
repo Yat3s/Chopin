@@ -100,6 +100,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
     private void configureDragResistance() {
         AppCompatSeekBar seekBar = (AppCompatSeekBar) findViewById(R.id.seek_bar);
         seekBar.setProgress(40);
+        seekBar.setBOK();
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
