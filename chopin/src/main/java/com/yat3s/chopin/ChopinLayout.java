@@ -141,6 +141,8 @@ public class ChopinLayout extends ViewGroup {
 
     private int mState = STATE_DEFAULT;
 
+    private int mTouchSlop;
+
     private OnStateChangeListener mOnStateChangeListener;
 
     public ChopinLayout(Context context) {
@@ -357,62 +359,65 @@ public class ChopinLayout extends ViewGroup {
                 boolean pullDown = dy > 0;
                 boolean pullUp = dy < 0;
 
-                if (mState == STATE_DEFAULT) {
-                    if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getView())
-                            && dy > Math.abs(dx)) {
-                        mStartInterceptTouchY = y;
-                        setState(STATE_DRAGGING_DOWN);
+                if (Math.abs(dy) > mTouchSlop) {
+                    if (mState == STATE_DEFAULT) {
+                        if (pullDown && mViewScrollChecker.canDoRefresh(this, mContentViewWrapper.getView())
+                                && dy > Math.abs(dx)) {
+                            mStartInterceptTouchY = y;
+                            setState(STATE_DRAGGING_DOWN);
+                            if (DEBUG) {
+                                Log.d(TAG, "dispatchTouchEvent: canIntercept pull down");
+                            }
+                            return true;
+                        }
+                        if (pullUp && mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getView())
+                                && -dy > Math.abs(dx)) {
+                            mStartInterceptTouchY = y;
+                            setState(STATE_DRAGGING_UP);
+                            if (DEBUG) {
+                                Log.d(TAG, "dispatchTouchEvent: canIntercept pull up");
+                            }
+                            return true;
+                        }
+                    }
+                    if (mState == STATE_DRAGGING_DOWN || mState == STATE_DRAGGING_UP) {
+                        int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY;
+                        int actualTranslationOffsetY = (int) (moveOffsetYAfterIntercepted * (1 - mIndicatorScrollResistance));
+
+                        // It should reset intercept event when dragging state has changed.
+                        if ((moveOffsetYAfterIntercepted > 0 && mState == STATE_DRAGGING_UP)
+                                || (moveOffsetYAfterIntercepted < 0 && mState == STATE_DRAGGING_DOWN)) {
+                            resetInterceptEvent(ev);
+                            actualTranslationOffsetY = 0;
+                        }
+
                         if (DEBUG) {
-                            Log.d(TAG, "dispatchTouchEvent: canIntercept pull down");
+                            Log.d(TAG, "Intercepted: \nmoveOffsetYAfterIntercepted--> " + moveOffsetYAfterIntercepted +
+                                    "\nactualTranslationOffsetY--> " + actualTranslationOffsetY +
+                                    "\ngetCurrentTranslatedOffsetY--> " + getCurrentTranslatedOffsetY());
+                        }
+                        translateViewWithTargetOffsetY(actualTranslationOffsetY);
+
+                        // Dispatch cancel event for cancel user click trigger.
+                        if (!hasDispatchCancelEvent) {
+                            sendCancelEvent();
+                            hasDispatchCancelEvent = true;
+                        }
+
+                        if (null != mRefreshHeaderIndicatorProvider && actualTranslationOffsetY > 0) {
+                            // Scroll distance has over refresh header indicator height.
+                            float progress = actualTranslationOffsetY / (float) mHeaderIndicatorView.getHeight();
+                            mRefreshHeaderIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_DOWN,
+                                    x, y);
+
+                        }
+
+                        if (null != mLoadingFooterIndicatorProvider && actualTranslationOffsetY < 0) {
+                            float progress = -actualTranslationOffsetY / (float) mFooterIndicatorView.getHeight();
+                            mLoadingFooterIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_UP, x, y);
                         }
                         return true;
                     }
-                    if (pullUp && mViewScrollChecker.canDoLoading(this, mContentViewWrapper.getView())
-                            && -dy > Math.abs(dx)) {
-                        mStartInterceptTouchY = y;
-                        setState(STATE_DRAGGING_UP);
-                        if (DEBUG) {
-                            Log.d(TAG, "dispatchTouchEvent: canIntercept pull up");
-                        }
-                        return true;
-                    }
-                }
-                if (mState == STATE_DRAGGING_DOWN || mState == STATE_DRAGGING_UP) {
-                    int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY;
-                    int actualTranslationOffsetY = (int) (moveOffsetYAfterIntercepted * (1 - mIndicatorScrollResistance));
-
-                    // It should reset intercept event when dragging state has changed.
-                    if ((moveOffsetYAfterIntercepted > 0 && mState == STATE_DRAGGING_UP)
-                            || (moveOffsetYAfterIntercepted < 0 && mState == STATE_DRAGGING_DOWN)) {
-                        resetInterceptEvent(ev);
-                        actualTranslationOffsetY = 0;
-                    }
-
-                    if (DEBUG) {
-                        Log.d(TAG, "Intercepted: \nmoveOffsetYAfterIntercepted--> " + moveOffsetYAfterIntercepted +
-                                "\nactualTranslationOffsetY--> " + actualTranslationOffsetY +
-                                "\ngetCurrentTranslatedOffsetY--> " + getCurrentTranslatedOffsetY());
-                    }
-                    translateViewWithTargetOffsetY(actualTranslationOffsetY);
-
-                    // Dispatch cancel event for cancel user click trigger.
-                    if (!hasDispatchCancelEvent) {
-                        sendCancelEvent();
-                        hasDispatchCancelEvent = true;
-                    }
-
-                    if (null != mRefreshHeaderIndicatorProvider && actualTranslationOffsetY > 0) {
-                        // Scroll distance has over refresh header indicator height.
-                        float progress = actualTranslationOffsetY / (float) mHeaderIndicatorView.getHeight();
-                        mRefreshHeaderIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_DOWN, x, y);
-                    }
-
-                    if (null != mLoadingFooterIndicatorProvider && actualTranslationOffsetY < 0) {
-                        float progress = -actualTranslationOffsetY / (float) mFooterIndicatorView.getHeight();
-                        mLoadingFooterIndicatorProvider.onPositionChange(this, progress, Indicator.STATE.DRAGGING_UP, x, y);
-                    }
-
-                    return true;
                 }
                 break;
 
@@ -484,22 +489,23 @@ public class ChopinLayout extends ViewGroup {
 
                     boolean pullDown = dy > 0;
                     boolean pullUp = dy < 0;
-
-                    if (pullDown && dy > Math.abs(dx)) {
-                        if (DEBUG) {
-                            Log.d(TAG, "onInterceptTouchEvent: canIntercept pull down");
+                    if (Math.abs(dy) > mTouchSlop) {
+                        if (pullDown && dy > Math.abs(dx)) {
+                            if (DEBUG) {
+                                Log.d(TAG, "onInterceptTouchEvent: canIntercept pull down");
+                            }
+                            mStartInterceptTouchY = y;
+                            mTranslatedOffsetWhileIntercept = getCurrentTranslatedOffsetY();
+                            return true;
                         }
-                        mStartInterceptTouchY = y;
-                        mTranslatedOffsetWhileIntercept = getCurrentTranslatedOffsetY();
-                        return true;
-                    }
-                    if (pullUp && -dy > Math.abs(dx)) {
-                        if (DEBUG) {
-                            Log.d(TAG, "onInterceptTouchEvent: canIntercept pull up");
+                        if (pullUp && -dy > Math.abs(dx)) {
+                            if (DEBUG) {
+                                Log.d(TAG, "onInterceptTouchEvent: canIntercept pull up");
+                            }
+                            mStartInterceptTouchY = y;
+                            mTranslatedOffsetWhileIntercept = getCurrentTranslatedOffsetY();
+                            return true;
                         }
-                        mStartInterceptTouchY = y;
-                        mTranslatedOffsetWhileIntercept = getCurrentTranslatedOffsetY();
-                        return true;
                     }
                     break;
             }
@@ -517,14 +523,17 @@ public class ChopinLayout extends ViewGroup {
                     mLastActionDownY = y;
                     break;
                 case MotionEvent.ACTION_MOVE:
-                    int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY;
-                    int actualTranslationOffsetY = mTranslatedOffsetWhileIntercept +
-                            (int) (moveOffsetYAfterIntercepted * (1 - mIndicatorScrollResistance));
-                    if (DEBUG) {
-                        Log.d(TAG, "onTouchEvent: moveOffsetYAfterIntercepted--> " + moveOffsetYAfterIntercepted);
+                    int dy = y - mLastActionDownY;
+                    if (Math.abs(dy) > mTouchSlop) {
+                        int moveOffsetYAfterIntercepted = y - mStartInterceptTouchY;
+                        int actualTranslationOffsetY = mTranslatedOffsetWhileIntercept +
+                                (int) (moveOffsetYAfterIntercepted * (1 - mIndicatorScrollResistance));
+                        if (DEBUG) {
+                            Log.d(TAG, "onTouchEvent: moveOffsetYAfterIntercepted--> " + moveOffsetYAfterIntercepted);
 
+                        }
+                        translateViewWithTargetOffsetY(actualTranslationOffsetY);
                     }
-                    translateViewWithTargetOffsetY(actualTranslationOffsetY);
                     return true;
             }
         }
@@ -1025,6 +1034,7 @@ public class ChopinLayout extends ViewGroup {
     }
 
     private void initialize() {
+        mTouchSlop = ViewConfiguration.get(getContext()).getScaledTouchSlop();
     }
 
     /**
