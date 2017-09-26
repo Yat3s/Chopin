@@ -92,12 +92,6 @@ public class ChopinLayout extends ViewGroup {
     // eg. footer indicator animation.
     private Indicator mLoadingFooterIndicatorProvider;
 
-    // The refresh listener
-    private OnRefreshListener mOnRefreshListener;
-
-    // The load more listener
-    private OnLoadMoreListener mOnLoadMoreListener;
-
     // The header indicator.
     private IndicatorViewWrapper mHeaderIndicatorView;
 
@@ -106,6 +100,12 @@ public class ChopinLayout extends ViewGroup {
 
     // The content view of user set.
     private ContentViewWrapper mContentViewWrapper;
+
+    // The refresh listener
+    private OnRefreshListener mOnRefreshListener;
+
+    // The load more listener
+    private OnLoadMoreListener mOnLoadMoreListener;
 
     private View mHeaderNotificationView;
 
@@ -163,7 +163,7 @@ public class ChopinLayout extends ViewGroup {
     @Override
     protected void onFinishInflate() {
         if (getChildCount() > SUPPORT_CHILD_COUNT) {
-            throw new IllegalArgumentException("It can ONLY set ONE child view!");
+            throw new IllegalArgumentException("It can ONLY set " + SUPPORT_CHILD_COUNT + " child(s) view!");
         } else if (getChildCount() == SUPPORT_CHILD_COUNT) {
             // Setup default background color of content view.
             // It fixed a bug when setting 'behind' indicator location can see behind indicator.
@@ -184,15 +184,71 @@ public class ChopinLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
-        for (int idx = 0; idx < getChildCount(); idx++) {
-            measureChild(getChildAt(idx), widthMeasureSpec, heightMeasureSpec);
+        int wholeMinimumHeight = 0;
+
+        // Measure content view.
+        if (null != mContentViewWrapper) {
+            View contentView = mContentViewWrapper.getView();
+            LayoutParams layoutParams = (LayoutParams) contentView.getLayoutParams();
+            int contentWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
+                    getPaddingLeft() + getPaddingRight() +
+                            layoutParams.leftMargin + layoutParams.rightMargin, layoutParams.width);
+            int contentHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec,
+                    getPaddingTop() + getPaddingBottom() +
+                            layoutParams.topMargin + layoutParams.bottomMargin, layoutParams.height);
+
+            contentView.measure(contentWidthMeasureSpec, contentHeightMeasureSpec);
+            wholeMinimumHeight += contentView.getMeasuredHeight();
+
+            if (DEBUG) {
+                Log.d(TAG, "onMeasureContent: " + contentView.getMeasuredHeight() + ", marginTop-->" + layoutParams.topMargin);
+            }
         }
+
+        // Measure indicator view.
+        if (null != mHeaderIndicatorView) {
+            View headerView = mHeaderIndicatorView.getView();
+            LayoutParams layoutParams = (LayoutParams) headerView.getLayoutParams();
+            int headerWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
+                    getPaddingLeft() + getPaddingRight() +
+                            layoutParams.leftMargin + layoutParams.rightMargin, layoutParams.width);
+            int headerHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec,
+                    getPaddingTop() + getPaddingBottom() +
+                            layoutParams.topMargin + layoutParams.bottomMargin, layoutParams.height);
+            headerView.measure(headerWidthMeasureSpec, headerHeightMeasureSpec);
+            wholeMinimumHeight += headerView.getMeasuredHeight();
+
+            if (DEBUG) {
+                Log.d(TAG, "onMeasureHeader: " + headerView.getMeasuredHeight());
+            }
+        }
+
+        if (null != mFooterIndicatorView) {
+            View footerView = mFooterIndicatorView.getView();
+            LayoutParams layoutParams = (LayoutParams) footerView.getLayoutParams();
+            int footerWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
+                    getPaddingLeft() + getPaddingRight() +
+                            layoutParams.leftMargin + layoutParams.rightMargin, layoutParams.width);
+            int footerHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec,
+                    getPaddingTop() + getPaddingBottom() +
+                            layoutParams.topMargin + layoutParams.bottomMargin, layoutParams.height);
+            footerView.measure(footerWidthMeasureSpec, footerHeightMeasureSpec);
+            wholeMinimumHeight += footerView.getMeasuredHeight();
+        }
+
         if (null != mRefreshHeaderIndicatorProvider) {
             mRefreshHeaderIndicatorProvider.onViewMeasured(this, mRefreshHeaderIndicatorProvider.getView());
         }
         if (null != mLoadingFooterIndicatorProvider) {
             mLoadingFooterIndicatorProvider.onViewMeasured(this, mLoadingFooterIndicatorProvider.getView());
         }
+
+        if (DEBUG) {
+            Log.d(TAG, "onMeasureParent: " + wholeMinimumHeight);
+        }
+
+        setMeasuredDimension(resolveSize(getSuggestedMinimumWidth(), widthMeasureSpec),
+                resolveSize(wholeMinimumHeight, heightMeasureSpec));
     }
 
     @Override
@@ -254,8 +310,6 @@ public class ChopinLayout extends ViewGroup {
                     mContentViewWrapper.getView().getMeasuredHeight());
         }
     }
-
-//    boolean needUpdateStartInterceptY = false;
 
     @Override
     public boolean dispatchTouchEvent(MotionEvent ev) {
@@ -1231,6 +1285,46 @@ public class ChopinLayout extends ViewGroup {
 
     public void setOnLoadMoreListener(OnLoadMoreListener onLoadMoreListener) {
         mOnLoadMoreListener = onLoadMoreListener;
+    }
+
+    // Configure custom layout params.
+    @Override
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        return p != null && p instanceof LayoutParams;
+    }
+
+    @Override
+    protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
+        return new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT);
+    }
+
+    @Override
+    protected ViewGroup.LayoutParams generateLayoutParams(ViewGroup.LayoutParams p) {
+        return new LayoutParams(p);
+    }
+
+    @Override
+    public ViewGroup.LayoutParams generateLayoutParams(AttributeSet attrs) {
+        return new LayoutParams(getContext(), attrs);
+    }
+
+    public static class LayoutParams extends ViewGroup.MarginLayoutParams {
+
+        public LayoutParams(Context c, AttributeSet attrs) {
+            super(c, attrs);
+        }
+
+        public LayoutParams(int width, int height) {
+            super(width, height);
+        }
+
+        public LayoutParams(MarginLayoutParams source) {
+            super(source);
+        }
+
+        public LayoutParams(ViewGroup.LayoutParams source) {
+            super(source);
+        }
     }
 
     public interface OnRefreshListener {
