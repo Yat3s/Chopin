@@ -64,7 +64,8 @@ public class LottieIndicator extends LottieAnimationView implements Indicator {
 
     @Override
     public void onPositionChange(ChopinLayout chopinLayout, float progress, STATE state, int touchX, int touchY) {
-        if (state == STATE.DRAGGING_DOWN || state == STATE.DRAGGING_UP) {
+        if ((state == STATE.DRAGGING_DOWN || state == STATE.DRAGGING_UP)
+                && progress <= 1f && progress >= 0f) {
             setProgress(progress);
         }
     }

@@ -11,7 +11,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
-import com.yat3s.chopin.indicator.ClassicRefreshIndicator;
 import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.cases.CaseAnyViewActivity;
 import com.yat3s.chopin.sample.cases.CaseCoordinatorLayoutActivity;
@@ -43,7 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
-        mChopinLayout.setRefreshHeaderIndicator(new ClassicRefreshIndicator(this));
+        mChopinLayout.setRefreshHeaderIndicator(new LottieIndicator(this, "victory.json", 0.1f));
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
