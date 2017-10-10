@@ -10,7 +10,7 @@ import com.yat3s.chopin.sample.R;
  * GitHub: https://github.com/yat3s
  */
 public class CaseWebViewActivity extends BaseCaseActivity {
-    private static final String BLOG_URL = "http://yat3s.com";
+    private static final String BLOG_URL = "http://github.com/yat3s";
 
     @Override
     protected int getContentLayoutId() {

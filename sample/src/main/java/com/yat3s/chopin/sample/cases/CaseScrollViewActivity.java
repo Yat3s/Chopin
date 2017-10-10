@@ -17,9 +17,7 @@ public class CaseScrollViewActivity extends BaseCaseActivity {
 
     @Override
     protected void initialize() {
-        setupRefreshHeader("refresh.json", 0.2f, 3000);
+        setupRefreshHeader("victory.json", 0.1f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
-        mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
-        mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_FRONT);
     }
 }

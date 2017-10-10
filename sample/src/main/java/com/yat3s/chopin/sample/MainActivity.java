@@ -42,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
+        mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
         mChopinLayout.setRefreshHeaderIndicator(new LottieIndicator(this, "victory.json", 0.1f));
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
             @Override
