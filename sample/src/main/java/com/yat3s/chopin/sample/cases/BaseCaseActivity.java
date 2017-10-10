@@ -50,7 +50,7 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
         });
     }
 
-    protected void setupLoadingFooter(String fileName, float scale, final long refreshCompleteDelay) {
+    protected void setupLoadingFooter(String fileName, float scale, final long loadingCompleteDelay) {
         LottieIndicator indicator = new LottieIndicator(this, fileName, scale);
         mChopinLayout.setLoadingFooterIndicator(indicator);
         mChopinLayout.setOnLoadMoreListener(new ChopinLayout.OnLoadMoreListener() {
@@ -61,7 +61,7 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
                     public void run() {
                         mChopinLayout.loadMoreComplete();
                     }
-                }, refreshCompleteDelay);
+                }, loadingCompleteDelay);
             }
         });
     }

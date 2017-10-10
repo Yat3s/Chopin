@@ -53,7 +53,7 @@ public abstract class BaseCaseFragment extends Fragment {
         });
     }
 
-    protected void setupLoadingFooter(String fileName, float scale, final long refreshCompleteDelay) {
+    protected void setupLoadingFooter(String fileName, float scale, final long loadingCompleteDelay) {
         LottieIndicator indicator = new LottieIndicator(getActivity(), fileName, scale);
         mChopinLayout.setLoadingFooterIndicator(indicator);
         mChopinLayout.setOnLoadMoreListener(new ChopinLayout.OnLoadMoreListener() {
@@ -64,7 +64,7 @@ public abstract class BaseCaseFragment extends Fragment {
                     public void run() {
                         mChopinLayout.loadMoreComplete();
                     }
-                }, refreshCompleteDelay);
+                }, loadingCompleteDelay);
             }
         });
     }
