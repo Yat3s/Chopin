@@ -254,6 +254,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
                 }
             }
         });
+        notificationSwitch.setChecked(true);
     }
 
     private void setupLottieIndicator() {

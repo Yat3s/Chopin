@@ -18,6 +18,7 @@ import com.yat3s.chopin.sample.cases.CaseFragmentActivity;
 import com.yat3s.chopin.sample.cases.CaseLinearLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseRecyclerViewActivity;
 import com.yat3s.chopin.sample.cases.CaseScrollViewActivity;
+import com.yat3s.chopin.sample.cases.CaseTextViewActivity;
 import com.yat3s.chopin.sample.cases.CaseViewPagerActivity;
 import com.yat3s.chopin.sample.cases.CaseWebViewActivity;
 import com.yat3s.library.adapter.BaseAdapter;
@@ -78,7 +79,8 @@ public class MainActivity extends AppCompatActivity {
         caseDemos.add(new CaseDemo("LinearLayout", R.mipmap.abstract_2, CaseLinearLayoutActivity.class));
         caseDemos.add(new CaseDemo("Fragment", R.mipmap.abstract_4, CaseFragmentActivity.class));
         caseDemos.add(new CaseDemo("WebView", R.mipmap.abstract_3, CaseWebViewActivity.class));
-        caseDemos.add(new CaseDemo("AnyView", R.mipmap.abstract_2, CaseAnyViewActivity.class));
+        caseDemos.add(new CaseDemo("TextView", R.mipmap.abstract_2, CaseTextViewActivity.class));
+        caseDemos.add(new CaseDemo("AnyView", R.mipmap.abstract_1, CaseAnyViewActivity.class));
 
         CaseDemoAdapter caseDemoAdapter = new CaseDemoAdapter(this, caseDemos);
         recyclerView.setAdapter(caseDemoAdapter);

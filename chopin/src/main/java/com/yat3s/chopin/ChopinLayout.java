@@ -228,14 +228,37 @@ public class ChopinLayout extends ViewGroup {
         if (null != mFooterIndicatorView) {
             View footerView = mFooterIndicatorView.getView();
             LayoutParams layoutParams = (LayoutParams) footerView.getLayoutParams();
+            int headerWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
+                    getPaddingLeft() + getPaddingRight() +
+                            layoutParams.leftMargin + layoutParams.rightMargin, layoutParams.width);
+            int headerHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec,
+                    getPaddingTop() + getPaddingBottom() +
+                            layoutParams.topMargin + layoutParams.bottomMargin, layoutParams.height);
+            footerView.measure(headerWidthMeasureSpec, headerHeightMeasureSpec);
+            wholeMinimumHeight += footerView.getMeasuredHeight();
+        }
+
+        // Measure notification view.
+        if (null != mHeaderNotificationView) {
+            LayoutParams layoutParams = (LayoutParams) mHeaderNotificationView.getLayoutParams();
             int footerWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
                     getPaddingLeft() + getPaddingRight() +
                             layoutParams.leftMargin + layoutParams.rightMargin, layoutParams.width);
             int footerHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec,
                     getPaddingTop() + getPaddingBottom() +
                             layoutParams.topMargin + layoutParams.bottomMargin, layoutParams.height);
-            footerView.measure(footerWidthMeasureSpec, footerHeightMeasureSpec);
-            wholeMinimumHeight += footerView.getMeasuredHeight();
+            mHeaderNotificationView.measure(footerWidthMeasureSpec, footerHeightMeasureSpec);
+        }
+
+        if (null != mFooterNotificationView) {
+            LayoutParams layoutParams = (LayoutParams) mFooterNotificationView.getLayoutParams();
+            int footerWidthMeasureSpec = getChildMeasureSpec(widthMeasureSpec,
+                    getPaddingLeft() + getPaddingRight() +
+                            layoutParams.leftMargin + layoutParams.rightMargin, layoutParams.width);
+            int footerHeightMeasureSpec = getChildMeasureSpec(heightMeasureSpec,
+                    getPaddingTop() + getPaddingBottom() +
+                            layoutParams.topMargin + layoutParams.bottomMargin, layoutParams.height);
+            mFooterNotificationView.measure(footerWidthMeasureSpec, footerHeightMeasureSpec);
         }
 
         if (null != mRefreshHeaderIndicatorProvider) {

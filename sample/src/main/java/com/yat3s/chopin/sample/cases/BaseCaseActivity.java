@@ -48,6 +48,7 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
                 }, refreshCompleteDelay);
             }
         });
+        mChopinLayout.performRefresh();
     }
 
     protected void setupLoadingFooter(String fileName, float scale, final long loadingCompleteDelay) {

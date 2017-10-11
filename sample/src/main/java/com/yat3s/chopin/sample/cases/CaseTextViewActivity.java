@@ -1,18 +1,16 @@
 package com.yat3s.chopin.sample.cases;
 
-import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.sample.R;
 
 /**
- * Created by Yat3s on 26/06/2017.
+ * Created by Yat3s on 11/10/2017.
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public class CaseScrollViewActivity extends BaseCaseActivity {
-
+public class CaseTextViewActivity extends BaseCaseActivity {
     @Override
     protected int getContentLayoutId() {
-        return R.layout.case_activity_scroll_view;
+        return R.layout.case_activity_text_view;
     }
 
     @Override

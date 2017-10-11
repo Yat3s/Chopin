@@ -29,6 +29,7 @@
         <activity android:name=".cases.CaseWebViewActivity"/>
         <activity android:name=".cases.CaseCoordinatorLayoutActivity"/>
         <activity android:name=".cases.CaseAnyViewActivity"/>
+        <activity android:name=".cases.CaseTextViewActivity"/>
         <activity android:name=".AdvancedSettingActivity"/>
     </application>
 

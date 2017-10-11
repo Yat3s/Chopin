@@ -31,7 +31,7 @@ public class CaseViewPagerActivity extends BaseCaseActivity {
 
     @Override
     protected void initialize() {
-        setupRefreshHeader("refresh.json", 0.2f, 3000);
+        setupRefreshHeader("refresh.json", 0.2f, 2000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
         mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
 

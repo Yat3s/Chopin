@@ -2,6 +2,7 @@ package com.yat3s.chopin.sample.cases;
 
 import android.webkit.WebView;
 
+import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.sample.R;
 
 /**
@@ -10,7 +11,7 @@ import com.yat3s.chopin.sample.R;
  * GitHub: https://github.com/yat3s
  */
 public class CaseWebViewActivity extends BaseCaseActivity {
-    private static final String BLOG_URL = "http://github.com/yat3s";
+    private static final String BLOG_URL = "https://github.com/yat3s";
 
     @Override
     protected int getContentLayoutId() {
@@ -21,6 +22,8 @@ public class CaseWebViewActivity extends BaseCaseActivity {
     protected void initialize() {
         setupRefreshHeader("refresh.json", 0.2f, 3000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
+
+        mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
 
         WebView webView = (WebView) findViewById(R.id.web_view);
         webView.loadUrl(BLOG_URL);
