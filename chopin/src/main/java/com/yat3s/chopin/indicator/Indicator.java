@@ -5,12 +5,14 @@ import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
 
+import java.io.Serializable;
+
 /**
  * Created by Yat3s on 06/08/2017.
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public interface Indicator {
+public interface Indicator extends Serializable {
     public enum STATE {
         DRAGGING_DOWN, DRAGGING_UP, BOUNCING_DOWN, BOUNCING_UP
     }

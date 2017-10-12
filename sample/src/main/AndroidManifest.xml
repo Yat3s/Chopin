@@ -30,6 +30,7 @@
         <activity android:name=".cases.CaseCoordinatorLayoutActivity"/>
         <activity android:name=".cases.CaseAnyViewActivity"/>
         <activity android:name=".cases.CaseTextViewActivity"/>
+        <activity android:name=".cases.CaseIndicatorDemosActivity"/>
         <activity android:name=".AdvancedSettingActivity"/>
     </application>
 

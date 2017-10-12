@@ -116,6 +116,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static class CaseDemo {
+        
+        private static final int CASE_TYPE_VIEW_COMPATIBLE = 0x00;
+
+        private static final int CASE_TYPE_INDICATOR_DEMO = 0x01;
+
+        public int type;
+        
         public String title;
 
         public int backgroundResId;
