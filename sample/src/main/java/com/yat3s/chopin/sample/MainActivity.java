@@ -11,10 +11,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 
 import com.yat3s.chopin.ChopinLayout;
+import com.yat3s.chopin.indicator.Indicator;
 import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.cases.CaseAnyViewActivity;
 import com.yat3s.chopin.sample.cases.CaseCoordinatorLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseFragmentActivity;
+import com.yat3s.chopin.sample.cases.CaseIndicatorDemosActivity;
 import com.yat3s.chopin.sample.cases.CaseLinearLayoutActivity;
 import com.yat3s.chopin.sample.cases.CaseRecyclerViewActivity;
 import com.yat3s.chopin.sample.cases.CaseScrollViewActivity;
@@ -82,12 +84,20 @@ public class MainActivity extends AppCompatActivity {
         caseDemos.add(new CaseDemo("TextView", R.mipmap.abstract_2, CaseTextViewActivity.class));
         caseDemos.add(new CaseDemo("AnyView", R.mipmap.abstract_1, CaseAnyViewActivity.class));
 
+
+        caseDemos.add(new CaseDemo("Victory", R.mipmap.abstract_1,
+                new LottieIndicator(this, "victory.json", 0.1f)));
+
         CaseDemoAdapter caseDemoAdapter = new CaseDemoAdapter(this, caseDemos);
         recyclerView.setAdapter(caseDemoAdapter);
         caseDemoAdapter.setOnItemClickListener(new BaseAdapter.OnItemClickListener<CaseDemo>() {
             @Override
             public void onClick(View view, CaseDemo item, int position) {
-                startActivity(new Intent(MainActivity.this, item.targetActivity));
+                if (item.type == CaseDemo.CASE_TYPE_VIEW_COMPATIBLE) {
+                    startActivity(new Intent(MainActivity.this, item.targetActivity));
+                } else {
+                    CaseIndicatorDemosActivity.start(MainActivity.this, item.indicator);
+                }
             }
         });
 
@@ -116,23 +126,33 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private static class CaseDemo {
-        
+
         private static final int CASE_TYPE_VIEW_COMPATIBLE = 0x00;
 
         private static final int CASE_TYPE_INDICATOR_DEMO = 0x01;
 
         public int type;
-        
+
         public String title;
 
         public int backgroundResId;
 
         public Class<?> targetActivity;
 
+        public Indicator indicator;
+
         public CaseDemo(String title, int backgroundResId, Class<?> targetActivity) {
+            this.type = CASE_TYPE_VIEW_COMPATIBLE;
             this.title = title;
             this.backgroundResId = backgroundResId;
             this.targetActivity = targetActivity;
+        }
+
+        public CaseDemo(String title, int backgroundResId, Indicator indicator) {
+            this.type = CASE_TYPE_INDICATOR_DEMO;
+            this.title = title;
+            this.backgroundResId = backgroundResId;
+            this.indicator = indicator;
         }
     }
 

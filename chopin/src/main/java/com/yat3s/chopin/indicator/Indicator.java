@@ -12,7 +12,7 @@ import java.io.Serializable;
  * Email: hawkoyates@gmail.com
  * GitHub: https://github.com/yat3s
  */
-public interface Indicator extends Serializable {
+public interface Indicator {
     public enum STATE {
         DRAGGING_DOWN, DRAGGING_UP, BOUNCING_DOWN, BOUNCING_UP
     }
