@@ -31,7 +31,7 @@ public abstract class BaseCaseFragment extends Fragment {
         if (null == rootView.findViewById(R.id.chopin_layout)) {
             throw new IllegalArgumentException("You should inflate a ChopinLayout with id chopin_layout!");
         } else {
-            mChopinLayout = (ChopinLayout) rootView.findViewById(R.id.chopin_layout);
+            mChopinLayout = rootView.findViewById(R.id.chopin_layout);
         }
         initialize(rootView);
         return rootView;

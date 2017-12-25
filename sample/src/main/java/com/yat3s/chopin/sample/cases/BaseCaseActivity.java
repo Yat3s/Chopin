@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 
+import com.hwangjr.rxbus.RxBus;
 import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.indicator.LottieIndicator;
 import com.yat3s.chopin.sample.R;
@@ -25,11 +26,12 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(getContentLayoutId());
+        RxBus.get().register(this);
 
         if (null == findViewById(R.id.chopin_layout)) {
             throw new IllegalArgumentException("You should define a ChopinLayout with id chopin_layout in content layout!");
         } else {
-            mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
+            mChopinLayout = findViewById(R.id.chopin_layout);
         }
         initialize();
     }
@@ -65,5 +67,12 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
                 }, loadingCompleteDelay);
             }
         });
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        RxBus.get().unregister(this);
+
     }
 }

@@ -9,6 +9,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.Toast;
 
 import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.indicator.Indicator;
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
+        mChopinLayout = findViewById(R.id.chopin_layout);
         mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
         mChopinLayout.setRefreshHeaderIndicator(new LottieIndicator(this, "victory.json", 0.1f));
         mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        RecyclerView recyclerView = (RecyclerView) findViewById(R.id.recycler_view);
+        RecyclerView recyclerView = findViewById(R.id.recycler_view);
         recyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
@@ -95,9 +96,12 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view, CaseDemo item, int position) {
                 if (item.type == CaseDemo.CASE_TYPE_VIEW_COMPATIBLE) {
                     startActivity(new Intent(MainActivity.this, item.targetActivity));
+                } else if (item.indicator instanceof LottieIndicator) {
+                    CaseIndicatorDemosActivity.start(MainActivity.this, (LottieIndicator) item.indicator);
                 } else {
-                    CaseIndicatorDemosActivity.start(MainActivity.this, item.indicator);
+                    Toast.makeText(MainActivity.this, "Cannot convert this class type!", Toast.LENGTH_SHORT).show();
                 }
+
             }
         });
 
