@@ -39,7 +39,7 @@ public class RecyclerViewFragment extends Fragment {
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        mRecyclerView = view.findViewById(R.id.recycler_view);
 
         // Configure adapter.
         MusicAdapter musicAdapter = new MusicAdapter(getActivity(), DataRepository.generateMusicData(30), false);

@@ -25,7 +25,7 @@ public class CaseWebViewActivity extends BaseCaseActivity {
 
         mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
 
-        WebView webView = (WebView) findViewById(R.id.web_view);
+        WebView webView = findViewById(R.id.web_view);
         webView.loadUrl(BLOG_URL);
     }
 }

@@ -73,6 +73,5 @@ public abstract class BaseCaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         RxBus.get().unregister(this);
-
     }
 }

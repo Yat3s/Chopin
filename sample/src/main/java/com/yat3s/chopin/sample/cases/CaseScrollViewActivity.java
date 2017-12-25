@@ -1,6 +1,5 @@
 package com.yat3s.chopin.sample.cases;
 
-import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.sample.R;
 
 /**

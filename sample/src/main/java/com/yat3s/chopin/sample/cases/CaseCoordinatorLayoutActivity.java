@@ -4,8 +4,6 @@ import android.support.design.widget.AppBarLayout;
 import android.support.v4.widget.NestedScrollView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.FrameLayout;
 
 import com.yat3s.chopin.ChopinLayout;
 import com.yat3s.chopin.ViewScrollChecker;
@@ -33,7 +31,7 @@ public class CaseCoordinatorLayoutActivity extends BaseCaseActivity {
         setupRefreshHeader("refresh.json", 0.2f, 2000);
         setupLoadingFooter("Plane.json", 0.2f, 1500);
 
-        final AppBarLayout barLayout = (AppBarLayout) findViewById(R.id.appbar);
+        final AppBarLayout barLayout = findViewById(R.id.appbar);
         barLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
             public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
@@ -42,7 +40,7 @@ public class CaseCoordinatorLayoutActivity extends BaseCaseActivity {
             }
         });
 
-        final NestedScrollView scrollView = (NestedScrollView) findViewById(R.id.scroll_view);
+        final NestedScrollView scrollView = findViewById(R.id.scroll_view);
         mChopinLayout.setViewScrollChecker(new ViewScrollChecker() {
             @Override
             public boolean canDoRefresh(ChopinLayout chopinLayout, View contentView) {
@@ -58,7 +56,7 @@ public class CaseCoordinatorLayoutActivity extends BaseCaseActivity {
         });
 
         // Setup navigation back button.
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override

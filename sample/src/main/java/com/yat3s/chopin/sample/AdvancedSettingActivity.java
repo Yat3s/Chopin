@@ -40,7 +40,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
     }
 
     protected void initialize() {
-        mChopinLayout = (ChopinLayout) findViewById(R.id.chopin_layout);
+        mChopinLayout = findViewById(R.id.chopin_layout);
 
         configureScrollState();
         configureDragResistance();
@@ -48,7 +48,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
         configureFooterIndicatorLocation();
         configureIndicatorStyle();
         configureNotificationView();
-        final ScrollView scrollView = (ScrollView) findViewById(R.id.scroll_view);
+        final ScrollView scrollView = findViewById(R.id.scroll_view);
         findViewById(R.id.perform_refresh).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -98,7 +98,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
     }
 
     private void configureDragResistance() {
-        AppCompatSeekBar seekBar = (AppCompatSeekBar) findViewById(R.id.seek_bar);
+        AppCompatSeekBar seekBar = findViewById(R.id.seek_bar);
         seekBar.setProgress(40);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -224,7 +224,7 @@ public class AdvancedSettingActivity extends AppCompatActivity {
     }
 
     private void configureNotificationView() {
-        SwitchCompat notificationSwitch = (SwitchCompat) findViewById(R.id.notification_view_switch);
+        SwitchCompat notificationSwitch = findViewById(R.id.notification_view_switch);
         notificationSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {

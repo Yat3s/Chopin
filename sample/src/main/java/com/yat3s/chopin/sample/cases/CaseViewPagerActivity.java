@@ -41,8 +41,8 @@ public class CaseViewPagerActivity extends BaseCaseActivity {
         fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_3));
         fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_4));
         fragments.add(RecyclerViewFragment.newInstance(R.mipmap.abstract_3));
-        ViewPager viewPager = (ViewPager) findViewById(R.id.view_pager);
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        TabLayout tabLayout = findViewById(R.id.tab_layout);
         viewPager.setAdapter(new FragmentPagerAdapter(getSupportFragmentManager()) {
             @Override
             public Fragment getItem(int position) {
