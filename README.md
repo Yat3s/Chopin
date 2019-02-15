@@ -1,5 +1,6 @@
 # Chopin
-An Android Refresh layout including some powerful features.
+An Android Refresh layout including some powerful features.  
+
 
 ![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/device.png)
 
