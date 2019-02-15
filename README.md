@@ -58,3 +58,58 @@ mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
     });
 ```
 
+## Customize & Other advance settings
+- NotificationView
+```java
+TextView headerNotificationView = new TextView(this);
+mChopinLayout.setHeaderNotificationView(headerNotificationView);
+
+// Also you can add foot notification view
+TextView footerNotificationView = new TextView(this);
+mChopinLayout.setFooterNotificationView(footerNotificationView);
+```
+
+- IndicatorLacation
+```java
+// ChopinLayout.INDICATOR_LOCATION_OUTSIDE
+// ChopinLayout.INDICATOR_LOCATION_FRONT
+// ChopinLayout.INDICATOR_LOCATION_BEHIND
+mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_OUTSIDE); 
+mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND); 
+
+```
+
+- IndicatorScrollResistance
+```java
+// 0.0f - 1.0f
+mChopinLayout.setIndicatorScrollResistance(0.5f);
+```
+
+- ScrollState
+```java
+
+mChopinLayout.setOnStateChangeListener(new ChopinLayout.OnStateChangeListener() {
+            @Override
+            public void onStateChanged(ChopinLayout layout, int newState) {
+                /*
+                    public static final int STATE_DEFAULT = 0;
+                
+                    public static final int STATE_DRAGGING_DOWN = 1;
+                
+                    public static final int STATE_DRAGGING_UP = 2;
+                
+                    public static final int STATE_REFRESHING = 3;
+                
+                    public static final int STATE_LOADING = 4;
+                
+                    public static final int STATE_BOUNCING_DOWN = 5;
+                
+                    public static final int STATE_BOUNCING_UP = 6;
+                
+                    public static final int STATE_SHOWING_HEADER_NOTIFICATION = 7;
+                
+                    public static final int STATE_SHOWING_FOOTER_NOTIFICATION = 8;
+                 */
+            }
+```
+
