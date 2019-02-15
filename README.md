@@ -1,7 +1,7 @@
 # Chopin
 An Android Refresh layout including some powerful features.
 
-![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/device.png)
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/device.png = 360x480)
 
 
 #### RecyclerView
