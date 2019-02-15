@@ -3,6 +3,21 @@ An Android Refresh layout including some powerful features.
 
 ![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/device-2019-02-15-111301.png)
 
+
+#### RecyclerView
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/recyclerview.gif)
+
+#### ViewPager
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/viewpager.gif)
+
+#### CoordinatorLayout
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/coordinatorLayout.gif)
+
+#### Any View & Advance setting
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/custom.gif)
+
+
+
 ## Gradle
 > implementation 'com.yat3s.android:chopin:0.6.2'
 
