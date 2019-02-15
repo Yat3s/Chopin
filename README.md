@@ -85,6 +85,40 @@ mChopinLayout.setFooterIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND)
 mChopinLayout.setIndicatorScrollResistance(0.5f);
 ```
 
+- OverScroll
+```java
+mChopinLayout.setEnableOverScroll(true);
+```
+
+- ViewScrollChecker
+```java
+mChopinLayout.setViewScrollChecker(viewScrollChecker);
+
+// You can view this interface
+public interface ViewScrollChecker {
+
+    /**
+     * Check content view whether can do refresh,
+     * so you can do some edition to control view refresh.
+     *
+     * @param chopinLayout
+     * @param contentView  The View nested in {@link ChopinLayout}
+     * @return
+     */
+    boolean canDoRefresh(ChopinLayout chopinLayout, View contentView);
+
+    /**
+     * Check content view whether can do loading,
+     * so you can do some edition to control view loading.
+     *
+     * @param chopinLayout
+     * @param contentView
+     * @return
+     */
+    boolean canDoLoading(ChopinLayout chopinLayout, View contentView);
+}
+```
+
 - ScrollState
 ```java
 
