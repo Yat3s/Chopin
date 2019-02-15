@@ -11,7 +11,7 @@ An Android Refresh layout including some powerful features.
 ![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/viewpager.gif)
 
 #### CoordinatorLayout
-![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/coordinatorLayout.gif)
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/coordinatorlayout.gif)
 
 #### Any View & Advance setting
 ![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/custom.gif)
