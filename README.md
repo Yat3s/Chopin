@@ -1,7 +1,7 @@
 # Chopin
 An Android Refresh layout including some powerful features.
 
-![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/device-2019-02-15-111301.png)
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/device.png)
 
 
 #### RecyclerView
@@ -19,7 +19,7 @@ An Android Refresh layout including some powerful features.
 
 
 ## Gradle
-> implementation 'com.yat3s.android:chopin:0.6.2'
+`implementation 'com.yat3s.android:chopin:0.6.2'`
 
 ## How to use
 - XML 
@@ -42,18 +42,18 @@ An Android Refresh layout including some powerful features.
 
 - Java or Kotlin
 ```java
-        mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
-        mChopinLayout.setRefreshHeaderIndicator(new LottieIndicator(this, "victory.json", 0.1f));
-        mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                mChopinLayout.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mChopinLayout.refreshComplete();
-                    }
-                }, 2000);
-            }
-        });
+mChopinLayout.setHeaderIndicatorLocation(ChopinLayout.INDICATOR_LOCATION_BEHIND);
+mChopinLayout.setRefreshHeaderIndicator(new LottieIndicator(this, "victory.json", 0.1f));
+mChopinLayout.setOnRefreshListener(new ChopinLayout.OnRefreshListener() {
+      @Override
+      public void onRefresh() {
+            mChopinLayout.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mChopinLayout.refreshComplete();
+                }
+             }, 2000);
+        }
+    });
 ```
 
