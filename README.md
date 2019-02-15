@@ -1,6 +1,8 @@
 # Chopin
 An Android Refresh layout including some powerful features.
 
+![](https://github.com/Yat3s/Chopin/blob/dev/screenshot/device-2019-02-15-111301.png)
+
 ## Gradle
 > implementation 'com.yat3s.android:chopin:0.6.2'
 
